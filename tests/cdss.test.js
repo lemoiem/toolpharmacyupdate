@@ -359,21 +359,27 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     await page.evaluate(() => showModule('home'));
   }
 
-  console.log('23. Chế độ sáng/tối');
+  console.log('23. Chế độ hiển thị Sáng · Ấm · Tối');
   {
     const ctx = await browser.newContext({ colorScheme: 'dark' });
     const dp = await ctx.newPage(); const derr = []; dp.on('pageerror', e => derr.push(e.message));
     await dp.goto('file://' + path); await dp.waitForTimeout(300);
-    const st = () => dp.evaluate(() => ({ dark: document.body.classList.contains('mode-dark'), aria: document.getElementById('mode-toggle').getAttribute('aria-checked'), bg: getComputedStyle(document.body).backgroundColor, label: document.querySelector('.mode-label').textContent }));
+    const st = () => dp.evaluate(() => { const on = [...document.querySelectorAll('#mode-switch .mode-opt[aria-checked="true"]')]; return { dark: document.body.classList.contains('mode-dark'), warm: document.body.classList.contains('mode-warm'), aria: on.length === 1 ? on[0].dataset.mode : on.length, bg: getComputedStyle(document.body).backgroundColor, label: document.querySelector('#mode-switch .mode-label').textContent }; });
     let s = await st();
-    ok('Lần đầu: theo hệ điều hành (prefers-color-scheme: dark)', s.dark && s.aria === 'true' && s.label === 'Tối', JSON.stringify(s));
+    ok('Lần đầu: theo hệ điều hành (prefers-color-scheme: dark)', s.dark && s.aria === 'dark' && s.label === 'Tối', JSON.stringify(s));
     ok('Nền tối thật sự (#0e1716)', s.bg === 'rgb(14, 23, 22)', s.bg);
-    await dp.click('#mode-toggle'); await dp.waitForTimeout(150); s = await st();
-    ok('Bấm nút → sáng, aria-checked=false', !s.dark && s.aria === 'false' && s.label === 'Sáng', JSON.stringify(s));
+    await dp.click('#mode-switch .mode-opt[data-mode="light"]'); await dp.waitForTimeout(150); s = await st();
+    ok('Bấm nút Sáng → sáng, chỉ một nút aria-checked', !s.dark && !s.warm && s.aria === 'light' && s.label === 'Sáng', JSON.stringify(s));
+    await dp.click('#mode-switch .mode-opt[data-mode="warm"]'); await dp.waitForTimeout(150); s = await st();
+    ok('Bấm nút Ấm → nền giấy ngà #f5ecdc', s.warm && !s.dark && s.aria === 'warm' && s.label === 'Ấm' && s.bg === 'rgb(245, 236, 220)', JSON.stringify(s));
+    await dp.click('#mode-switch .mode-opt[data-mode="light"]'); await dp.waitForTimeout(100);
     await dp.reload(); await dp.waitForTimeout(300); s = await st();
     ok('Lựa chọn được nhớ sau khi tải lại (ưu tiên hơn hệ điều hành)', !s.dark, JSON.stringify(s));
-    await dp.keyboard.press('Tab'); await dp.focus('#mode-toggle'); await dp.keyboard.press('Enter'); await dp.waitForTimeout(150); s = await st();
-    ok('Dùng được bằng bàn phím (Enter)', s.dark, JSON.stringify(s));
+    await dp.focus('#mode-switch .mode-opt[aria-checked="true"]'); await dp.keyboard.press('ArrowRight'); await dp.waitForTimeout(100); s = await st();
+    const foc = await dp.evaluate(() => document.activeElement.dataset.mode);
+    ok('Bàn phím: → từ Sáng sang Ấm, focus đi theo', s.warm && foc === 'warm', JSON.stringify(s) + ' focus=' + foc);
+    await dp.keyboard.press('ArrowRight'); await dp.waitForTimeout(100); s = await st();
+    ok('Bàn phím: → từ Ấm sang Tối', s.dark && s.aria === 'dark', JSON.stringify(s));
     // màu inline: đảo độ sáng nhưng giữ sắc độ, có bản gốc để in
     await dp.evaluate(() => { showModule('home'); const d = document.createElement('div'); d.id = 'dk-probe'; d.setAttribute('style', 'background:#ffebee;color:#c62828;border:1px solid #ef9a9a'); d.textContent = 'x'; document.getElementById('home').appendChild(d); });
     await dp.waitForTimeout(100);
@@ -388,8 +394,15 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     ok('Sau khi in: quay lại màu tối', await dp.evaluate(() => getComputedStyle(document.getElementById('dk-probe')).backgroundColor !== 'rgb(255, 235, 238)'));
     await dp.evaluate(() => toggleMode()); await dp.waitForTimeout(100);
     ok('Chuyển về sáng: khôi phục đúng style gốc', await dp.evaluate(() => document.getElementById('dk-probe').getAttribute('style') === 'background:#ffebee;color:#c62828;border:1px solid #ef9a9a'));
+    await dp.evaluate(() => { const d = document.getElementById('dk-probe'); d.setAttribute('style', 'background:#ffffff;color:#c62828'); applyMode('warm'); });
+    const wp = await dp.evaluate(() => { const s = getComputedStyle(document.getElementById('dk-probe')); return [s.backgroundColor, s.color]; });
+    ok('Ấm: nền inline trắng → ngà, chữ giữ nguyên', wp[0] === 'rgb(253, 248, 238)' && wp[1] === 'rgb(198, 40, 40)', wp.join(' / '));
+    await dp.evaluate(() => applyMode('dark')); await dp.waitForTimeout(50);
+    ok('Ấm → Tối: chuyển từ màu GỐC (không chồng hai lần)', await dp.evaluate(() => { const d = document.getElementById('dk-probe'); return d.dataset.lightStyle === 'background:#ffffff;color:#c62828' && d.dataset.adMode === 'dark'; }));
+    await dp.evaluate(() => { applyMode('light'); document.getElementById('dk-probe').remove(); });
     // tương phản chữ/nền ở chế độ tối trên mọi module (sau khi tính toán)
-    await dp.goto('file://' + path + '?mode=dark'); await dp.waitForTimeout(300);
+    for (const md of ['dark', 'warm']) {
+    await dp.goto('file://' + path + '?mode=' + md); await dp.waitForTimeout(300);
     // bấm tính toán trước, đo ở lượt sau (MutationObserver chuyển màu ở microtask, trước khi trình duyệt vẽ)
     const ids = await dp.evaluate(() => [...document.querySelectorAll('.module')].map(m => m.id)); const bad = [];
     for (const id of ids) {
@@ -413,10 +426,11 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     }, id));
     }
     await dp.evaluate(() => showModule('home'));
-    ok('Chế độ tối: mọi chữ đạt tương phản ≥4:1 (mọi module, sau khi tính toán)', bad.length === 0, bad.slice(0, 8).join(' | '));
+    ok(`Chế độ ${md === 'dark' ? 'Tối' : 'Ấm'}: mọi chữ đạt tương phản ≥4:1 (mọi module, sau khi tính toán)`, bad.length === 0, bad.slice(0, 8).join(' | '));
+    }
     const mob = await ctx.newPage(); await mob.setViewportSize({ width: 320, height: 640 }); await mob.goto('file://' + path + '?mode=dark'); await mob.waitForTimeout(300);
-    const mv = await mob.evaluate(() => { const r = document.getElementById('mode-toggle').getBoundingClientRect(); return { sw: document.documentElement.scrollWidth, vis: r.width > 0 && r.right <= innerWidth && r.top < 80 }; });
-    ok('Điện thoại 320 px: nút hiển thị trên header, không tràn ngang', mv.vis && mv.sw <= 320, JSON.stringify(mv));
+    const mv = await mob.evaluate(() => { const r = document.getElementById('mode-switch').getBoundingClientRect(); return { sw: document.documentElement.scrollWidth, vis: r.width > 0 && r.right <= innerWidth && r.top < 80 }; });
+    ok('Điện thoại 320 px: nhóm 3 nút hiển thị trên header, không tràn ngang', mv.vis && mv.sw <= 320, JSON.stringify(mv));
     ok('Không có lỗi runtime ở chế độ tối', derr.length === 0, derr.join(' | '));
     await ctx.close();
   }

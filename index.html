@@ -273,7 +273,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
 
 </head>
 <body class="theme-ease">
-<script>/* Chế độ sáng/tối: đặt lớp ngay khi mở trang để không nháy nền trắng (logic đầy đủ ở mục CHẾ ĐỘ SÁNG/TỐI) */(function(){var m=null;try{m=localStorage.getItem('cdss-mode-v19')}catch(e){}var q=new URLSearchParams(location.search).get('mode');if(q==='dark'||q==='light')m=q;if(!m&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)m='dark';if(m==='dark')document.body.classList.add('mode-dark')})();</script>
+<script>/* Chế độ hiển thị Sáng/Ấm/Tối: đặt lớp ngay khi mở trang để không nháy nền trắng (logic đầy đủ ở mục CHẾ ĐỘ SÁNG/TỐI) */(function(){var m=null;try{m=localStorage.getItem('cdss-mode-v19')}catch(e){}var q=new URLSearchParams(location.search).get('mode');if(q==='dark'||q==='light'||q==='warm')m=q;if(!m&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)m='dark';if(m==='dark'||m==='warm')document.body.classList.add('mode-'+m)})();</script>
 
 <!-- HEADER -->
 <style>
@@ -332,6 +332,7 @@ body.theme-ease{
   body.theme-ease .result-table td{border-color:var(--border);font-variant-numeric:tabular-nums}
   body.theme-ease .result-table tr:nth-child(even) td{background:#fbfaf5}
   body.theme-ease .result-table tr[style*="background"] td{background:transparent}
+  body.theme-ease .result-table .warn-row td,body.theme-ease .tag-orange{color:#9a3412}   /* cam đậm: đạt tương phản ≥4,5:1 trên nền cam nhạt/kem */
   body.theme-ease .alert-info{background:var(--layer2);border-left-color:#5b7f63;color:var(--ink)}
   body.theme-ease .step-card{background:var(--layer1);border-color:var(--border)}
   body.theme-ease .step-num{background:var(--ink)}
@@ -403,26 +404,49 @@ body.theme-ease .brand-tag{color:var(--muted)}
    • Nền xanh than ngả ngọc (cùng tông logo), không dùng đen tuyệt đối để giảm chói và lóa khi trực đêm
    • Màu nhóm lâm sàng có bản sáng hơn (--gcd/--gtd trong data-modules) để đạt tương phản WCAG AA trên nền tối
    • Nút hành động trên nền tối: nền sáng + chữ tối
-   • Màu đặt trực tiếp trong style="" của các bảng/kết quả do JS chuyển đổi (darkAdapt) – xem mục CHẾ ĐỘ TỐI trong script
+   • Màu đặt trực tiếp trong style="" của các bảng/kết quả do JS chuyển đổi (modeAdapt) – xem mục CHẾ ĐỘ TỐI trong script
    ══════════════════════════════════════════════════════════════════════ */
-/* Nút chuyển Sáng/Tối */
-.mode-toggle{display:inline-flex;align-items:center;gap:.5rem;flex-shrink:0;margin-left:1rem;padding:0;border:0;background:none;cursor:pointer;font-family:var(--font);font-size:12px;font-weight:700;color:inherit}
-.mode-track{position:relative;display:inline-flex;align-items:center;justify-content:space-between;width:64px;height:32px;padding:0 8px;border-radius:999px;background:#e6f4f1;border:1px solid #c9e3dd;transition:background .25s,border-color .25s}
-.mode-track svg{width:16px;height:16px;position:relative;z-index:1;transition:opacity .25s,color .25s}
-.mode-sun{color:#b45309}.mode-moon{color:#64748b;opacity:.55}
-.mode-knob{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(15,63,58,.25);transition:transform .25s cubic-bezier(.4,0,.2,1),background .25s}
-.mode-label{min-width:2.4em;text-align:left}
-.mode-toggle:hover .mode-track{border-color:#115e59}
-.mode-toggle:focus-visible{outline:none}
-.mode-toggle:focus-visible .mode-track{box-shadow:0 0 0 3px rgba(17,94,89,.35)}
-body.mode-dark .mode-track{background:#1e2b45;border-color:#33456b}
-body.mode-dark .mode-knob{transform:translateX(32px);background:#c7d2fe;box-shadow:0 0 8px rgba(165,180,252,.55)}
-body.mode-dark .mode-sun{color:#94a3b8;opacity:.5}
-body.mode-dark .mode-moon{color:#1e1b4b;opacity:1}
+/* Nhóm nút chế độ hiển thị: Sáng · Ấm · Tối (radiogroup) */
+.mode-switch{display:inline-flex;align-items:center;gap:.5rem;flex-shrink:0;margin-left:1rem;font-family:var(--font);font-size:12px;font-weight:700}
+.mode-seg{position:relative;display:inline-flex;padding:3px;border-radius:999px;background:#e6f4f1;border:1px solid #c9e3dd;transition:background .25s,border-color .25s}
+.mode-seg::before{content:'';position:absolute;top:3px;left:3px;width:32px;height:28px;border-radius:999px;background:#fff;box-shadow:0 1px 3px rgba(15,63,58,.25);transition:transform .25s cubic-bezier(.4,0,.2,1),background .25s,box-shadow .25s}
+.mode-opt{position:relative;z-index:1;display:flex;align-items:center;justify-content:center;width:32px;height:28px;padding:0;border:0;border-radius:999px;background:none;cursor:pointer;opacity:.5;transition:opacity .2s,color .25s}
+.mode-opt svg{width:16px;height:16px}
+.mode-opt[aria-checked="true"]{opacity:1}
+.mode-opt:hover{opacity:.9}
+.mode-opt:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(17,94,89,.4)}
+.mode-opt[data-mode="light"]{color:#b45309}.mode-opt[data-mode="warm"]{color:#c2410c}.mode-opt[data-mode="dark"]{color:#475569}
+.mode-switch[data-mode="warm"] .mode-seg{background:#f1e3c8;border-color:#e0cda8}
+.mode-switch[data-mode="warm"] .mode-seg::before{transform:translateX(32px);background:#fff4dc;box-shadow:0 0 8px rgba(234,140,40,.45)}
+.mode-switch[data-mode="dark"] .mode-seg{background:#1e2b45;border-color:#33456b}
+.mode-switch[data-mode="dark"] .mode-seg::before{transform:translateX(64px);background:#c7d2fe;box-shadow:0 0 8px rgba(165,180,252,.55)}
+.mode-switch[data-mode="dark"] .mode-opt{color:#94a3b8}
+.mode-switch[data-mode="dark"] .mode-opt[data-mode="dark"]{color:#1e1b4b}
+.mode-label{min-width:2.4em}
 body:not(.theme-ease) .mode-label{color:#fff}
-@media print{.mode-toggle{display:none!important}}
-@media (prefers-reduced-motion:reduce){.mode-knob,.mode-track,.mode-track svg{transition:none}}
-@media screen and (max-width:700px){.mode-toggle{order:1;margin-left:auto}.hdr-tool-info{order:2}.mode-label{display:none}}
+@media print{.mode-switch{display:none!important}}
+@media (prefers-reduced-motion:reduce){.mode-seg,.mode-seg::before,.mode-opt{transition:none}}
+@media screen and (max-width:700px){.mode-switch{order:1;margin-left:auto}.hdr-tool-info{order:2}.mode-label{display:none}}
+
+/* CHẾ ĐỘ ẤM – nền giấy ngà (trắng ấm), giảm ánh sáng xanh khi đọc lâu; màu cảnh báo và màu nhóm giữ nguyên */
+@media screen{
+  body.theme-ease.mode-warm{
+    --bg:#f5ecdc;--card:#fdf7ec;--border:#e2d4ba;
+    --text:#3a2e1f;--muted:#76664f;--ink:#2f2416;
+    --layer1:#efe4cf;--layer2:#f1e7d3;--layer3:#ece1ca;--layer4:#e3d5b9;
+    --primary:#0f5e54;--primary-dark:#0b4a42;--primary-light:#e7ead8;
+    --nav-act-bg:#e7ead8;--nav-act-border:#0f5e54;--nav-act-text:#0b4a42;
+  }
+  body.theme-ease.mode-warm .header{background:#faf2e3;border-bottom-color:var(--border)}
+  body.theme-ease.mode-warm .brand-name{color:#2f3d2a}
+  body.theme-ease.mode-warm .brand-name b{background:#e7ead8}
+  body.theme-ease.mode-warm .home-card{background:var(--card);border-color:#dccdb0}
+  body.theme-ease.mode-warm input[type=number],body.theme-ease.mode-warm input[type=text],body.theme-ease.mode-warm select,body.theme-ease.mode-warm textarea{background:#fffaf1;border-color:#d8c8a9;color:var(--text)}
+  body.theme-ease.mode-warm .result-table tr:nth-child(even) td{background:#f8efdf}
+  body.theme-ease.mode-warm .result-table tr[style*="background"] td{background:transparent}
+  body.theme-ease.mode-warm .metric-card{border-color:#ddd0b4}
+  body.theme-ease.mode-warm .theme-fab{background:var(--card);border-color:var(--border)}
+}
 
 @media screen{
   body.theme-ease.mode-dark{
@@ -534,10 +558,10 @@ body:not(.theme-ease) .mode-label{color:#fff}
     <div class="hdr-author">DSCKI. Lê Mới Em</div>
     <div class="ver-badge">Phiên bản 1.9 · 2026</div>
   </div>
-  <button type="button" class="mode-toggle no-print" id="mode-toggle" role="switch" aria-checked="false" aria-label="Chế độ tối" onclick="toggleMode()">
-    <span class="mode-track" aria-hidden="true"><span class="mode-knob"></span><svg class="mode-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg><svg class="mode-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6a.6.6 0 0 0-.8-.7 9.6 9.6 0 1 0 12.5 12.5.6.6 0 0 0-.7-.8z"/></svg></span>
-    <span class="mode-label">Sáng</span>
-  </button>
+  <div class="mode-switch no-print" id="mode-switch" data-mode="light" role="radiogroup" aria-label="Chế độ hiển thị" onkeydown="modeKey(event)">
+    <span class="mode-seg"><button type="button" class="mode-opt" data-mode="light" role="radio" aria-checked="true" tabindex="0" aria-label="Sáng" title="Sáng – nền kem tiêu chuẩn" onclick="applyMode('light',true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></button><button type="button" class="mode-opt" data-mode="warm" role="radio" aria-checked="false" tabindex="-1" aria-label="Ấm" title="Ấm – nền giấy ngà, giảm ánh sáng xanh khi đọc lâu" onclick="applyMode('warm',true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6.5 16.5a5.5 5.5 0 0 1 11 0z" fill="currentColor"/><path d="M2.5 20h19M12 4.5v3M5 9.5l1.6 1.6M19 9.5l-1.6 1.6M2.5 16.5h1.5M20 16.5h1.5"/></svg></button><button type="button" class="mode-opt" data-mode="dark" role="radio" aria-checked="false" tabindex="-1" aria-label="Tối" title="Tối – trực đêm, phòng tối" onclick="applyMode('dark',true)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6a.6.6 0 0 0-.8-.7 9.6 9.6 0 1 0 12.5 12.5.6.6 0 0 0-.7-.8z"/></svg></button></span>
+    <span class="mode-label" aria-hidden="true">Sáng</span>
+  </div>
 </div>
 
 <button class="theme-fab no-print" id="theme-fab" onclick="toggleTheme()" title="Chuyển giữa giao diện Ease (mặc định) và giao diện cũ">↩︎ Giao diện cũ</button>
@@ -1812,7 +1836,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="card">
     <div class="card-title">📝 Lịch Sử Cập Nhật</div>
     <table class="result-table"><thead><tr><th>Phiên bản</th><th>Ngày</th><th>Nội dung</th></tr></thead><tbody>
-      <tr class="highlight-row"><td>v1.9</td><td>10/2026</td><td>Chế độ sáng/tối: nút gạt ☀️/🌙 trên header, nhớ lựa chọn, mặc định theo cài đặt hệ điều hành; bảng màu tối xanh than ngả ngọc, màu nhóm lâm sàng có bản sáng hơn đạt tương phản WCAG AA; màu inline của bảng/kết quả được đảo độ sáng nhưng giữ sắc độ (đỏ/cam/xanh lá vẫn mang nghĩa mức nguy cơ); bản in luôn nền trắng</td></tr>
+      <tr class="highlight-row"><td>v1.9</td><td>10/2026</td><td>Chế độ hiển thị Sáng · Ấm · Tối: nhóm 3 nút ☀️/🌅/🌙 trên header (dùng được bằng phím mũi tên), nhớ lựa chọn, mặc định theo cài đặt hệ điều hành; chế độ Ấm nền giấy ngà giảm ánh sáng xanh khi đọc lâu; chữ cam hàng cảnh báo đậm hơn đạt tương phản AA; bảng màu tối xanh than ngả ngọc, màu nhóm lâm sàng có bản sáng hơn đạt tương phản WCAG AA; màu inline của bảng/kết quả được đảo độ sáng nhưng giữ sắc độ (đỏ/cam/xanh lá vẫn mang nghĩa mức nguy cơ); bản in luôn nền trắng</td></tr>
       <tr><td>v1.8</td><td>10/2026</td><td>Đổi tên ứng dụng thành NeoPed CDSS (Neonatal &amp; Paediatric Clinical Decision Support System); logo mới “bàn chân em bé + nhịp tim”; favicon; bỏ khối logo/tên bệnh viện, khẩu hiệu và huy hiệu JCI/RTAC khỏi header và trang chủ; theme Ease: thay màu hồng Phương Nam bằng màu thương hiệu NeoPed (xanh ngọc đậm) cho nút và mục đang chọn ở trang chủ, trong module nút In và mục đang chọn theo màu nhóm lâm sàng</td></tr>
       <tr><td>v1.7</td><td>10/2026</td><td>Icon 3D cho tiêu đề thẻ trong tất cả module và bảng liều tham khảo (ánh xạ emoji → icon trong data-modules, áp dụng cả nội dung sinh lại khi tính toán); đánh số bước liên tục ở module Cơn hen cấp nặng</td></tr>
       <tr><td>v1.6</td><td>10/2026</td><td>Sắp xếp lại module theo 5 nhóm lâm sàng (Hồi sức · Sơ sinh · Cấp cứu nhi khoa theo ABCDE · Dịch truyền &amp; dinh dưỡng · Thông tin); đặt lại tên theo thuật ngữ y khoa; mã màu theo nhóm; icon 3D Fluent Emoji nhúng offline; điều hướng, trang chủ, tiêu đề module và bảng tổng quan sinh từ khối data-modules; bỏ thẻ EOS trùng lặp</td></tr>
@@ -6279,27 +6303,38 @@ function renderDoseReference(){
 try{renderDoseReference()}catch(e){console.error(e);const el=document.getElementById('dose-reference');if(el)el.innerHTML=`<div class="alert alert-danger">🚨 Lỗi dữ liệu bảng liều: ${e.message}</div>`}
 
 
-// ===== CHẾ ĐỘ SÁNG/TỐI (v1.9) – lớp body.mode-dark trên theme Ease =====
-// Ưu tiên: ?mode=dark|light trên URL → lựa chọn đã lưu (localStorage) → cài đặt hệ điều hành (prefers-color-scheme).
-// Lớp được đặt sớm ngay sau <body> để không nháy nền trắng; ở đây chỉ đồng bộ nút và chuyển màu inline.
-const MODE_KEY='cdss-mode-v19';
-function isDark(){const c=document.body.classList;return c.contains('mode-dark')&&c.contains('theme-ease')}
+// ===== CHẾ ĐỘ HIỂN THỊ: Sáng · Ấm · Tối (v1.9) – lớp body.mode-warm / body.mode-dark trên theme Ease =====
+// Ưu tiên: ?mode=light|warm|dark trên URL → lựa chọn đã lưu (localStorage) → cài đặt hệ điều hành (tối/sáng).
+// "Ấm": nền giấy ngà, giảm ánh sáng xanh – đọc phác đồ lâu, phòng ánh sáng vàng. Lớp được đặt sớm ngay sau <body> để không nháy.
+const MODE_KEY='cdss-mode-v19',MODES=['light','warm','dark'];
+const MODE_META={light:{label:'Sáng',bar:'#fffdf8'},warm:{label:'Ấm',bar:'#faf2e3'},dark:{label:'Tối',bar:'#101a19'}};
+function curMode(){const c=document.body.classList;if(!c.contains('theme-ease'))return'light';return c.contains('mode-dark')?'dark':c.contains('mode-warm')?'warm':'light'}
+function isDark(){return curMode()==='dark'}
 function applyMode(m,save){
-  if(m==='dark'&&!document.body.classList.contains('theme-ease'))applyTheme('ease');   // chế độ tối chỉ thiết kế cho theme Ease
-  document.body.classList.toggle('mode-dark',m==='dark');
+  if(!MODES.includes(m))m='light';
+  if(m!=='light'&&!document.body.classList.contains('theme-ease'))applyTheme('ease');   // chế độ Ấm/Tối chỉ thiết kế cho theme Ease
+  document.body.classList.toggle('mode-dark',m==='dark');document.body.classList.toggle('mode-warm',m==='warm');
   if(save){try{localStorage.setItem(MODE_KEY,m)}catch(e){}}
   syncModeUI();
 }
-function toggleMode(){applyMode(isDark()?'light':'dark',true)}
+function toggleMode(){applyMode(isDark()?'light':'dark',true)}   // Sáng ↔ Tối (phím tắt/tương thích)
 function syncModeUI(){
-  const d=isDark(),b=document.getElementById('mode-toggle');
-  if(b){b.setAttribute('aria-checked',String(d));b.title=d?'Đang ở chế độ tối – bấm để chuyển sang sáng':'Đang ở chế độ sáng – bấm để chuyển sang tối';
-    const l=b.querySelector('.mode-label');if(l)l.textContent=d?'Tối':'Sáng'}
-  const mc=document.querySelector('meta[name="theme-color"]');if(mc)mc.content=d?'#101a19':'#fffdf8';
-  d?darkAdapt(document.body):lightRestore(document.body);
+  const m=curMode(),sw=document.getElementById('mode-switch');
+  if(sw){sw.dataset.mode=m;
+    sw.querySelectorAll('.mode-opt').forEach(b=>{const on=b.dataset.mode===m;b.setAttribute('aria-checked',String(on));b.tabIndex=on?0:-1});
+    const l=sw.querySelector('.mode-label');if(l)l.textContent=MODE_META[m].label}
+  const mc=document.querySelector('meta[name="theme-color"]');if(mc)mc.content=MODE_META[m].bar;
+  lightRestore(document.body);if(m!=='light')modeAdapt(document.body);
 }
-// Màu đặt trực tiếp trong style="" (bảng, kết quả do JS sinh): đảo độ sáng, GIỮ sắc độ (đỏ vẫn là đỏ, xanh lá vẫn là xanh lá)
-// – nền sáng → nền tối cùng sắc; chữ tối → chữ sáng cùng sắc; viền sáng → viền tối. Bản gốc lưu ở data-light-style để in và để quay lại.
+// Bàn phím trong nhóm nút (radiogroup WAI-ARIA): ←/→ hoặc ↑/↓ đổi chế độ, Home/End về đầu/cuối
+function modeKey(e){
+  const i=MODES.indexOf(curMode());const j={ArrowRight:(i+1)%3,ArrowDown:(i+1)%3,ArrowLeft:(i+2)%3,ArrowUp:(i+2)%3,Home:0,End:2}[e.key];
+  if(j==null)return;e.preventDefault();applyMode(MODES[j],true);
+  const b=document.querySelector(`#mode-switch .mode-opt[data-mode="${MODES[j]}"]`);if(b)b.focus();
+}
+// Màu đặt trực tiếp trong style="" (bảng, kết quả do JS sinh). Bản gốc lưu ở data-light-style để in và để quay lại.
+// – Tối: đảo độ sáng, GIỮ sắc độ (đỏ vẫn là đỏ, xanh lá vẫn là xanh lá): nền sáng → nền tối cùng sắc; chữ tối → chữ sáng; viền sáng → viền tối.
+// – Ấm: chỉ nền gần trắng (L >0,9) được pha về tông giấy ngà; chữ, viền và nền màu đậm giữ nguyên.
 function _rgb(c){
   let m=c.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
   if(m){let h=m[1];if(h.length===3)h=h.replace(/./g,x=>x+x);return[0,2,4].map(i=>parseInt(h.substr(i,2),16)/255).concat(1)}
@@ -6317,50 +6352,59 @@ function dkColor(c,kind){
   else{if(l<=.7)return c;l=.26;s*=.5}
   return _css(h,s,l,v[3]);
 }
+function wmColor(c,kind){
+  if(kind!=='bg')return c;const v=_rgb(c);if(!v||_hsl(v)[2]<.9)return c;
+  const W=[251,243,226],k=.6,q=v.slice(0,3).map((x,i)=>Math.round(x*255*(1-k)+W[i]*k));
+  return v[3]<1?`rgba(${q},${v[3]})`:`rgb(${q})`;
+}
 const DK_COLOR=/#[0-9a-f]{6}\b|#[0-9a-f]{3}\b|rgba?\([^)]*\)/gi;
-function dkStyle(st){
-  if(/url\(/i.test(st))return st;
+function adaptStyle(st,mode){
+  if(/url\(/i.test(st))return st;const fn=mode==='dark'?dkColor:wmColor;
   return st.replace(/(^|;)\s*([\w-]+)\s*:([^;]*)/g,(all,sep,prop,val)=>{
     const p=prop.toLowerCase();
     const kind=p.startsWith('--')?null:/^background/.test(p)?'bg':p==='color'?'fg':/^(border|outline)/.test(p)?'bd':null;
-    return kind?`${sep}${prop}:${val.replace(DK_COLOR,c=>dkColor(c,kind))}`:all;
+    return kind?`${sep}${prop}:${val.replace(DK_COLOR,c=>fn(c,kind))}`:all;
   });
 }
 function _dkEl(el){
-  const st=el.getAttribute('style');if(st==null||st===el.dataset.darkStyle)return;   // đã chuyển (hoặc do chính hàm này ghi)
-  const d=dkStyle(st);el.dataset.lightStyle=st;el.dataset.darkStyle=d;if(d!==st)el.setAttribute('style',d);
+  const m=curMode();if(m==='light')return;
+  const st=el.getAttribute('style');if(st==null)return;
+  const mine=st===el.dataset.darkStyle;if(mine&&el.dataset.adMode===m)return;   // đã chuyển (hoặc do chính hàm này ghi)
+  const orig=mine?el.dataset.lightStyle:st,d=adaptStyle(orig,m);
+  el.dataset.lightStyle=orig;el.dataset.darkStyle=d;el.dataset.adMode=m;if(d!==st)el.setAttribute('style',d);
 }
-function darkAdapt(root){if(!root||root.nodeType!==1)return;if(root.hasAttribute('style'))_dkEl(root);root.querySelectorAll('[style]').forEach(_dkEl)}
+function modeAdapt(root){if(!root||root.nodeType!==1)return;if(root.hasAttribute('style'))_dkEl(root);root.querySelectorAll('[style]').forEach(_dkEl)}
 function lightRestore(root){if(!root||root.nodeType!==1)return;
   [root,...root.querySelectorAll('[data-light-style]')].forEach(el=>{if(el.dataset&&el.dataset.lightStyle!=null){
     if(el.getAttribute('style')===el.dataset.darkStyle)el.setAttribute('style',el.dataset.lightStyle);
-    delete el.dataset.lightStyle;delete el.dataset.darkStyle}})}
+    delete el.dataset.lightStyle;delete el.dataset.darkStyle;delete el.dataset.adMode}})}
 // Bản sao HTML với màu gốc (dùng khi chép nội dung sang cửa sổ in riêng)
 function lightHTML(el){if(!el)return'';const c=el.cloneNode(true);lightRestore(c);return c.innerHTML}
 let DK_PAUSE=false;   // tạm dừng khi in
-new MutationObserver(ms=>{if(!isDark()||DK_PAUSE)return;
-  for(const m of ms){if(m.type==='attributes')_dkEl(m.target);else m.addedNodes.forEach(darkAdapt)}
+new MutationObserver(ms=>{if(curMode()==='light'||DK_PAUSE)return;
+  for(const m of ms){if(m.type==='attributes')_dkEl(m.target);else m.addedNodes.forEach(modeAdapt)}
 }).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['style']});
 // In: luôn in màu gốc trên nền trắng
-window.addEventListener('beforeprint',()=>{if(isDark()){DK_PAUSE=true;lightRestore(document.body)}});
-window.addEventListener('afterprint',()=>{DK_PAUSE=false;if(isDark())darkAdapt(document.body)});
+window.addEventListener('beforeprint',()=>{if(curMode()!=='light'){DK_PAUSE=true;lightRestore(document.body)}});
+window.addEventListener('afterprint',()=>{DK_PAUSE=false;if(curMode()!=='light')modeAdapt(document.body)});
 // ===== Giao diện: "ease" (mặc định từ v1.5) hoặc "classic" (giao diện cũ). Chọn qua nút, hoặc ?theme=ease / ?theme=classic =====
 function applyTheme(t){
   document.body.classList.toggle('theme-ease',t==='ease');
   const b=document.getElementById('theme-fab');if(b)b.textContent=t==='ease'?'↩︎ Giao diện cũ':'🎨 Giao diện mới';
   try{localStorage.setItem('cdss-theme-v15',t)}catch(e){}   // khóa mới: lựa chọn "giao diện cũ" lúc xem thử không ghi đè mặc định mới
-  if(typeof MODE_KEY!=='undefined')syncModeUI();   // giao diện cũ không có chế độ tối
+  if(typeof MODE_KEY!=='undefined')syncModeUI();   // giao diện cũ không có chế độ Ấm/Tối
 }
 function toggleTheme(){applyTheme(document.body.classList.contains('theme-ease')?'classic':'ease')}
 (function(){let t='ease';
   try{t=localStorage.getItem('cdss-theme-v15')||t}catch(e){}
   const q=new URLSearchParams(location.search).get('theme');if(q==='ease'||q==='classic')t=q;
   applyTheme(t)})();
-// Khởi tạo chế độ sáng/tối (sau khi đã áp theme)
+// Khởi tạo chế độ hiển thị (sau khi đã áp theme)
 (function(){
   const q=new URLSearchParams(location.search).get('mode');let saved=null;try{saved=localStorage.getItem(MODE_KEY)}catch(e){}
   const mq=window.matchMedia&&matchMedia('(prefers-color-scheme: dark)');
-  applyMode(q==='dark'||q==='light'?q:saved||(mq&&mq.matches?'dark':'light'),q==='dark'||q==='light');
+  const fromUrl=MODES.includes(q);
+  applyMode(fromUrl?q:saved||(mq&&mq.matches?'dark':'light'),fromUrl);
   if(mq&&mq.addEventListener)mq.addEventListener('change',e=>{let s=null;try{s=localStorage.getItem(MODE_KEY)}catch(x){}if(!s)applyMode(e.matches?'dark':'light')});
 })();
 

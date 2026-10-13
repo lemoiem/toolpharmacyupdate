@@ -95,14 +95,18 @@ npx playwright install chromium
 node tests/cdss.test.js            # mặc định kiểm thử ./index.html
 ```
 
-Kết quả phiên bản 1.8: **142/142 ca đạt**.
+Kết quả phiên bản 1.9: **161/161 ca đạt**.
 
 ---
 
 ## Giao diện
 
 - **Giao diện mặc định "Ease":** nền kem phân lớp, không bóng đổ. Mỗi nhóm lâm sàng có một màu riêng. Màu thương hiệu NeoPed (xanh ngọc đậm) chỉ dùng cho nút bấm và mục đang chọn ở trang chủ; trong module, nút In và mục đang chọn theo màu nhóm; đỏ, cam, xanh lá dành riêng cho cảnh báo mức độ nguy cơ.
-- **Chế độ sáng/tối:** nút gạt ☀️/🌙 ở góc phải header (trên điện thoại nằm cạnh logo). Lần đầu mở, app theo cài đặt sáng/tối của hệ điều hành; sau khi bấm, lựa chọn được nhớ trên trình duyệt. Có thể ép bằng `?mode=dark` hoặc `?mode=light`. Nền tối xanh than (không đen tuyệt đối) để giảm chói khi trực đêm; màu cảnh báo đỏ/cam/xanh lá giữ nguyên ý nghĩa; bản in luôn nền trắng.
+- **Chế độ hiển thị Sáng · Ấm · Tối:** nhóm 3 nút ☀️ / 🌅 / 🌙 ở góc phải header (trên điện thoại nằm cạnh logo; dùng được bằng phím ← →).
+  - **Sáng:** nền kem tiêu chuẩn.
+  - **Ấm:** nền giấy ngà, giảm ánh sáng xanh – đọc phác đồ lâu, phòng đèn vàng.
+  - **Tối:** nền xanh than (không đen tuyệt đối) – trực đêm, phòng tối.
+  - Lần đầu mở, app theo cài đặt sáng/tối của hệ điều hành; sau khi chọn, lựa chọn được nhớ trên trình duyệt. Có thể ép bằng `?mode=light`, `?mode=warm`, `?mode=dark`. Màu cảnh báo đỏ/cam/xanh lá giữ nguyên ý nghĩa ở mọi chế độ; bản in luôn nền trắng.
 - **Giao diện cũ:** bấm nút "↩︎ Giao diện cũ" ở góc dưới bên phải, hoặc mở trang kèm `?theme=classic`.
 - **Điện thoại:** điều hướng dạng dải ngang cuộn được, bảng cuộn trong thẻ, không tràn ngang ở màn hình 320–390 px.
 - **In:** nút "In module này" cho từng module; phiếu pha chế TPN in riêng.
@@ -112,7 +116,7 @@ Kết quả phiên bản 1.8: **142/142 ca đạt**.
 ## Bảo mật và dữ liệu người bệnh
 
 - Mọi phép tính chạy ngay trên trình duyệt. **Không gửi và không lưu thông tin người bệnh lên máy chủ.**
-- Trình duyệt chỉ lưu lựa chọn giao diện (Ease/cũ) và chế độ sáng/tối.
+- Trình duyệt chỉ lưu lựa chọn giao diện (Ease/cũ) và chế độ hiển thị (Sáng/Ấm/Tối).
 - Họ tên và mã hồ sơ nhập ở module PN chỉ dùng để in phiếu pha chế; prompt gửi cho chức năng phân tích AI đã được ẩn danh.
 - Chức năng **"Phân tích AI"** ở module PN gọi trực tiếp API từ trình duyệt và **sẽ không hoạt động** nếu không có máy chủ trung gian giữ khóa API. Phần tính toán PN vẫn đầy đủ khi không dùng AI.
 - Dữ liệu sức khỏe là dữ liệu cá nhân nhạy cảm theo Nghị định 13/2023/NĐ-CP. Đơn vị triển khai chịu trách nhiệm pháp lý và nên tham vấn bộ phận pháp chế.
@@ -123,7 +127,7 @@ Kết quả phiên bản 1.8: **142/142 ca đạt**.
 
 | Phiên bản | Nội dung chính |
 |---|---|
-| 1.9 | Chế độ sáng/tối (nút gạt trên header, mặc định theo hệ điều hành), bản in luôn nền trắng |
+| 1.9 | Chế độ hiển thị Sáng · Ấm · Tối (nhóm 3 nút trên header, mặc định theo hệ điều hành), bản in luôn nền trắng |
 | 1.8 | Đổi tên thành NeoPed CDSS; logo mới; bỏ khối thông tin bệnh viện khỏi header; màu hành động theo thương hiệu (trang chủ) và theo nhóm lâm sàng (module), bỏ màu hồng cũ |
 | 1.7 | Icon 3D cho tiêu đề thẻ trong mọi module; đánh số bước liên tục ở module hen |
 | 1.6 | Sắp xếp module theo 5 nhóm lâm sàng (ABCDE), đặt tên theo thuật ngữ y khoa, mã màu theo nhóm, icon 3D |

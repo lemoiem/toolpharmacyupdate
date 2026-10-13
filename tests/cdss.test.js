@@ -317,6 +317,31 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     ok('Bảng tổng quan trang Hướng dẫn liệt kê 17 module lâm sàng', st.ov === 17, st.ov);
   }
 
+  console.log('21. Icon 3D tiêu đề thẻ + đánh số bước');
+  {
+    const steps = async sev => page.evaluate(sev => { showModule('asthma'); document.getElementById('a-wt').value = 25; document.getElementById('a-sev').value = sev; calcAsthma(); return [...document.querySelectorAll('#asthma-result .step-num')].map(x => x.textContent).join(','); }, sev);
+    ok('Hen mức vừa: bước 1,2,3 liên tục', (await steps('moderate')) === '1,2,3', await steps('moderate'));
+    ok('Hen nguy kịch: bước 1→7 liên tục', (await steps('critical')) === '1,2,3,4,5,6,7', await steps('critical'));
+    await page.waitForTimeout(100);
+    const ic = await page.evaluate(() => {
+      const out = {};
+      for (const m of ['resus', 'neo', 'paed', 'tpn', 'eos', 'guide']) { showModule(m); }
+      return out;
+    });
+    await page.waitForTimeout(200);
+    const cov = await page.evaluate(() => {
+      const t = [...document.querySelectorAll('.card-title')];
+      const withIcon = t.filter(x => x.querySelector(':scope > .i3d')).length;
+      const leftEmoji = t.filter(x => !x.querySelector(':scope > .i3d') && /^\s*\p{Extended_Pictographic}/u.test(x.textContent)).map(x => x.textContent.trim().slice(0, 25));
+      return { total: t.length, withIcon, leftEmoji };
+    });
+    ok(`Tiêu đề thẻ có icon 3D (${cov.withIcon}/${cov.total})`, cov.withIcon > 40, JSON.stringify(cov));
+    ok('Chỉ còn emoji không có bản 3D (cờ 🇻🇳) hoặc không còn', cov.leftEmoji.every(x => /🇻🇳/u.test(x)), cov.leftEmoji.join(' | '));
+    await page.evaluate(() => { showModule('asthma'); calcAsthma(); });
+    await page.waitForTimeout(150);
+    ok('Thẻ sinh lại khi tính toán vẫn được gắn icon 3D', await page.evaluate(() => !!document.querySelector('#asthma-result .card-title > .i3d-lungs')));
+  }
+
   console.log('14. Lỗi runtime trên trang');
   ok('Không có pageerror', errors.length === 0, errors.join(' | '));
 

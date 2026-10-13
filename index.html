@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Công Cụ Hỗ Trợ Quyết Định Lâm Sàng – Bệnh Viện Phương Nam</title>
+<title>NeoPed CDSS – Hỗ trợ quyết định lâm sàng Nhi – Sơ sinh</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22 role=%22img%22 aria-label=%22NeoPed CDSS%22%3E%3Cdefs%3E  %3ClinearGradient id=%22np-bg%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E    %3Cstop offset=%220%22 stop-color=%22#0f766e%22/%3E    %3Cstop offset=%221%22 stop-color=%22#1d4ed8%22/%3E  %3C/linearGradient%3E%3C/defs%3E%3Crect width=%2264%22 height=%2264%22 rx=%2216%22 fill=%22url%28#np-bg%29%22/%3E%3Ccircle cx=%2232%22 cy=%2215.5%22 r=%226.5%22 fill=%22#fff%22/%3E%3Crect x=%2212%22 y=%2225%22 width=%2240%22 height=%2211%22 rx=%225.5%22 fill=%22#fff%22/%3E%3Crect x=%2226.5%22 y=%2223%22 width=%2211%22 height=%2231%22 rx=%225.5%22 fill=%22#fff%22/%3E%3Cpath d=%22M32 36.2c-.3 0-.6-.1-.8-.3l-4.1-3.9a3.1 3.1 0 0 1 4.4-4.4l.5.5.5-.5a3.1 3.1 0 0 1 4.4 4.4l-4.1 3.9c-.2.2-.5.3-.8.3z%22 fill=%22#c2185b%22/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -346,6 +347,20 @@ body.theme-ease{
 .theme-fab{position:fixed;right:16px;bottom:16px;z-index:200;display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .9rem;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12)}
 .theme-fab:hover{border-color:var(--primary);color:var(--primary)}
 @media print{.theme-fab{display:none!important}}
+/* ── THƯƠNG HIỆU NeoPed CDSS ── */
+.brand{display:flex;align-items:center;gap:.75rem;flex-shrink:0}
+.brand-logo{width:48px;height:48px;flex-shrink:0;border-radius:13px;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.brand-logo svg{display:block}
+.brand-name{font-size:21px;font-weight:800;letter-spacing:-.3px;line-height:1.1;color:#fff}
+.brand-name span{color:#bfe9ff}
+.brand-name b{font-size:11px;font-weight:800;letter-spacing:.8px;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.2);vertical-align:3px;margin-left:2px}
+.brand-tag{font-size:11.5px;color:rgba(255,255,255,.85);margin-top:3px}
+body.theme-ease .brand-logo{box-shadow:none}
+body.theme-ease .brand-name{color:#0f3f3a}
+body.theme-ease .brand-name span{color:#1d4ed8}
+body.theme-ease .brand-name b{background:#e3f3ef;color:#0f766e}
+body.theme-ease .brand-tag{color:var(--muted)}
+@media screen and (max-width:700px){.brand-logo,.brand-logo svg{width:40px!important;height:40px!important}.brand-name{font-size:18px}}
 /* ── CẤU TRÚC MODULE THEO NHÓM LÂM SÀNG (data-modules) ── */
 .gdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gc,#98a2b3);margin-right:.45rem;flex-shrink:0}
 .nav-section{display:flex;align-items:center;color:var(--gc,#6b7d6f)!important}
@@ -409,52 +424,24 @@ body.theme-ease{
 }
 </style>
 <div class="header">
-  <div class="logo-hospital">
-    <!-- ── LOGO PHƯƠNG NAM (SVG tái hiện chính xác) ── -->
-    <div class="logo-pn-wrap">
-      <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
-        <!-- Nền vuông hồng -->
-        <rect width="52" height="52" rx="9" fill="#c2185b"/>
-        <!-- Vòng tròn Âm-Dương (Yin-Yang style) -->
-        <circle cx="26" cy="26" r="18" fill="#fff"/>
-        <!-- Nửa dưới hồng đậm -->
-        <path d="M26 26 a18 18 0 0 0 0 -18 a9 9 0 0 1 0 18 a9 9 0 0 0 0 18 a18 18 0 0 0 0-18z" fill="#c2185b"/>
-        <!-- Vòng nhỏ trắng trên -->
-        <circle cx="26" cy="17" r="4" fill="#fff"/>
-        <!-- Vòng nhỏ hồng dưới -->
-        <circle cx="26" cy="35" r="4" fill="#c2185b"/>
-        <!-- Hình bé (silhouette đơn giản) -->
-        <circle cx="22" cy="15" r="2.5" fill="#fff" opacity=".9"/>
-        <ellipse cx="22" cy="21" rx="2" ry="3" fill="#fff" opacity=".85"/>
-        <!-- Hình mẹ (silhouette đơn giản) -->
-        <circle cx="31" cy="29" r="3" fill="#c2185b" opacity=".85"/>
-        <ellipse cx="31" cy="36" rx="2.5" ry="3.5" fill="#c2185b" opacity=".8"/>
-        <!-- Viền ngoài -->
-        <rect width="52" height="52" rx="9" fill="none" stroke="#ad1457" stroke-width="1.5"/>
-      </svg>
-    </div>
-    <div class="hospital-brand">
-      <div class="hospital-name-main">PHƯƠNG NAM
-        <em>Mẹ tròn con vuông</em>
-      </div>
-      <div class="hospital-group-tag">Tập Đoàn Y Tế Phương Châu</div>
-      <div class="hdr-badges">
-        <span class="hdr-badge">⭐ JCI Accredited</span>
-        <span class="hdr-badge">RTAC</span>
-      </div>
+  <div class="brand" title="NeoPed CDSS – Hỗ trợ quyết định lâm sàng Nhi – Sơ sinh">
+    <div class="brand-logo"><svg width="48" height="48" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="NeoPed CDSS"><defs>  <linearGradient id="np-bg" x1="0" y1="0" x2="1" y2="1">    <stop offset="0" stop-color="#0f766e"/>    <stop offset="1" stop-color="#1d4ed8"/>  </linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#np-bg)"/><circle cx="32" cy="15.5" r="6.5" fill="#fff"/><rect x="12" y="25" width="40" height="11" rx="5.5" fill="#fff"/><rect x="26.5" y="23" width="11" height="31" rx="5.5" fill="#fff"/><path d="M32 36.2c-.3 0-.6-.1-.8-.3l-4.1-3.9a3.1 3.1 0 0 1 4.4-4.4l.5.5.5-.5a3.1 3.1 0 0 1 4.4 4.4l-4.1 3.9c-.2.2-.5.3-.8.3z" fill="#c2185b"/></svg></div>
+    <div class="brand-text">
+      <div class="brand-name">Neo<span>Ped</span> <b>CDSS</b></div>
+      <div class="brand-tag">Hỗ trợ quyết định lâm sàng Nhi – Sơ sinh</div>
     </div>
   </div>
 
   <div class="hdr-divider"></div>
 
   <div class="hdr-tool-info">
-    <div class="hdr-tool-title"><i class="i3d i3d-hospital" aria-hidden="true"></i> Công Cụ Hỗ Trợ Quyết Định Lâm Sàng</div>
-    <div class="hdr-tool-sub">Clinical Decision Support Tool · Sơ sinh &amp; Nhi khoa · Dựa trên bằng chứng</div>
+    <div class="hdr-tool-title">Tính liều theo cân nặng · Phân tầng nguy cơ</div>
+    <div class="hdr-tool-sub">Neonatal &amp; Paediatric Clinical Decision Support · Dựa trên bằng chứng</div>
   </div>
 
   <div class="hdr-right">
     <div class="hdr-author">DSCKI. Lê Mới Em</div>
-    <div class="ver-badge">Phiên bản 1.7 · 2026</div>
+    <div class="ver-badge">Phiên bản 1.8 · 2026</div>
   </div>
 </div>
 
@@ -473,17 +460,17 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-home"></b></div><div>⭐ JCI Accredited · RTAC</div></div>
   </div>
   <div class="module-topbar">
     <div>
-      <div class="module-title" style="margin-bottom:0"><i class="i3d i3d-hospital" aria-hidden="true"></i> Công Cụ Hỗ Trợ Quyết Định Lâm Sàng</div>
-      <div class="module-subtitle" style="margin-bottom:0">Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · DSCKI. Lê Mới Em</div>
+      <div class="module-title" style="margin-bottom:0">NeoPed CDSS – Hỗ trợ quyết định lâm sàng Nhi – Sơ sinh</div>
+      <div class="module-subtitle" style="margin-bottom:0">Neonatal &amp; Paediatric Clinical Decision Support System · DSCKI. Lê Mới Em</div>
     </div>
     <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap" class="no-print">
-      <div class="home-badge" style="background:linear-gradient(135deg,#fce4ec,#fff5f8);border:1.5px solid #f8bbd0;border-radius:10px;padding:.5rem 1rem;font-size:12px;font-weight:600;color:#880e4f">⭐ JCI Accredited &nbsp;|&nbsp; RTAC &nbsp;|&nbsp; v1.7 · 2026</div>
+      <div class="home-badge" style="background:var(--layer2,#f4f2e9);border:1px solid var(--border);border-radius:10px;padding:.5rem 1rem;font-size:12px;font-weight:600;color:var(--text)">Phiên bản 1.8 · 2026</div>
       <button class="print-bar-btn" onclick="printCurrentModule()">🖨️ In trang chủ</button>
     </div>
   </div>
@@ -502,7 +489,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🆘 Hồi Sức Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -531,7 +518,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍼 Máy Tính Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -560,7 +547,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">👦 Máy Tính Nhi Khoa</div>
     </div>
     <div class="prt-meta">
@@ -589,7 +576,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🔥 Bỏng – Công Thức Parkland</div>
     </div>
     <div class="prt-meta">
@@ -633,7 +620,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">💊 Kháng Sinh – Sepsis Sơ Sinh &amp; Nhi</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-sepsis"></b></div><div>⭐ JCI · RTAC</div></div>
@@ -659,7 +646,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🩸 Nhiễm Toan Cetone Đái Tháo Đường (DKA)</div>
     </div>
     <div class="prt-meta">
@@ -689,7 +676,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">⚡ Động Kinh Liên Tục (Status Epilepticus)</div>
     </div>
     <div class="prt-meta">
@@ -716,7 +703,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">💨 Hen Phế Quản Nặng – Cấp Cứu</div>
     </div>
     <div class="prt-meta">
@@ -743,7 +730,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">❤️ Nhịp Nhanh Trên Thất (SVT)</div>
     </div>
     <div class="prt-meta">
@@ -770,7 +757,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">⚗️ Tăng Kali Máu – Điều Trị Khẩn Cấp</div>
     </div>
     <div class="prt-meta">
@@ -798,7 +785,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🟡 Ngưỡng Điều Trị Bilirubin Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -830,7 +817,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍬 Hạ Đường Huyết Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -858,7 +845,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🌡️ Hạ Thân Nhiệt Trị Liệu – Tiêu Chí HIE</div>
     </div>
     <div class="prt-meta">
@@ -890,7 +877,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🧠 Chấn Thương Đầu – Công Cụ PREDICT</div>
     </div>
     <div class="prt-meta">
@@ -922,7 +909,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🧪 Pha Dịch Truyền (Ad Hoc Fluids)</div>
     </div>
     <div class="prt-meta">
@@ -950,7 +937,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🦠 Ước Tính Nguy Cơ Nhiễm Khuẩn Huyết Sơ Sinh Sớm (EOS)</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-eos"></b></div><div>⭐ JCI · RTAC</div></div>
@@ -1182,7 +1169,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍶 Dinh Dưỡng Tĩnh Mạch Toàn Phần (TPN)</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-tpn"></b></div><div>⭐ JCI · RTAC</div></div>
@@ -1330,7 +1317,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">📖 Hướng Dẫn Sử Dụng</div>
     </div>
     <div class="prt-meta">
@@ -1339,7 +1326,7 @@ body.theme-ease{
     </div>
   </div>
 
-  <div class="module-subtitle">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · Bệnh Viện Phương Nam · v1.7 · 2026</div>
+  <div class="module-subtitle">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · Bệnh Viện Phương Nam · v1.8 · 2026</div>
 
   <div class="card">
     <div class="card-title">🎯 Mục Đích &amp; Phạm Vi Ứng Dụng</div>
@@ -1570,7 +1557,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.7 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.8 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">📚 Tài Liệu Tham Khảo</div>
     </div>
     <div class="prt-meta">
@@ -1730,7 +1717,8 @@ body.theme-ease{
   <div class="card">
     <div class="card-title">📝 Lịch Sử Cập Nhật</div>
     <table class="result-table"><thead><tr><th>Phiên bản</th><th>Ngày</th><th>Nội dung</th></tr></thead><tbody>
-      <tr class="highlight-row"><td>v1.7</td><td>10/2026</td><td>Icon 3D cho tiêu đề thẻ trong tất cả module và bảng liều tham khảo (ánh xạ emoji → icon trong data-modules, áp dụng cả nội dung sinh lại khi tính toán); đánh số bước liên tục ở module Cơn hen cấp nặng</td></tr>
+      <tr class="highlight-row"><td>v1.8</td><td>10/2026</td><td>Đổi tên ứng dụng thành NeoPed CDSS (Neonatal &amp; Paediatric Clinical Decision Support System); logo mới “trẻ dang tay – dấu thập y tế”; favicon; bỏ khối logo/tên bệnh viện, khẩu hiệu và huy hiệu JCI/RTAC khỏi header và trang chủ</td></tr>
+      <tr><td>v1.7</td><td>10/2026</td><td>Icon 3D cho tiêu đề thẻ trong tất cả module và bảng liều tham khảo (ánh xạ emoji → icon trong data-modules, áp dụng cả nội dung sinh lại khi tính toán); đánh số bước liên tục ở module Cơn hen cấp nặng</td></tr>
       <tr><td>v1.6</td><td>10/2026</td><td>Sắp xếp lại module theo 5 nhóm lâm sàng (Hồi sức · Sơ sinh · Cấp cứu nhi khoa theo ABCDE · Dịch truyền &amp; dinh dưỡng · Thông tin); đặt lại tên theo thuật ngữ y khoa; mã màu theo nhóm; icon 3D Fluent Emoji nhúng offline; điều hướng, trang chủ, tiêu đề module và bảng tổng quan sinh từ khối data-modules; bỏ thẻ EOS trùng lặp</td></tr>
       <tr><td>v1.5</td><td>10/2026</td><td>Giao diện Ease làm mặc định (nền kem phân lớp, không bóng đổ, màu Phương Nam chỉ cho hành động, điểm nhấn Hatch ở trang chủ); nút “Giao diện cũ” để quay lại; bản in giữ nhận diện cũ</td></tr>
       <tr><td>v1.4</td><td>10/2026</td><td>Thêm khối data-tpn-products (chế phẩm acid amin/lipid, dung dịch gốc, vi chất–vitamin, phác đồ mặc định, lịch tăng dần, ngưỡng an toàn và khoảng tham chiếu) – module TPN, phiếu in và prompt AI đọc từ dữ liệu; bảng liều tham khảo sinh tự động từ data-drug-doses (ref_row) và data-neo-abx – bỏ bảng HTML tĩnh; gộp bản ghi trùng (hy_d10, hy_glucagon)</td></tr>
@@ -1746,7 +1734,7 @@ body.theme-ease{
 
 <!-- ── PRINT FOOTER (ẩn trên màn hình, hiện khi in) ── -->
 <div id="print-footer-bar">
-  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.7 · 2026 · DSCKI. Lê Mới Em
+  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.8 · 2026 · DSCKI. Lê Mới Em
 </div>
 
 </div>
@@ -7029,7 +7017,7 @@ function printCurrentModule(){
   // 2. Update footer
   const footer = document.getElementById('print-footer-bar');
   if(footer) footer.textContent =
-    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.7 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
+    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.8 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
 
   // 3. Print — CSS @media print sẽ tự ẩn sidebar/header, chỉ hiện module active
   window.print();
@@ -7763,7 +7751,7 @@ function printTPNReport(){
     <div class="sig-box"><div class="sig-line"></div><b>Bác sĩ Điều trị</b><br><small>${d.dr||'(Ký &amp; ghi rõ họ tên)'}</small></div>
   </div>
   <div style="text-align:center;font-size:10px;color:#999;margin-top:10px;border-top:1px solid #ddd;padding-top:6px">
-    BV Phương Nam · Tập Đoàn Y Tế Phương Châu · Máy Tính Lâm Sàng v1.7 · 2026 · DSCKI. Lê Mới Em · ${new Date().toLocaleString('vi-VN')}
+    BV Phương Nam · Tập Đoàn Y Tế Phương Châu · Máy Tính Lâm Sàng v1.8 · 2026 · DSCKI. Lê Mới Em · ${new Date().toLocaleString('vi-VN')}
   </div>
   <script>setTimeout(()=>window.print(),900);<\/script>
   </body></html>`);

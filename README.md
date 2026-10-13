@@ -1,11 +1,13 @@
-# CDSS Nhi – Sơ sinh · Bệnh viện Phương Nam
+<p align="center"><img src="assets/logo-neoped.svg" width="96" alt="NeoPed CDSS"></p>
 
-**Công cụ hỗ trợ quyết định lâm sàng (Clinical Decision Support System – CDSS)** cho cấp cứu nhi khoa, sơ sinh và nuôi dưỡng tĩnh mạch. Công cụ tính liều theo cân nặng và phân tầng nguy cơ dựa trên các hướng dẫn điều trị quốc tế.
+# NeoPed CDSS
+
+**Hỗ trợ quyết định lâm sàng Nhi – Sơ sinh** (*Neonatal & Paediatric Clinical Decision Support System*): tính liều theo cân nặng và phân tầng nguy cơ cho cấp cứu nhi khoa, sơ sinh và nuôi dưỡng tĩnh mạch, dựa trên các hướng dẫn điều trị quốc tế.
 
 - 🌐 **Web app:** <https://lemoiem.github.io/toolpharmacyupdate/>
 - 🏥 **Đơn vị:** Bệnh viện Phương Nam – Tập đoàn Y tế Phương Châu
 - 👤 **Tác giả:** DSCKI. Lê Mới Em – Dược sĩ lâm sàng
-- 🔖 **Phiên bản:** 1.7 (10/2026)
+- 🔖 **Phiên bản:** 1.8 (10/2026)
 
 > [!WARNING]
 > **Đây là công cụ HỖ TRỢ quyết định, không thay thế phán đoán lâm sàng.** Mọi liều và chỉ định phải được bác sĩ/dược sĩ lâm sàng kiểm tra và phê duyệt trước khi dùng cho người bệnh. Các khối dữ liệu gắn nhãn **"chưa kiểm chứng"** cần một dược sĩ hoặc bác sĩ thứ hai đối chiếu với nguồn gốc trước khi áp dụng lâm sàng.
@@ -93,7 +95,7 @@ npx playwright install chromium
 node tests/cdss.test.js            # mặc định kiểm thử ./index.html
 ```
 
-Kết quả phiên bản 1.7: **137/137 ca đạt**.
+Kết quả phiên bản 1.8: **137/137 ca đạt**.
 
 ---
 
@@ -120,6 +122,7 @@ Kết quả phiên bản 1.7: **137/137 ca đạt**.
 
 | Phiên bản | Nội dung chính |
 |---|---|
+| 1.8 | Đổi tên thành NeoPed CDSS; logo mới; bỏ khối thông tin bệnh viện khỏi header |
 | 1.7 | Icon 3D cho tiêu đề thẻ trong mọi module; đánh số bước liên tục ở module hen |
 | 1.6 | Sắp xếp module theo 5 nhóm lâm sàng (ABCDE), đặt tên theo thuật ngữ y khoa, mã màu theo nhóm, icon 3D |
 | 1.5 | Giao diện Ease làm mặc định |
@@ -141,6 +144,7 @@ Danh mục đầy đủ có trong ứng dụng (trang **Tài liệu tham khảo*
 
 ## Ghi nhận
 
+- Logo NeoPed CDSS (`assets/logo-neoped.svg`): trẻ dang tay tạo thành dấu thập y tế, trái tim ở ngực; nền gradient xanh ngọc → xanh dương (màu nhóm Hồi sức và Cấp cứu nhi).
 - Icon 3D: [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji), giấy phép MIT. Icon được nhúng dạng WebP để dùng offline.
 - Font chữ: [Be Vietnam Pro](https://fonts.google.com/specimen/Be+Vietnam+Pro), SIL Open Font License.
 - Mã nguồn của ứng dụng: chưa công bố giấy phép sử dụng. Muốn dùng lại hoặc triển khai tại đơn vị khác, vui lòng liên hệ tác giả.

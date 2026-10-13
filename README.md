@@ -144,7 +144,7 @@ Danh mục đầy đủ có trong ứng dụng (trang **Tài liệu tham khảo*
 
 ## Ghi nhận
 
-- Logo NeoPed CDSS (`assets/logo-neoped.svg`): trẻ dang tay tạo thành dấu thập y tế, trái tim ở ngực; nền gradient xanh ngọc → xanh dương (màu nhóm Hồi sức và Cấp cứu nhi).
+- Logo NeoPed CDSS (`assets/logo-neoped.svg`): bàn chân em bé (sơ sinh – nhi) với đường nhịp tim khoét trong lòng bàn chân (lâm sàng); nền gradient xanh lá ngọc → xanh chàm, có điểm sáng nổi khối.
 - Icon 3D: [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji), giấy phép MIT. Icon được nhúng dạng WebP để dùng offline.
 - Font chữ: [Be Vietnam Pro](https://fonts.google.com/specimen/Be+Vietnam+Pro), SIL Open Font License.
 - Mã nguồn của ứng dụng: chưa công bố giấy phép sử dụng. Muốn dùng lại hoặc triển khai tại đơn vị khác, vui lòng liên hệ tác giả.

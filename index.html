@@ -292,6 +292,64 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
 .hdr-author{font-size:12px;font-weight:700;color:#fff;opacity:.92}
 .ver-badge{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:3px 12px;font-size:10.5px;margin-top:4px;display:inline-block;color:#fff;font-weight:600;letter-spacing:.3px}
 
+/* ══════════════════════════════════════════════════════════════════════
+   THEME "EASE" (XEM THỬ) – định hướng Ease Health + điểm nhấn Hatch cho trang chủ
+   • Nền kem, phân lớp bằng các mảng màu nhạt; KHÔNG đổ bóng
+   • Chữ và số liệu: xanh rêu đậm (--ink); màu Phương Nam CHỈ cho hành động (nút, mục đang chọn, focus)
+   • Đỏ/cam/xanh lá giữ nguyên, chỉ dành cho mức độ nguy cơ/cảnh báo
+   • Chỉ áp dụng trên màn hình; bản in giữ nguyên nhận diện cũ
+   ══════════════════════════════════════════════════════════════════════ */
+body.theme-ease{
+  --bg:#faf8f2;--card:#fff;--border:#e3e0d2;
+  --text:#1d2a21;--muted:#5f6b62;--ink:#16301d;
+  --layer1:#f4f2e9;--layer2:#eef3e8;--layer3:#e7f0ea;--layer4:#dde9df;
+  --primary:#b5006e;--primary-dark:#8a0054;--primary-light:#f8e8f1;
+  --shadow:none;--rad:16px;--rad-sm:10px;
+  --nav-act-bg:#f8e8f1;--nav-act-border:#b5006e;--nav-act-text:#8a0054;
+}
+@media screen{
+  body.theme-ease .header{background:#fffdf8;color:var(--ink);border-bottom:1px solid var(--border);box-shadow:none}
+  body.theme-ease .logo-pn-wrap{box-shadow:none;border:1px solid var(--border)}
+  body.theme-ease .hospital-name-main{color:var(--primary-dark);text-shadow:none}
+  body.theme-ease .hospital-name-main em,body.theme-ease .hospital-group-tag,body.theme-ease .hdr-tool-sub{color:var(--muted)}
+  body.theme-ease .hdr-badge,body.theme-ease .ver-badge{background:var(--layer2);border-color:var(--border);color:var(--ink)}
+  body.theme-ease .hdr-divider{background:var(--border)}
+  body.theme-ease .hdr-tool-title,body.theme-ease .hdr-author{color:var(--ink)}
+  body.theme-ease .sidebar{background:var(--layer1);border-right:1px solid var(--border);border-bottom-color:var(--border)}
+  body.theme-ease .nav-section{color:#6b7d6f}
+  body.theme-ease .nav-item:hover{background:var(--layer3);color:var(--ink)}
+  body.theme-ease .module-title,body.theme-ease .card-title,body.theme-ease .step-title,body.theme-ease .home-card-title,body.theme-ease .drug-dose{color:var(--ink)}
+  body.theme-ease .card-title{border-bottom:1px solid var(--border)}
+  body.theme-ease .card{box-shadow:none;border:1px solid var(--border)}
+  body.theme-ease .metric-card{background:var(--layer3);border:1px solid #d5e3d8}
+  body.theme-ease .metric-card .value{color:var(--ink);font-variant-numeric:tabular-nums}
+  body.theme-ease .result-table th{background:var(--layer2);color:var(--ink);border-color:var(--border)}
+  body.theme-ease .result-table td{border-color:var(--border);font-variant-numeric:tabular-nums}
+  body.theme-ease .result-table tr:nth-child(even) td{background:#fbfaf5}
+  body.theme-ease .result-table tr[style*="background"] td{background:transparent}
+  body.theme-ease .alert-info{background:var(--layer2);border-left-color:#5b7f63;color:var(--ink)}
+  body.theme-ease .step-card{background:var(--layer1);border-color:var(--border)}
+  body.theme-ease .step-num{background:var(--ink)}
+  body.theme-ease .range-badge,body.theme-ease .infusion-badge{background:var(--layer4);color:var(--ink)}
+  body.theme-ease .disclaimer,body.theme-ease .ai-box{background:var(--layer2);border-color:var(--border);color:var(--ink)}
+  body.theme-ease .ai-box-title,body.theme-ease .ai-box-body{color:var(--ink)}
+  body.theme-ease .print-bar-btn{background:var(--primary);box-shadow:none}
+  body.theme-ease .print-bar-btn:hover{background:var(--primary-dark);transform:none}
+  body.theme-ease input[type=number],body.theme-ease input[type=text],body.theme-ease select{border:1px solid #d6d3c4;background:#fff}
+  body.theme-ease .comp-bar{box-shadow:none}
+  body.theme-ease .home-badge{background:var(--layer2)!important;border-color:var(--border)!important;color:var(--ink)!important}
+  /* Điểm nhấn Hatch – chỉ trang chủ: thẻ viền mảnh, bo 16px, dải pastel luân phiên */
+  body.theme-ease .home-card{border:1px solid #2b3a2f;border-radius:16px;box-shadow:none;padding-top:1.3rem}
+  body.theme-ease .home-card::before{opacity:1;height:6px;background:var(--hc,#cfe8d6)}
+  body.theme-ease .home-card:nth-child(4n+2){--hc:#cfe3f3}
+  body.theme-ease .home-card:nth-child(4n+3){--hc:#f9dcc8}
+  body.theme-ease .home-card:nth-child(4n+4){--hc:#f6d3e1}
+  body.theme-ease .home-card:hover{transform:none;box-shadow:none;border-color:var(--primary);outline:2px solid var(--primary-light)}
+}
+/* Nút chuyển giao diện (xem thử) */
+.theme-fab{position:fixed;right:16px;bottom:16px;z-index:200;display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .9rem;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12)}
+.theme-fab:hover{border-color:var(--primary);color:var(--primary)}
+@media print{.theme-fab{display:none!important}}
 /* ── NHÃN PHIÊN BẢN DỮ LIỆU ── */
 .data-tag{font-size:11px;color:var(--muted);border-top:1px dashed var(--border);margin-top:.75rem;padding-top:.4rem;line-height:1.6}
 .data-tag .unv{color:#b45309;font-weight:700}
@@ -380,6 +438,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
   </div>
 </div>
 
+<button class="theme-fab no-print" id="theme-fab" onclick="toggleTheme()" title="Chuyển giữa giao diện hiện tại và giao diện Ease (xem thử)">🎨 Xem thử giao diện mới</button>
 <div class="layout">
 <!-- SIDEBAR NAV -->
 <nav class="sidebar">
@@ -431,7 +490,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
       <div class="module-subtitle" style="margin-bottom:0">Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · DSCKI. Lê Mới Em</div>
     </div>
     <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap" class="no-print">
-      <div style="background:linear-gradient(135deg,#fce4ec,#fff5f8);border:1.5px solid #f8bbd0;border-radius:10px;padding:.5rem 1rem;font-size:12px;font-weight:600;color:#880e4f">⭐ JCI Accredited &nbsp;|&nbsp; RTAC &nbsp;|&nbsp; v1.0 · 2026</div>
+      <div class="home-badge" style="background:linear-gradient(135deg,#fce4ec,#fff5f8);border:1.5px solid #f8bbd0;border-radius:10px;padding:.5rem 1rem;font-size:12px;font-weight:600;color:#880e4f">⭐ JCI Accredited &nbsp;|&nbsp; RTAC &nbsp;|&nbsp; v1.0 · 2026</div>
       <button class="print-bar-btn" onclick="printCurrentModule()">🖨️ In trang chủ</button>
     </div>
   </div>
@@ -5725,6 +5784,18 @@ function renderDoseReference(){
 }
 try{renderDoseReference()}catch(e){console.error(e);const el=document.getElementById('dose-reference');if(el)el.innerHTML=`<div class="alert alert-danger">🚨 Lỗi dữ liệu bảng liều: ${e.message}</div>`}
 
+
+// ===== Giao diện: "classic" (mặc định hiện tại) hoặc "ease" (xem thử). Chọn qua nút, hoặc ?theme=ease / ?theme=classic =====
+function applyTheme(t){
+  document.body.classList.toggle('theme-ease',t==='ease');
+  const b=document.getElementById('theme-fab');if(b)b.textContent=t==='ease'?'↩︎ Về giao diện hiện tại':'🎨 Xem thử giao diện mới';
+  try{localStorage.setItem('cdss-theme',t)}catch(e){}
+}
+function toggleTheme(){applyTheme(document.body.classList.contains('theme-ease')?'classic':'ease')}
+(function(){let t='classic';
+  try{t=localStorage.getItem('cdss-theme')||t}catch(e){}
+  const q=new URLSearchParams(location.search).get('theme');if(q==='ease'||q==='classic')t=q;
+  applyTheme(t)})();
 
 // Cỡ ống NKQ sơ sinh (không cuff) – NRP/ANZCOR: <1 kg 2,5 mm; 1–2 kg 3,0 mm; >2 kg 3,5 mm
 function ettNeo(wt){return wt<1?2.5:wt<=2?3.0:3.5}

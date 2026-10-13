@@ -294,6 +294,29 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     await tp.close();
   }
 
+  console.log('20. Cấu trúc module (data-modules): nhóm, tên, thứ tự, icon 3D');
+  {
+    const st = await page.evaluate(() => {
+      showModule('home');
+      const MD = DATA['modules'];
+      const ids = MD.records.map(r => r.id);
+      const nav = [...document.querySelectorAll('nav.sidebar .nav-item')].map(n => (n.getAttribute('onclick').match(/'([^']+)'/) || [])[1]);
+      const cards = [...document.querySelectorAll('#home-groups .home-card')].map(n => (n.getAttribute('onclick').match(/'([^']+)'/) || [])[1]);
+      const titles = MD.records.filter(r => document.getElementById(r.id)).map(r => [r.id, document.querySelector('#' + r.id + ' .module-title').textContent.trim() === r.title]);
+      const icon = getComputedStyle(document.querySelector('#home-groups .home-ico .i3d')).backgroundImage;
+      const paed = MD.records.filter(r => r.group === 'paedem').sort((a, b) => a.order - b.order).map(r => r.abcde).join('');
+      const modsDom = [...document.querySelectorAll('.module')].map(m => m.id);
+      return { ids, nav, cards, titles, icon, paed, modsDom, groups: document.querySelectorAll('#home-groups .home-group').length, ov: document.querySelectorAll('#module-overview tbody tr').length };
+    });
+    ok('Điều hướng = Trang chủ + đủ 19 module theo đúng thứ tự dữ liệu', JSON.stringify(st.nav) === JSON.stringify(['home', ...st.ids]), st.nav.join(','));
+    ok('Trang chủ: 5 nhóm, mỗi module đúng 1 thẻ (không trùng EOS)', st.groups === 5 && st.cards.length === st.ids.length && new Set(st.cards).size === st.cards.length, st.cards.join(','));
+    ok('Mọi module trong dữ liệu đều có màn hình tương ứng', st.ids.every(i => st.modsDom.includes(i)), st.ids.filter(i => !st.modsDom.includes(i)).join(','));
+    ok('Tiêu đề từng module lấy từ dữ liệu', st.titles.every(t => t[1]), st.titles.filter(t => !t[1]).map(t => t[0]).join(','));
+    ok('Nhóm Cấp cứu nhi khoa xếp theo ABCDE (B→C→D→E)', st.paed === [...st.paed].sort().join('') && st.paed.startsWith('B'), st.paed);
+    ok('Icon 3D nhúng (data:image/webp) hiển thị', st.icon.startsWith('url("data:image/webp'), st.icon.slice(0, 40));
+    ok('Bảng tổng quan trang Hướng dẫn liệt kê 17 module lâm sàng', st.ov === 17, st.ov);
+  }
+
   console.log('14. Lỗi runtime trên trang');
   ok('Không có pageerror', errors.length === 0, errors.join(' | '));
 

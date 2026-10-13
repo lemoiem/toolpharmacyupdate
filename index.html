@@ -338,18 +338,36 @@ body.theme-ease{
   body.theme-ease input[type=number],body.theme-ease input[type=text],body.theme-ease select{border:1px solid #d6d3c4;background:#fff}
   body.theme-ease .comp-bar{box-shadow:none}
   body.theme-ease .home-badge{background:var(--layer2)!important;border-color:var(--border)!important;color:var(--ink)!important}
-  /* Điểm nhấn Hatch – chỉ trang chủ: thẻ viền mảnh, bo 16px, dải pastel luân phiên */
-  body.theme-ease .home-card{border:1px solid #2b3a2f;border-radius:16px;box-shadow:none;padding-top:1.3rem}
-  body.theme-ease .home-card::before{opacity:1;height:6px;background:var(--hc,#cfe8d6)}
-  body.theme-ease .home-card:nth-child(4n+2){--hc:#cfe3f3}
-  body.theme-ease .home-card:nth-child(4n+3){--hc:#f9dcc8}
-  body.theme-ease .home-card:nth-child(4n+4){--hc:#f6d3e1}
-  body.theme-ease .home-card:hover{transform:none;box-shadow:none;border-color:var(--primary);outline:2px solid var(--primary-light)}
+  /* Trang chủ: thẻ phẳng, viền mảnh, bo 16px; dải màu và ô icon theo NHÓM lâm sàng (không luân phiên ngẫu nhiên) */
+  body.theme-ease .home-card{border:1px solid #d9d5c5;border-radius:16px;box-shadow:none}
+  body.theme-ease .home-card:hover{transform:none;box-shadow:none;border-color:var(--gc);outline:2px solid var(--gt)}
 }
 /* Nút chuyển giao diện (xem thử) */
 .theme-fab{position:fixed;right:16px;bottom:16px;z-index:200;display:inline-flex;align-items:center;gap:.4rem;padding:.5rem .9rem;border-radius:999px;border:1px solid var(--border);background:#fff;color:var(--text);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12)}
 .theme-fab:hover{border-color:var(--primary);color:var(--primary)}
 @media print{.theme-fab{display:none!important}}
+/* ── CẤU TRÚC MODULE THEO NHÓM LÂM SÀNG (data-modules) ── */
+.gdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gc,#98a2b3);margin-right:.45rem;flex-shrink:0}
+.nav-section{display:flex;align-items:center;color:var(--gc,#6b7d6f)!important}
+.nav-item .nav-icon .i3d{font-size:21px}
+.nav-item.active{border-left-color:var(--gc,var(--nav-act-border))}
+.abcde{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 4px;border-radius:6px;background:var(--gc,#1d4ed8);color:#fff;font-size:11px;font-weight:800;line-height:1}
+.nav-item .abcde{margin-left:auto;opacity:.85}
+.home-group{margin-bottom:1.4rem}
+.home-group-title{display:flex;align-items:center;flex-wrap:wrap;gap:.15rem;font-size:13px;font-weight:800;color:var(--gc);text-transform:uppercase;letter-spacing:.6px;margin:.25rem 0 .65rem}
+.home-group-title small{font-weight:600;text-transform:none;letter-spacing:0;color:var(--muted);margin-left:.35rem;font-size:12px}
+.home-grid{grid-template-columns:repeat(auto-fill,minmax(178px,1fr))}
+.home-card{position:relative;padding:1.1rem .9rem 1rem}
+.home-card::before{opacity:1!important;height:4px;background:var(--gc)!important}
+.home-card .abcde{position:absolute;top:12px;right:12px}
+.home-ico{width:64px;height:64px;margin:0 auto .6rem;border-radius:18px;background:var(--gt,#f2f4f7);display:flex;align-items:center;justify-content:center}
+.home-ico .i3d{font-size:44px}
+.home-card-title{color:var(--text)!important;font-size:14px;line-height:1.3}
+.home-card-sub{line-height:1.35}
+.module-title .i3d{font-size:1.15em;vertical-align:-.2em}
+.module-group-chip{display:inline-flex;align-items:center;font-size:11px;font-weight:700;color:var(--gc);background:var(--gt);border-radius:999px;padding:2px 10px;margin-bottom:.35rem;white-space:nowrap}
+.abcde-legend{font-size:11.5px;color:var(--muted);margin:-.4rem 0 1rem}
+@media screen and (max-width:700px){.sidebar .abcde{display:none}.home-grid{grid-template-columns:1fr 1fr}.home-ico{width:52px;height:52px}.home-ico .i3d{font-size:36px}}
 /* ── NHÃN PHIÊN BẢN DỮ LIỆU ── */
 .data-tag{font-size:11px;color:var(--muted);border-top:1px dashed var(--border);margin-top:.75rem;padding-top:.4rem;line-height:1.6}
 .data-tag .unv{color:#b45309;font-weight:700}
@@ -428,13 +446,13 @@ body.theme-ease{
   <div class="hdr-divider"></div>
 
   <div class="hdr-tool-info">
-    <div class="hdr-tool-title">🖥️ Công Cụ Hỗ Trợ Quyết Định Lâm Sàng</div>
+    <div class="hdr-tool-title"><i class="i3d i3d-hospital" aria-hidden="true"></i> Công Cụ Hỗ Trợ Quyết Định Lâm Sàng</div>
     <div class="hdr-tool-sub">Clinical Decision Support Tool · Sơ sinh &amp; Nhi khoa · Dựa trên bằng chứng</div>
   </div>
 
   <div class="hdr-right">
     <div class="hdr-author">DSCKI. Lê Mới Em</div>
-    <div class="ver-badge">Phiên bản 1.5 · 2026</div>
+    <div class="ver-badge">Phiên bản 1.6 · 2026</div>
   </div>
 </div>
 
@@ -442,34 +460,7 @@ body.theme-ease{
 <div class="layout">
 <!-- SIDEBAR NAV -->
 <nav class="sidebar">
-  <div class="nav-section">Tổng quan</div>
-  <div class="nav-item active" onclick="showModule('home')"><span class="nav-icon">🏠</span><span>Trang Chủ</span></div>
-  <div class="nav-section">Sơ Sinh & Nhi</div>
-  <div class="nav-item" onclick="showModule('resus')"><span class="nav-icon">🆘</span><span>Hồi Sức Sơ Sinh</span></div>
-  <div class="nav-item" onclick="showModule('neo')"><span class="nav-icon">🍼</span><span>Máy Tính Sơ Sinh</span></div>
-  <div class="nav-item" onclick="showModule('paed')"><span class="nav-icon">👦</span><span>Máy Tính Nhi Khoa</span></div>
-  <div class="nav-section">Cấp Cứu</div>
-  <div class="nav-item" onclick="showModule('burns')"><span class="nav-icon">🔥</span><span>Bỏng</span></div>
-  <div class="nav-item" onclick="showModule('sepsis')"><span class="nav-icon">💊</span><span>Kháng Sinh Sepsis</span></div>
-  <div class="nav-item" onclick="showModule('dka')"><span class="nav-icon">🩸</span><span>DKA</span></div>
-  <div class="nav-item" onclick="showModule('seizure')"><span class="nav-icon">⚡</span><span>Động Kinh</span></div>
-  <div class="nav-item" onclick="showModule('asthma')"><span class="nav-icon">💨</span><span>Hen Phế Quản Nặng</span></div>
-  <div class="nav-item" onclick="showModule('svt')"><span class="nav-icon">❤️</span><span>Nhịp Nhanh (SVT)</span></div>
-  <div class="nav-item" onclick="showModule('hyperk')"><span class="nav-icon">⚗️</span><span>Tăng Kali Máu</span></div>
-  <div class="nav-section">Sơ Sinh Chuyên Sâu</div>
-  <div class="nav-item" onclick="showModule('bili')"><span class="nav-icon">🟡</span><span>Bilirubin Ngưỡng</span></div>
-  <div class="nav-item" onclick="showModule('hypo')"><span class="nav-icon">🍬</span><span>Hạ ĐH Sơ Sinh</span></div>
-  <div class="nav-item" onclick="showModule('cool')"><span class="nav-icon">🌡️</span><span>Hạ Thân Nhiệt TL</span></div>
-  <div class="nav-section">Dinh Dưỡng</div>
-  <div class="nav-item" onclick="showModule('tpn')"><span class="nav-icon">🍶</span><span>Dinh Dưỡng TPN</span></div>
-  <div class="nav-section">Nguy Cơ</div>
-  <div class="nav-item" onclick="showModule('eos')"><span class="nav-icon">🦠</span><span>Nguy Cơ NKH Sớm</span></div>
-  <div class="nav-section">Công Cụ</div>
-  <div class="nav-item" onclick="showModule('head')"><span class="nav-icon">🧠</span><span>Chấn Thương Đầu</span></div>
-  <div class="nav-item" onclick="showModule('adhoc')"><span class="nav-icon">🧪</span><span>Pha Dịch Ad Hoc</span></div>
-  <div class="nav-section">Thông Tin</div>
-  <div class="nav-item" onclick="showModule('guide')"><span class="nav-icon">📖</span><span>Hướng Dẫn Dùng</span></div>
-  <div class="nav-item" onclick="showModule('refs')"><span class="nav-icon">📚</span><span>Tài Liệu Tham Khảo</span></div>
+  <!-- sinh từ data-modules (buildModuleUI) -->
 </nav>
 
 <!-- MAIN CONTENT -->
@@ -480,43 +471,22 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-home"></b></div><div>⭐ JCI Accredited · RTAC</div></div>
   </div>
   <div class="module-topbar">
     <div>
-      <div class="module-title" style="margin-bottom:0">🖥️ Công Cụ Hỗ Trợ Quyết Định Lâm Sàng</div>
+      <div class="module-title" style="margin-bottom:0"><i class="i3d i3d-hospital" aria-hidden="true"></i> Công Cụ Hỗ Trợ Quyết Định Lâm Sàng</div>
       <div class="module-subtitle" style="margin-bottom:0">Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · DSCKI. Lê Mới Em</div>
     </div>
     <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap" class="no-print">
-      <div class="home-badge" style="background:linear-gradient(135deg,#fce4ec,#fff5f8);border:1.5px solid #f8bbd0;border-radius:10px;padding:.5rem 1rem;font-size:12px;font-weight:600;color:#880e4f">⭐ JCI Accredited &nbsp;|&nbsp; RTAC &nbsp;|&nbsp; v1.0 · 2026</div>
+      <div class="home-badge" style="background:linear-gradient(135deg,#fce4ec,#fff5f8);border:1.5px solid #f8bbd0;border-radius:10px;padding:.5rem 1rem;font-size:12px;font-weight:600;color:#880e4f">⭐ JCI Accredited &nbsp;|&nbsp; RTAC &nbsp;|&nbsp; v1.6 · 2026</div>
       <button class="print-bar-btn" onclick="printCurrentModule()">🖨️ In trang chủ</button>
     </div>
   </div>
   <div class="alert alert-warn">⚠️ <strong>Tuyên bố miễn trách nhiệm:</strong> Đây là <strong>công cụ hỗ trợ quyết định lâm sàng</strong> – không thay thế phán đoán lâm sàng của bác sĩ. Liều lượng thuốc phải được bác sĩ/dược sĩ lâm sàng kiểm tra và phê duyệt trước khi sử dụng. Luôn đối chiếu với phác đồ điều trị, dược thư và hướng dẫn của Bộ Y tế Việt Nam hiện hành.</div>
-  <div class="home-grid">
-    <div class="home-card" onclick="showModule('resus')"><div class="home-icon">🆘</div><div class="home-card-title">Hồi Sức Sơ Sinh</div><div class="home-card-sub">Phác đồ NLS</div></div>
-    <div class="home-card" onclick="showModule('neo')"><div class="home-icon">🍼</div><div class="home-card-title">Sơ Sinh</div><div class="home-card-sub">0.4 – 6 kg</div></div>
-    <div class="home-card" onclick="showModule('paed')"><div class="home-icon">👦</div><div class="home-card-title">Nhi Khoa</div><div class="home-card-sub">3 – 150 kg</div></div>
-    <div class="home-card" onclick="showModule('burns')"><div class="home-icon">🔥</div><div class="home-card-title">Bỏng</div><div class="home-card-sub">Parkland · Lund-Browder</div></div>
-    <div class="home-card" onclick="showModule('sepsis')"><div class="home-icon">💊</div><div class="home-card-title">Kháng Sinh Sepsis</div><div class="home-card-sub">Early/Late onset</div></div>
-    <div class="home-card" onclick="showModule('dka')"><div class="home-icon">🩸</div><div class="home-card-title">DKA</div><div class="home-card-sub">Dịch truyền · Insulin</div></div>
-    <div class="home-card" onclick="showModule('seizure')"><div class="home-icon">⚡</div><div class="home-card-title">Động Kinh</div><div class="home-card-sub">Status Epilepticus</div></div>
-    <div class="home-card" onclick="showModule('asthma')"><div class="home-icon">💨</div><div class="home-card-title">Hen Nặng</div><div class="home-card-sub">Phác đồ cấp cứu</div></div>
-    <div class="home-card" onclick="showModule('svt')"><div class="home-icon">❤️</div><div class="home-card-title">SVT</div><div class="home-card-sub">Nhịp nhanh trên thất</div></div>
-    <div class="home-card" onclick="showModule('hyperk')"><div class="home-icon">⚗️</div><div class="home-card-title">Tăng Kali Máu</div><div class="home-card-sub">Điều trị khẩn cấp</div></div>
-    <div class="home-card" onclick="showModule('bili')"><div class="home-icon">🟡</div><div class="home-card-title">Bilirubin</div><div class="home-card-sub">Ngưỡng điều trị</div></div>
-    <div class="home-card" onclick="showModule('hypo')"><div class="home-icon">🍬</div><div class="home-card-title">Hạ ĐH Sơ Sinh</div><div class="home-card-sub">Glucose neonatal</div></div>
-    <div class="home-card" onclick="showModule('cool')"><div class="home-icon">🌡️</div><div class="home-card-title">Hạ Thân Nhiệt</div><div class="home-card-sub">Tiêu chí HIE</div></div>
-    <div class="home-card" onclick="showModule('tpn')"><div class="home-icon">🍶</div><div class="home-card-title">Dinh Dưỡng TPN</div><div class="home-card-sub">Nuôi ăn tĩnh mạch toàn phần</div></div>
-    <div class="home-card" onclick="showModule('eos')"><div class="home-icon">🦠</div><div class="home-card-title">Nguy Cơ NKH Sớm</div><div class="home-card-sub">EOS Risk Calculator 2024</div></div>
-    <div class="home-card" onclick="showModule('head')"><div class="home-icon">🧠</div><div class="home-card-title">Chấn Thương Đầu</div><div class="home-card-sub">PREDICT tool</div></div>
-    <div class="home-card" onclick="showModule('adhoc')"><div class="home-icon">🧪</div><div class="home-card-title">Pha Dịch</div><div class="home-card-sub">Ad Hoc Fluids</div></div>
-    <div class="home-card" onclick="showModule('eos')"><div class="home-icon">🦠</div><div class="home-card-title">Nguy Cơ EOS</div><div class="home-card-sub">Kaiser Permanente 2024</div></div>
-    <div class="home-card" onclick="showModule('guide')"><div class="home-icon">📖</div><div class="home-card-title">Hướng Dẫn</div><div class="home-card-sub">Cách sử dụng ứng dụng</div></div>
-    <div class="home-card" onclick="showModule('refs')"><div class="home-icon">📚</div><div class="home-card-title">Tài Liệu Tham Khảo</div><div class="home-card-sub">Evidence-based sources</div></div>
-  </div>
+  <div id="home-groups"><!-- sinh từ data-modules --></div>
 </div>
 
 <!-- ============================= RESUS AT BIRTH ============================= -->
@@ -530,7 +500,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🆘 Hồi Sức Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -559,7 +529,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍼 Máy Tính Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -588,7 +558,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">👦 Máy Tính Nhi Khoa</div>
     </div>
     <div class="prt-meta">
@@ -617,7 +587,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🔥 Bỏng – Công Thức Parkland</div>
     </div>
     <div class="prt-meta">
@@ -661,7 +631,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">💊 Kháng Sinh – Sepsis Sơ Sinh &amp; Nhi</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-sepsis"></b></div><div>⭐ JCI · RTAC</div></div>
@@ -687,7 +657,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🩸 Nhiễm Toan Cetone Đái Tháo Đường (DKA)</div>
     </div>
     <div class="prt-meta">
@@ -717,7 +687,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">⚡ Động Kinh Liên Tục (Status Epilepticus)</div>
     </div>
     <div class="prt-meta">
@@ -744,7 +714,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">💨 Hen Phế Quản Nặng – Cấp Cứu</div>
     </div>
     <div class="prt-meta">
@@ -771,7 +741,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">❤️ Nhịp Nhanh Trên Thất (SVT)</div>
     </div>
     <div class="prt-meta">
@@ -798,7 +768,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">⚗️ Tăng Kali Máu – Điều Trị Khẩn Cấp</div>
     </div>
     <div class="prt-meta">
@@ -826,7 +796,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🟡 Ngưỡng Điều Trị Bilirubin Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -858,7 +828,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍬 Hạ Đường Huyết Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -886,7 +856,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🌡️ Hạ Thân Nhiệt Trị Liệu – Tiêu Chí HIE</div>
     </div>
     <div class="prt-meta">
@@ -918,7 +888,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🧠 Chấn Thương Đầu – Công Cụ PREDICT</div>
     </div>
     <div class="prt-meta">
@@ -950,7 +920,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🧪 Pha Dịch Truyền (Ad Hoc Fluids)</div>
     </div>
     <div class="prt-meta">
@@ -978,7 +948,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🦠 Ước Tính Nguy Cơ Nhiễm Khuẩn Huyết Sơ Sinh Sớm (EOS)</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-eos"></b></div><div>⭐ JCI · RTAC</div></div>
@@ -1210,7 +1180,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍶 Dinh Dưỡng Tĩnh Mạch Toàn Phần (TPN)</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-tpn"></b></div><div>⭐ JCI · RTAC</div></div>
@@ -1358,7 +1328,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">📖 Hướng Dẫn Sử Dụng</div>
     </div>
     <div class="prt-meta">
@@ -1367,7 +1337,7 @@ body.theme-ease{
     </div>
   </div>
 
-  <div class="module-subtitle">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · Bệnh Viện Phương Nam · v1.0 · 2026</div>
+  <div class="module-subtitle">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · Bệnh Viện Phương Nam · v1.6 · 2026</div>
 
   <div class="card">
     <div class="card-title">🎯 Mục Đích &amp; Phạm Vi Ứng Dụng</div>
@@ -1378,27 +1348,7 @@ body.theme-ease{
 
   <div class="card">
     <div class="card-title">🗂️ Tổng Quan 17 Module</div>
-    <table class="result-table">
-      <thead><tr><th>Module</th><th>Đối tượng</th><th>Chức năng chính</th><th>Phạm vi cân nặng</th></tr></thead>
-      <tbody>
-        <tr><td>🆘 Hồi Sức Sơ Sinh</td><td>Phòng đẻ / cấp cứu</td><td>Phác đồ NLS, kích thước NKQ, catheter rốn, thuốc hồi sức</td><td>0.4–6 kg</td></tr>
-        <tr class="highlight-row"><td>🍼 Máy Tính Sơ Sinh</td><td>NICU</td><td>Thuốc, kháng sinh, dịch truyền, kích thước thiết bị</td><td>0.4–6 kg</td></tr>
-        <tr><td>👦 Máy Tính Nhi Khoa</td><td>Nhi khoa / Cấp cứu Nhi</td><td>Thuốc cấp cứu, an thần, kháng động kinh, thiết bị</td><td>3–150 kg</td></tr>
-        <tr class="highlight-row"><td>🔥 Bỏng</td><td>Cấp cứu / Bỏng</td><td>Dịch Parkland, diện tích bỏng (Lund-Browder), phác đồ</td><td>0.4–150 kg</td></tr>
-        <tr><td>💊 Kháng Sinh Sepsis</td><td>NICU / Nhi Khoa</td><td>Phác đồ kháng sinh early/late-onset sepsis sơ sinh, Nhi</td><td>0.4–150 kg</td></tr>
-        <tr class="highlight-row"><td>🩸 DKA</td><td>Nhi Khoa / Nội tiết</td><td>Dịch hồi sức, insulin, điều trị phù não</td><td>3–150 kg</td></tr>
-        <tr><td>⚡ Động Kinh</td><td>Cấp cứu / Nhi</td><td>Phác đồ status epilepticus 0–60 phút, liều thuốc</td><td>3–150 kg</td></tr>
-        <tr class="highlight-row"><td>💨 Hen Phế Quản Nặng</td><td>Cấp cứu / Nhi</td><td>Salbutamol, Ipratropium, MgSO₄, Hydrocortisone, Salbutamol IV</td><td>3–150 kg</td></tr>
-        <tr><td>❤️ SVT</td><td>Cấp cứu / Tim mạch</td><td>Adenosine, Cardioversion, phân biệt SVT vs VT</td><td>0.4–150 kg</td></tr>
-        <tr class="highlight-row"><td>⚗️ Tăng Kali Máu</td><td>NICU / Nhi</td><td>Ca Gluconate, Glucose-Insulin, Salbutamol, NaHCO₃</td><td>0.4–150 kg</td></tr>
-        <tr><td>🟡 Bilirubin</td><td>NICU / Sơ sinh</td><td>Phân loại xử trí theo ngưỡng chiếu đèn/thay máu AAP 2022 (tra biểu đồ)</td><td>≥35 tuần</td></tr>
-        <tr class="highlight-row"><td>🍬 Hạ ĐH Sơ Sinh</td><td>NICU</td><td>Dextrose bolus, GIR, Glucagon, mục tiêu glucose</td><td>0.4–6 kg</td></tr>
-        <tr><td>🌡️ Hạ Thân Nhiệt TL</td><td>NICU</td><td>Tiêu chí HIE, Sarnat score, phác đồ làm lạnh 72h</td><td>≥36 tuần</td></tr>
-        <tr class="highlight-row"><td>🍶 Dinh Dưỡng TPN</td><td>NICU</td><td>Tính TPN đầy đủ: GIR, protein, lipid, điện giải, thẩm thấu</td><td>0.3–10 kg</td></tr>
-        <tr><td>🧠 Chấn Thương Đầu</td><td>Cấp cứu Nhi</td><td>Công cụ PREDICT – chỉ định CT, hướng dẫn về nhà</td><td>0–18 tuổi</td></tr>
-        <tr class="highlight-row"><td>🧪 Pha Dịch Ad Hoc</td><td>Dược / Điều dưỡng</td><td>Pha glucose, muối theo nồng độ &amp; thể tích cần thiết</td><td>–</td></tr>
-      </tbody>
-    </table>
+    <div id="module-overview"><!-- sinh từ data-modules --></div>
   </div>
 
   <div class="card">
@@ -1618,7 +1568,7 @@ body.theme-ease{
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v1.6 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">📚 Tài Liệu Tham Khảo</div>
     </div>
     <div class="prt-meta">
@@ -1778,7 +1728,8 @@ body.theme-ease{
   <div class="card">
     <div class="card-title">📝 Lịch Sử Cập Nhật</div>
     <table class="result-table"><thead><tr><th>Phiên bản</th><th>Ngày</th><th>Nội dung</th></tr></thead><tbody>
-      <tr class="highlight-row"><td>v1.5</td><td>10/2026</td><td>Giao diện Ease làm mặc định (nền kem phân lớp, không bóng đổ, màu Phương Nam chỉ cho hành động, điểm nhấn Hatch ở trang chủ); nút “Giao diện cũ” để quay lại; bản in giữ nhận diện cũ</td></tr>
+      <tr class="highlight-row"><td>v1.6</td><td>10/2026</td><td>Sắp xếp lại module theo 5 nhóm lâm sàng (Hồi sức · Sơ sinh · Cấp cứu nhi khoa theo ABCDE · Dịch truyền &amp; dinh dưỡng · Thông tin); đặt lại tên theo thuật ngữ y khoa; mã màu theo nhóm; icon 3D Fluent Emoji nhúng offline; điều hướng, trang chủ, tiêu đề module và bảng tổng quan sinh từ khối data-modules; bỏ thẻ EOS trùng lặp</td></tr>
+      <tr><td>v1.5</td><td>10/2026</td><td>Giao diện Ease làm mặc định (nền kem phân lớp, không bóng đổ, màu Phương Nam chỉ cho hành động, điểm nhấn Hatch ở trang chủ); nút “Giao diện cũ” để quay lại; bản in giữ nhận diện cũ</td></tr>
       <tr><td>v1.4</td><td>10/2026</td><td>Thêm khối data-tpn-products (chế phẩm acid amin/lipid, dung dịch gốc, vi chất–vitamin, phác đồ mặc định, lịch tăng dần, ngưỡng an toàn và khoảng tham chiếu) – module TPN, phiếu in và prompt AI đọc từ dữ liệu; bảng liều tham khảo sinh tự động từ data-drug-doses (ref_row) và data-neo-abx – bỏ bảng HTML tĩnh; gộp bản ghi trùng (hy_d10, hy_glucagon)</td></tr>
       <tr><td>v1.3</td><td>10/2026</td><td>Mô hình EOS Kaiser cập nhật 2024 (Puopolo, Pediatrics 2024) làm mặc định, giữ mô hình 2017 để so sánh; tách toàn bộ liều theo cân nặng, luật kháng sinh sơ sinh, bảng dịch ESPGHAN và hệ số EOS thành 4 khối JSON có version/updated/source/status; nhãn phiên bản dữ liệu ở cuối mỗi module; Sổ dữ liệu ở trang TLTK; sửa tràn ngang trên điện thoại (điều hướng ngang, header gọn, bảng cuộn trong thẻ)</td></tr>
       <tr><td>v1.2</td><td>10/2026</td><td>Rà soát logic & thuật toán toàn bộ module: sửa công thức UVC/UAC, Na⁺ hiệu chỉnh DKA (ISPAD 2022), MgSO₄ (mL), fentanyl truyền, tỷ lệ I:T; liều kháng sinh sơ sinh thống nhất theo PMA/PNA (Red Book/NeoFax); dịch sơ sinh theo ESPGHAN 2018; EOS theo phương trình logistic Kaiser gốc; bilirubin theo ngưỡng AAP 2022 tra biểu đồ; chấn thương đầu theo PECARN; TPN: thể tích túi theo dịch toàn phần, K⁺ từ KH₂PO₄, Ca×P theo nồng độ; thuật ngữ quốc tế (INN)</td></tr>
@@ -1792,11 +1743,314 @@ body.theme-ease{
 
 <!-- ── PRINT FOOTER (ẩn trên màn hình, hiện khi in) ── -->
 <div id="print-footer-bar">
-  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.5 · 2026 · DSCKI. Lê Mới Em
+  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.6 · 2026 · DSCKI. Lê Mới Em
 </div>
 
 </div>
 
+<style id="icons-3d">
+/* Icon 3D: Microsoft Fluent Emoji (MIT License) – nhúng WebP 96 px để dùng offline */
+.i3d{display:inline-block;width:1em;height:1em;background:center/contain no-repeat;vertical-align:-.15em;flex-shrink:0}
+.i3d-alembic{background-image:url(data:image/webp;base64,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)}
+.i3d-ambulance{background-image:url(data:image/webp;base64,UklGRu4LAABXRUJQVlA4WAoAAAAQAAAAXwAAXwAAQUxQSPwCAAABoG3btimLmWutU7qxbdvmm207H2Abr7Zt27adXFTFtuumNmZ0Crt28JQWEROA/x0oSQ6TGZI0kyERAVBLUAHoUCiw4SUvNFsDb75y7Q4FdAgUc9zBZJ9eEpqcyqxv0buQpHf8fCloMqLyF7iVvzLZDl+piySiAAwwrEPPhB13R5GGoDJfA4ICZ0aXko93QZNQrPv6TxObwQQP06cU2KxCEigw3eeMbM8rhucZUor8YqokgE3pY4d7AXghtS+nTsBklee+jSTj9w8uqC9lRw14kuWXIzsGjMzU9P4vnH9s6twYVrrug28cyztfTjLpwRXYeZJDPbAC2zG6GLuKWTGs0Q6BQz0gxfyfMjBfKtO8Rs98ielddMxYgZPpmLECe9AxY4ZV2iFmTDHzu/TMl5jdT8+MFTiJjhkrsBsdM2ZYqR1ixkRmbjEwX2K4m54ZK3AcHTNm2JguZkwx75cxMl9i1SfpmbECp9ExY4ad6ZgxxWI/hJg1uZ+eGTOsR8+8XR1dzgT2BkPeaq3sNf/xtbI0Ve4+7675j6+VveY/sS8yF9iq5c3Hu6Eo01djdhz3RFGCAuezk5kOX2uIlCkWb7MT/hz7E/oe+xNC8I5fLQtFl4ptfmJen18Giq4Vi5/53Ojo2NsfMvahPTo6Njb+xqsfvvd+rx/HfsSP3nvz5l2rUPSoAKqVemXV2Jvn3ZV6tVo1HWn0ONKY5TPGXiLfn65eAaDoWQ1/nuJDhl4cj4Ki3/dH34uLtwAwE/RTRKTAuXS9BL8UTPpbkX3Yk+dOUggGqFii42N3jjdA0WeRqd+LoTsfRxsiGKjhOHa68vx2AekbDFvQxW6C43owDFbMbqILJdHRbwJF/w3HMfgyH3kIDIMWqV1MeueD9578alMYBiiKQyOj8yF4F+n2hWHwAuz4Ov968soFYBisYp2HWXr/6lCkKIraRqfd9/zTNxywKGAYtAFrnHj7c8/edtwqgCFRQ7kqBm+CUlEkK1YIYIUiTSsU0MKQuAhSFsF/tlZQOCDMCAAAUCoAnQEqYABgAD49GItDoiGhFVoGfCADxLYAaEcAqs8lvx/5GeypYX7b+GfyA5rcxPYb/G+3T4Vf4r2QeYL+on+b6n/mT/Wr9wPd3/rv7Ge6D+8+oB/RP8B1gH9d9QD9gPTW9jX9wP3M9nv//5xz/bvor8pv8p4c+VL0v7RZSn9F5q+Cuwn+U/kweAvmXhGfR/9NiUHjAeT+wB+Y/+B9wHyJZ13zP/A/+f/K/AN/LP6J/yP7v+8v+C+Z32U+hr+2jiHCEPVVm9knAfA3RWvVqtGIm2DDYXOMya/cNtSfF90jFxuAPPb0hbHE0CI+yoJnLbvGALv5GyAXB29L74qopbunqOCprPdJ/hDWFQRc7nlt/qtBw/BQ4/Yzpr8Hv4uofVtb/Q0vZTYxeRVl6xQn6aoQ/fsnXOJgFnvls1XeO5BMFSmd5tGvkO2rvR8Be9rm2prK2xdS9xt9xAAA/v9gGAABK6QJ5bbAcoRX12/wq+f8AQI29mypHCxnsxbWz5GGoa8FUqOe/qROIykBIexep+2e3zEGMK6dLPILfiHNed/w83WDFf3rGD8e6gcSfiLXjF85h/2l/hd/eGwi/wuHbuBnsvmoNW9Wu+D3zG3H75V7Tm1+KxdtVFa3qrpNGigUzL8pF9C5VrEPG6fvUZYS3ftezQE2xwa0G18rr7oLKQK4wrWexaiBa0k8A76L34JpWNhRXc9QfvHI76IbXz/lbMpWnpLjRfyd5QAMdFSxJURuZt+3azZrTUTNK0AVv6kiLbydhVcDf83POnQ9WYKva1aGtSVXVhe1NGZ/bu/gvpRBt1l/4Y/JC4OZ+1Xx2YKjGap/y1uXAvoHQcPtay5gfHATJCedIgtH+UmcEbD0d1Zuce7czu8/CjMcMr9v5r/5CxIrikEXT3/Rci7LzYxOJghUJEz6cTmfwXmPc7EadhhAADSnmNLI/5osdiOlqaEmgQ1b62/N6TFUFmtcc+5wpmbDTjdZUdk1voo0u7oGYg7FysUQUr6QGy8W3Qex9tSEmig3YBuIo2joUO4AcecRJU5/Zd28pqfM5yZjnUi//x1PzcbhuWrP4U6C+gqOlyNC7rivO4CxOlx3Obk+jiA0Ku0ArWp++SOLy+iNVrXmPjdox7nsSsymsf0gXJlXBavJCOqNRtGXdXARu+ddjUh2q8dkHVl5YtPXv6qDeXfc3R0yqY+HTzbMAWYeXSh6gLdn8Zi2F9AZxznsfFlBGSAMzpw6bL1IaSEs58eYB0YHg2TeWu5GlvMWndiH1y82ivg8B0DhevQNjPDq1uf490rW+4fr/rszeOmBmQCOvTOfgKhods/AMHqwQjttuDG6x829svVrDLYW2NWi0xWMWcrBq1HMhDXltxh3sIuc2oCVrJYzktFatoMHf3DOd/gv/Fn+z+wRFEO69e93mRfGk5m+KOLzVfzE6mc0Nnh/+lM/XGAw+REr9drgaO96taMq3aktoVa8lsjMbcexeDxw1PHEfb1p3qdfhQ/jDiwZnjf7B8NtoKYddqV0gLrdZ7BnAgocCahU2ONK7gA+/KZU08zTOYDnoaZam158QOjztGToBB+gW1vNr4N/xS9CND5k/nBT3woZ50y7aFekb6CqVhNSXPeNKH8Pykz/msXaHwPiNHhW3H/BdckpDQM2E36vQYYtMFy74i8vf9fmxFY6KdbasAjxCOK5ona9D9Q/ITXyrV4if9Lt6v66W1uFJIyp8DIkWQR5X0y6gkQnZYXjnGOFAxzEqwMf8pStW0zFzj6ZnkNLnjBsFANUbCRPsExIwO8qYBFCJQhsa5cUzhxTA0ihw2NnyDHzRsZ327roSv7eXn8DKzcPrr85V7TS25eP5o0P8wIwdyxUu/YpPJkNrdVMsoMKmgEIwLz7W2o9/d7ud69CmrWJbJXVj2SzG2x8OuH0rt1obwmj+Gs6qdtxikEuhCH7U/j1O1w8bYgkb+IwN0TdzJeCtShpYQ3B54OMpyQbpWda1248ABCDueLl8ilfuYjvnjg4kPYYMuYNB8klhVM79YbB4xqJ3KZl1YbIS2x4yx35TIlZKGyksoflULbPTf+mLw4ZJsoxzQlcI/B+1IJCa4QeiYAa/sPvvRh7ZfSgVZ9gAgoleDIrwdj6ipxEf7Y+FgBxNZKCImH8XAiMbKxrEHGjK1G/9ClGM2LmPtP85dvODJuB2rIec6KYH2ZOuLkgkBzwHul/TP7bG8MJ+7zVHH6+4CaEAblWAvO/GapfTfANysYHbRH0wzGK2H23BwRMdYUA9VTblYrkUSHFk5syKZvDQHW7YQQ+h3pnN6paykUZux+RyVxajjC7aBobprimfOnVseJlbgbtt7wgMkgt2a4MicQs2JuiXvGMp3yTDGBuYj+FgfwKXdAxBaB6Ox3xoGUfaf/D/2y1knQHTYEUYN/87tSh2KuGNod57+3fY/9U8E0L+J7h8/qHZr43g+dWokLL/p2gvQFA/UHXCo8l38HTL2R/juzFi6tC+jx8QKcVzRa2smXo8B+UEX0faW3aQ8hNxTmTfhpqFm+sHq5DURFAv1qKNhQuPMywEZkBZoY5N0ygci9X43lcBjhr3c+8glmO8GyNF2BY2lYMm9ubQ4NBG36V278tQTCkk+vHn5+bTA329rNZZB8Uc6Z6Ms4sGi5ghgv7aRYK0mDCyNb3ecsLrcAzMb8rTbSv/gT4bt7SiN42XUz/NvXF7E6KN/pGhGY1Yq7SePL+jxbOGbDDvf7UEFBg0sjZ+QWC+Si2XCyPhwM0yEnMaNtdcWU8L603vr9QUwLz5OR+t8R3mdsXWR2bkytPA1uyQ4kY/MfaeRYBivgHhZfJJBx+AQnaZUoOCPB0tKCMB/ALyjtAmpqlC2R+A4vjQiLbf732TjTlt9uhi2VuX7N8YHnbinYp6b4w0A3Gbeno3nTMJmKkUslISl4kpqHEfJx/fnjfTV/UJht7hoz8YyqCnSmhrEjYOtwPxofe4qGPO0EgiBXJF4vRrN1WcxuFZrsAAAA=)}
+.i3d-baby{background-image:url(data:image/webp;base64,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)}
+.i3d-blood{background-image:url(data:image/webp;base64,UklGRmIJAABXRUJQVlA4WAoAAAAQAAAAXwAAXwAAQUxQSLMDAAABoK1tkyHZ+iOitm3btm2bd2Db1i3Ye9/AYG3zyLZte09G5H8yqsjaOouICcD/qmKdamcyWIopdaAM3WE3zJlzw2EdbJAMmz/FSZ/aHDZAiu1/YinupfCn7aGDI7rkxyyctPDjJVWGpsNdLJyy8C50A2M4gM5pOg+ADYrogu8wphN8Z0GVITFcS+e0ndfCBsSwwR9ep1f9zw1hQ/IgnTN0PjAghmPpnLHzWNhAiC78UY2ZRf1wYZVhMFxP5yw6r4cNgmK9P6LORo0/1oMOgWGUzll1jsIGwHAwnbPsPAjWnOh8b9SYrahvzKfSmuFcOmfdeS6sMZUVf4g6ezW+X0G0LcOtdPbovBXWlGHbCPYasS2sJZXH6f04HxdtyHAsnT07j4U1I7rAezX6ivreAiqtGC6is3fnRbBGVFb6MWp/NX5cSbQNwy10JnTeAmvCsEUJpoyyBawFxYP0HM4HoQ0YDqYzqfMgWDrReV5hZAm+Mo9KNsOJdKZ1ngBLJrrY5zXyRP1sMZVchqvpTOy8GpZKZZVfomaq8csqopkMt7AwdeEtsESKzSaCyWNiU2imEXo250giw241mD7qbrAsKk/S8zmfFE3SYW8GGwzujS6HYrx6C17HoSkU609UNlkn1odm6HAFSxuFV6DLIPYCo43gCyYJFBsU1jYqywbQ/jocR2ejzuPQZbidpZXC2xMI5ClGK86nBNLfwl+ztlL51cL9Kdb8q6W/1oT2ZdiWLXFbWH97MdhscM8M+7e1f4Z929o3wy6s7ZC79KfYJFhbqYxNoH0Jlv2lpV+WhfQ39zuMVoLvzNUfFGP0VpxjUPTe4SqWVgqvRNefYW9GK8G9Yf0JFv2KtY3KrxaF9AfDvbW0Ueq9MCTscBCjjeBB6DKIzPd2jRaivj2fSAZ0OIPegvMMdEipsshnNfJF/WwR0RwwnETP5zwJhqw69/OMbMHn51akNWznXnNV9+1geWC4jBO5JngZDInFdIwlU+GYmmSCyOKvsOQpfGVxEeRWrP4BS5bCD1aHIrthnXc5kWOC764NQ37DKs+y1P5q4TOrwNCiYcF7Se/LyXsWhKFNBU7+mRF9RPDnkwFFq6LYYJQMr7NTPcjRDaCChg044mmSxetMqheSTx8BGNpWBQ4Z/ZNkePGY1IsHyT9HDwFU0bwBWPfsh77lDL996Kx1ARiGUEwBLLvnWTfNeeatDz5465k5N525x7IA1ARDqZ1g0rnnnXduTCqdYljFuk4xqXadCYZZJsV/ywBWUDggiAUAAJAgAJ0BKmAAYAA+PRqJQyIhoRaszkggA8S0AGhiTEWr2n8gPZFsH+O/BP4zc4sdHsW/gfcB29vEr+jPhJ/sR+yXY19AD9husR9AD9efVU/5n7VfAf+1v7h/AB/Kv7N/8esA4Dv6K6BCmvb8FqOqysKr1Lc3L0p7AH8p/pu+K/qynPecme3ns1WhwUhlsdSKdCwfrn2dCjJURjJNehR5vZGdImHe0ulVmxzKSt4gpeBnfM3U34hFgjFGtuD5XtAvuui+cy6ZzSCNmRgwMSUQgcV+QRXssk6f8vPeCP5Udnq/7J5ybNww4UB3+Us+R9Gymlhn/7WalCo4oS4xQGpSkGvaoMA/tW8jJ93m+iBAAP7+7qqqq+34hGSEj0PW3oB0HCIgbkutZaPvXHz30fYM1fufLDW67avuglR2XUKJgD4hJqHFUudpFqTn465x+QrpGmwf+xKMzmJkH6RaoiPFaABVLQRBjh2wb9C0MvPC0HmAncr3d2t/cUJIvb1DLUmM5TRuxs2CDxF2/ieFtW/VGMYnyokEJRC/0I0YYCEV8NxjfEf8dM+2D+KmV2ok9PrdbDpM2/t/aMLLW7gKdPyDJ2p5Nz2YI6DwJ/0KLP3mtksgD12sb65IULTiLMxPS9g71jPat986hWfHizjjaBLaIHXAxx/rFoP7LRvOl9NzqyKjH04kq1vm81akOoJjOx67Lmw6ZF4v1KtUmKoJSDaS2wjC9r4A+yC0fDp9TWbtDatZWdnsXz/fKYoKkffL/2WBRefU+uknnzCdPAY8ozEjfctegoxnvvqhZlcNuB+gebbYWLvn8CcI4akb7VNZp0az7gvWEe1Hwbpy4U12LBZflUmrBHMaToeLXjH+Q+780rmLUb+gz+RhHgERNcwMoVup+FetymtVZeU42UrOiOdjuMK7bU0t1DVzt2mdxKrQN+f8WYTL5zzP3RL8S6eSxbpODUcX+cDn43ggmEKslo/ueFf/b+ykz4nY30x9lfko0KvpSkfHO8U6scQx79ogLVrRr+7hD16tv8vaqi0dETF/Y0mH7s+s/dSS/a4BHeFvM52LZWBi7hjITc5YwY4VwP96f+2EIyu1qodl5ktXyG9I2eHbpjlxii5vMK8VbX2wuOmZ4GlvR5243KeLyOW5QYek1ZTOCxGwfIm5QYye1MR4fq+wlVg+J+hRq10lfpX8lIHwD+iZCrpeWtDcam7jT9DXkdTzUX1r/Zv0AlZpbxbOHq8jTBGUnt7Y4r/4CU7/Cy/MWmGjhuBiHE75KFtOFhTZyrgw1gCWamQcJtcnbE525IWhDoja2/wPUDp0wy2XcX+Gsbm+Sxg17ngrWAxzNr33+OWsPPEYCGJMocwLTE8QGxeunbk8fBXNjEqI6kG6GDaq4wQm+ipQvGInkW4s3XWD2X7n2nra7ZekwxfuW6GWjCOs8EBOUDCR587JNkb4LOHZXnphiIlYbh+F+/trv/1iZKDApwRhTcMFe0h3Tcz7CyX4bLt/4K///Ljf/loH//K0F26aleLzJWh/P3Y82e8zWZxeGJWVzIdqzzPU4fK3JfLd77WwmVfYKPZmwa74EsfxVZmK8vE5G3zOhM/X7GdpmAVSbO3dhez8YAPxRO3bi8+OgZIJMAfDcO1oVTGKiQ5RYQSG5UldMDm+KzhBTt61RunijNWS8nVl+zyefoHTlp4Ljinuk7C98Q4a3wAqD1tEfQKcDTkm1aEO9XI2WweC/uHHP26ui5M+ZzbuxmZy4u19QBmWUfI2gHK2tjefUbBLjmqm9kqc3AF0Fep1BuEonCwvJXZSgC7K13orIU9mt8yAHI84DfT0Iqx0pHdtYuh+t/pBtB/9oJJ1/qx5HejIjgKesa/ppLV9Z6hddJhynWXrFsvjgAAAAA==)}
+.i3d-bolt{background-image:url(data:image/webp;base64,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)}
+.i3d-book{background-image:url(data:image/webp;base64,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)}
+.i3d-books{background-image:url(data:image/webp;base64,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)}
+.i3d-bottle{background-image:url(data:image/webp;base64,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)}
+.i3d-brain{background-image:url(data:image/webp;base64,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)}
+.i3d-bulb{background-image:url(data:image/webp;base64,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)}
+.i3d-droplet{background-image:url(data:image/webp;base64,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)}
+.i3d-fire{background-image:url(data:image/webp;base64,UklGRugKAABXRUJQVlA4WAoAAAAQAAAAXwAAXwAAQUxQSO4DAAAB8Ebbumnbtm3l7/vKtG3btm3btm3btm3btm3bc3n1Xr5S8kJXKaUu/IyICcD/m6XrFCrdhmEB7TDVkz68bBxYZxl2Ivnu5LCOEhnpyxR7+cEksG4KWI9OOt8aD9pJigeyk3S+MBq0gxTT9zCTZORDw4l2T8AxdPYZeYuqdA5G+oKpL0ZeCpOOMWxEZ/+RpyBIt4g8O6AceSBCpxgWZ+JAc+T2CF2iuIs+IGbn2gityQAMc3vmIHP+22KwpsSg1o/iVvpgmPjTDLCGBP9ufSjmTSkPis4PxoE2I2L7v3D/SlDp4z46hzDyUTNpRMxuJMmDEASG5ekc0shzERoxnMSeFJ1HIIgO89pQMXJbWBOGZRkzmSP3wPDYic4hzv73uWANiI78UU4kmZ2bYYKfUhoqJr47ikp9hqMY2WfOaf3L6Rz6yItg1alM/ZeU+2ImmVnSuSqsOlxLZ/85ZxZN+YsxVOpSzJNSHkD5yDNhtd1BZ80e54LVZJjLE+vio1Cp6gp6XXSuBqtHMcmfcq4s5deCSDUB+9JZu3NdhGrEXmNq4BWTWgzzpMz6E1eEVRJwNGMDzvuhdYjoy/QGco6zQqtQTNfL3AAjT4NVEbA1nS0mfj0ypAbDNYxNMHFNWAWC4T5kaiPmG6pQzBDZaOIvY0HLGTZiaoSJayKUCziFsZWYL4aVEzxMbyXxw+EgpQQjfMHUCplmg5ZSTPt35macOyCUMizJxGYjr4CV25reTuKbgtIBRzK2k/mHiaDFLm2JiQvDCinuojfk3LyY4LGmIo9GKCPAc41dUcHLTA0574aWktcaexaQQnipqcR3Q7ln6E19OnwhKB5o7PMRShmuY2zq0+FLBRzf2LuhlGELekPOZ1BaMV/OTd0FLSQY7XvmdiIvQSgExd3ZWzqkXMDObMi5DqyUYoq/MreSs88KLQXF3dlbSfxyREgxwypsJvI2KIqLhNezN+LcBaEcDOuwkcyeaaEVQPUJehOeH4eiRsMcPZ6b4OYIVcBwGL2BlL8cRaQO0eE+yKk+524wVGpYhbE653sjqNQCw2WMleXIZWCoVnTUt+h19fIkBFSsmPYHek29vN9MaoJh3p8Z6+nlC6OJoG7DHF8w5jpy5JNjQVG7YfInSK/ByWtGgKJ+w7DHRqZUyhP/tCugaFGBhR4js+ehS57Ju2eGCtoUA9Z9lmSKnvJgcvKYST6+MmBoVwVY/OKv+O/JY4zu7jFGT/z3z89bGFBF0wZgjOWOe+TLHg6y58uHj15mNEAMrYsZAIw0/VKbH3TubY+/8MLjt5170OZLTT8SAJihE8WCYAglmKBDRc1CMAHEQjBTQUeL4P/NVlA4INQGAADQIgCdASpgAGAAPj0aikOiIaEWqiYYIAPEtgbeAs5k/xd+nfjf7IFX/tX3455SZvMc53/zX3Jdrz7sfcJ/UbqD+Yb9pP2x91j8M/dJ6AH9c/oHqwf6r2OPQA/Yz0xPYY/a/9wPgC/lX9e/+fWAf/X1AOsv/AD9VVqp4mdMN8W8+nqn/3/jx+kPYE/k39B6u37b+w9+pzfs7EErvRdvpgGvM6T21++IA1NCO78GDSoXavlE9hQ3YC3LPkWn1L6H+TgOqbBCxy5KQdUm+AyBPDbyJby14KXHpYo6ntkSQOcx8d6QjWuqYeHut/5/hgofYiryZILFalenT52XM/EQwbENIfdiG8VQAMSwbAKQj3c2deJRFwVk/dJ8YxJP2xKGIAD+/2AZdyWvOWxp8BJHBlLTs+mcIVzegV9H9Smq+TN81mBzxzPp6ttMmPU41dAK64fLArH21MziPF3Aa8l/v3h6TAtS3lsDy5wg8m+NYKA8Lvsd6JhzXVhNLLhL6y88p7LdxGcuWDTmfpWWY0dkWt1Rtp0aU/m+rRmNsZww8OXV/B/F76up8Q8w/x2z/xdIDMcdPQtMj24xW2nDW19/xz/vHa7q4IWc5oVTQKt7m1+A+6EaGc5FnTNqjdpy1bCgvoeOO4WZI0WAuxeMrAi4msqLcqzOwe4ZkD4zWBaN5XqEbmGeN1szo2UIQ4IdXPjMIIrA1/ReqYsR2iPyCfeF2gJV0JZPPHOI3Ai4qFZxqa0x1/Ntn/+VyU66dzJU7Fm8dfa+HhK6Uh+8qAkNW4+8MdzDn5y/yYjXUzSfrrdAZ+eIkFukvAf58TO3BDN6tl4bHVcZMP8gyZphdCAim0gJvqmdZnoCAWUqLLvUlsvZx3TD1v4NDLconRSrgp/j8cT7E4DIT9nUVRuMdDHxToRhWM8ctyCTZONGM/sdDtPmDvZSOWwA0Djx6Aw+4MHC5ktoXu+O4kaRJVuUK0BasRTOkI9fCxam4Pwl8boKl2v095YFxlnYbEFGQChLDdlTq0nAIXLiyrN8ygiYMw9A2wrn9XOfOQGU37s+RfdR8+Ng5fxN7Spv2olvnwckzxgx/qtbKajhYoq9i41nIvttrq5W0w5C47DJldswB0lH//ddveaVPozWgZmolAWpG1yQHYqEWx+FfNRiiiBNNpMZ1GFROUWKtq1k+ddouhiaBTaJ02h3h3TO/zN3VQFcV8mFPV14cZF6JdEl/K41oztAHkhDU6EgW9+7vYMOml48qzb2b9p7hmrgFBEBTHgpE/d8sAAocqFt1aiGJrTkGNfuY4gt9P/2eodj859dZM61o0AaxUgNoshkW5cpSB2kYFg7JaK9poW/lhuEq5MHT0qviWK2+WHvwzRmGnk8yfoZ0+an7MB0BuZq4w4E5senwBU8ewGB5ZZyoEubMcozYso42gylyQsRvZSSDOvsLdOJuiE6dqRsQAXFEdiY6e4dxxV4IEPRcOvtXCGIZyiI+L7yCD2wJeEo1yE+B0rDoqBK7X4NlqvmLfAMjjNhtfhW7PNuktX4pWHrUWbR5sDZ9iPsHFPSmDJMs1IL10KkbcPLIoQl+f3u7+059WoN0DPef8+I74djPV1J1vZ/6UHMI3r5dnxE5vtXCp/9mcPFHahkZr/jKDGlZqVBYZ5evcf8FeQIBsE5WfSbpUilcdOe98KkaiObCEP8ir9QoMTmaraSn9QcsWLeLKpldNUj1scvDCcMY8UBarwyScfPWXuLUzg7Buny/m3pZeMR3yV526AWUBg0hqWf7mn0kwmzAKjiLgo7EguTLIAM9KQNQMba/QvDB6nnPf0a1wed6u3StIu9DvOpEBW9zaJOmHekMOUy1i9sZRgTtKLJm/cI253SRuRLGMaE+TDWbvhawZyGgNfVzzBW70D7f8ACfgNLN0ASoGAOwgKkHdyo61MpPTNtlE6GIi7iBCGiM89uqjqdq9bbVkm0HFTa078pnKJl4xC82p03/U9D7xfrf0pbd0glfm6pTqWqYjxK3jcLFIludoHcFMsU8Q8EYg6OyvA2ZKc0ZYpijob+ML7e/fXs73OOlExr+rVJ9NVpyS17WHpz9A4CPaK9uLb3s7vw2vx7UJhWSJmwWaSrndyO3xzhI8DXUP9dmcQ+dZxaIsrdj2Cx5g7aXkPXBgKUBxqNxgrXbtIYAtol8YbcNblt2/KA0XLvBMKHEtuuyfIHo/wDV75O4mZrOf++P//5OD//UUX//ZXAlDvH9n6oKQY2H7G7/yOGz7T8zvuM+lzwf0LT+rtvzlZvPgKNWog8ZbyhUIKP4dJ/MRx132m7HQrq3p8oNx+FEr1tuxc/nYYrTAAAAA==)}
+.i3d-heart{background-image:url(data:image/webp;base64,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)}
+.i3d-home{background-image:url(data:image/webp;base64,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)}
+.i3d-hospital{background-image:url(data:image/webp;base64,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)}
+.i3d-lungs{background-image:url(data:image/webp;base64,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)}
+.i3d-microbe{background-image:url(data:image/webp;base64,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)}
+.i3d-pill{background-image:url(data:image/webp;base64,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)}
+.i3d-snow{background-image:url(data:image/webp;base64,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)}
+.i3d-syringe{background-image:url(data:image/webp;base64,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)}
+.i3d-testtube{background-image:url(data:image/webp;base64,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)}
+</style>
+<script type="application/json" id="data-modules">
+{
+ "version": "1.0.0",
+ "updated": "2026-10-13",
+ "status": "verified",
+ "title": "Cấu trúc module – nhóm lâm sàng, thứ tự, tên theo thuật ngữ y khoa, icon",
+ "source": "Cấu hình giao diện nội bộ CDSS Bệnh viện Phương Nam. Thứ tự nhóm Cấp cứu nhi theo tiếp cận ABCDE (APLS/PALS). Icon: Microsoft Fluent Emoji (MIT).",
+ "groups": [
+  {
+   "id": "resus",
+   "title": "Hồi sức",
+   "en": "Resuscitation",
+   "color": "#0f766e",
+   "tint": "#e3f3ef"
+  },
+  {
+   "id": "neo",
+   "title": "Sơ sinh",
+   "en": "Neonatology – NICU",
+   "color": "#6d28d9",
+   "tint": "#efe9fb"
+  },
+  {
+   "id": "paedem",
+   "title": "Cấp cứu nhi khoa (ABCDE)",
+   "en": "Paediatric emergency",
+   "color": "#1d4ed8",
+   "tint": "#e7edfc"
+  },
+  {
+   "id": "fluid",
+   "title": "Dịch truyền & dinh dưỡng",
+   "en": "Fluids & nutrition",
+   "color": "#a16207",
+   "tint": "#faf1de"
+  },
+  {
+   "id": "info",
+   "title": "Thông tin",
+   "en": "Information",
+   "color": "#475467",
+   "tint": "#eceef2"
+  }
+ ],
+ "records": [
+  {
+   "order": 1,
+   "id": "resus",
+   "group": "resus",
+   "icon": "baby",
+   "short": "Hồi sức sơ sinh",
+   "title": "Hồi sức sơ sinh tại phòng sinh",
+   "sub": "NLS · ANZCOR 2023 / ILCOR",
+   "target": "Phòng sinh / Cấp cứu sơ sinh",
+   "function": "Thông khí áp lực dương, ETT, ép tim, adrenaline, bù thể tích",
+   "range": "0,3–6 kg"
+  },
+  {
+   "order": 2,
+   "id": "paed",
+   "group": "resus",
+   "icon": "ambulance",
+   "short": "Cấp cứu nhi (PALS)",
+   "title": "Liều cấp cứu nhi theo cân nặng",
+   "sub": "PALS 2020 / APLS · ETT · sốc điện",
+   "target": "Cấp cứu nhi / PICU",
+   "function": "Ước tính cân nặng (APLS), ETT, khử rung, thuốc cấp cứu, an thần, chống co giật",
+   "range": "3–150 kg"
+  },
+  {
+   "order": 3,
+   "id": "neo",
+   "group": "neo",
+   "icon": "bottle",
+   "short": "Thuốc sơ sinh (NICU)",
+   "title": "Thuốc và thủ thuật sơ sinh (NICU)",
+   "sub": "ETT · UVC/UAC · kháng sinh · truyền liên tục",
+   "target": "NICU",
+   "function": "Catheter rốn, liều thuốc, kháng sinh theo PMA/PNA, dịch theo ngày tuổi, pha bơm tiêm",
+   "range": "0,3–6 kg"
+  },
+  {
+   "order": 4,
+   "id": "eos",
+   "group": "neo",
+   "icon": "microbe",
+   "short": "Nguy cơ EOS",
+   "title": "Nguy cơ nhiễm khuẩn huyết sơ sinh sớm (EOS)",
+   "sub": "Kaiser Permanente 2024 · ≥34 tuần",
+   "target": "Phòng sinh / Sơ sinh",
+   "function": "Ước tính nguy cơ EOS (mô hình 2024/2017), khuyến cáo cấy máu – kháng sinh",
+   "range": "34–43 tuần"
+  },
+  {
+   "order": 5,
+   "id": "bili",
+   "group": "neo",
+   "icon": "bulb",
+   "short": "Tăng bilirubin máu",
+   "title": "Tăng bilirubin máu sơ sinh",
+   "sub": "Chiếu đèn / thay máu · AAP 2022",
+   "target": "Sơ sinh / NICU",
+   "function": "Phân loại xử trí theo ngưỡng chiếu đèn, leo thang điều trị, thay máu",
+   "range": "≥35 tuần"
+  },
+  {
+   "order": 6,
+   "id": "hypo",
+   "group": "neo",
+   "icon": "blood",
+   "short": "Hạ glucose máu",
+   "title": "Hạ glucose máu sơ sinh",
+   "sub": "GIR · AAP 2011 / BAPM 2017",
+   "target": "Sơ sinh / NICU",
+   "function": "Gel dextrose, bolus dextrose 10%, tốc độ truyền glucose (GIR), glucagon",
+   "range": "0,3–6 kg"
+  },
+  {
+   "order": 7,
+   "id": "cool",
+   "group": "neo",
+   "icon": "snow",
+   "short": "Hạ thân nhiệt (HIE)",
+   "title": "Hạ thân nhiệt điều trị – Bệnh não thiếu oxy thiếu máu cục bộ (HIE)",
+   "sub": "Phân độ Sarnat · TOBY / NICHD",
+   "target": "NICU",
+   "function": "Tiêu chí chỉ định, phân độ Sarnat, quy trình hạ thân nhiệt 72 giờ",
+   "range": "≥36 tuần, ≥1800 g"
+  },
+  {
+   "order": 8,
+   "id": "asthma",
+   "group": "paedem",
+   "abcde": "B",
+   "icon": "lungs",
+   "short": "Cơn hen cấp nặng",
+   "title": "Cơn hen phế quản cấp nặng",
+   "sub": "GINA 2024 · BTS/SIGN · NAC",
+   "target": "Cấp cứu nhi",
+   "function": "SABA, ipratropium, corticosteroid, MgSO₄, salbutamol tĩnh mạch",
+   "range": "3–150 kg"
+  },
+  {
+   "order": 9,
+   "id": "sepsis",
+   "group": "paedem",
+   "abcde": "C",
+   "icon": "pill",
+   "short": "Nhiễm khuẩn huyết",
+   "title": "Nhiễm khuẩn huyết và sốc nhiễm khuẩn – kháng sinh kinh nghiệm",
+   "sub": "SSC Pediatric 2020 · EOS / LOS sơ sinh",
+   "target": "Sơ sinh / Nhi",
+   "function": "Hồi sức dịch, kháng sinh kinh nghiệm sơ sinh (EOS, LOS) và trẻ em",
+   "range": "0,3–150 kg"
+  },
+  {
+   "order": 10,
+   "id": "svt",
+   "group": "paedem",
+   "abcde": "C",
+   "icon": "heart",
+   "short": "Nhịp nhanh trên thất",
+   "title": "Nhịp nhanh kịch phát trên thất (SVT)",
+   "sub": "PALS 2020 · adenosine · sốc điện đồng bộ",
+   "target": "Cấp cứu nhi / Tim mạch",
+   "function": "Nghiệm pháp phế vị, adenosine, sốc điện đồng bộ, phân biệt SVT – VT",
+   "range": "0,4–150 kg"
+  },
+  {
+   "order": 11,
+   "id": "hyperk",
+   "group": "paedem",
+   "abcde": "C",
+   "icon": "testtube",
+   "short": "Tăng kali máu",
+   "title": "Tăng kali máu",
+   "sub": "Ổn định màng tế bào · insulin–glucose",
+   "target": "Sơ sinh / Nhi",
+   "function": "Calci gluconat, insulin + glucose, salbutamol, bicarbonat, thải K⁺",
+   "range": "0,3–150 kg"
+  },
+  {
+   "order": 12,
+   "id": "seizure",
+   "group": "paedem",
+   "abcde": "D",
+   "icon": "bolt",
+   "short": "Trạng thái động kinh",
+   "title": "Trạng thái động kinh co giật",
+   "sub": "AES 2016 · ESETT 2019",
+   "target": "Cấp cứu nhi",
+   "function": "Benzodiazepine, thuốc bậc 2 (levetiracetam, fosphenytoin, valproate, phenobarbital), gây mê",
+   "range": "2–150 kg"
+  },
+  {
+   "order": 13,
+   "id": "head",
+   "group": "paedem",
+   "abcde": "D",
+   "icon": "brain",
+   "short": "Chấn thương sọ não",
+   "title": "Chấn thương sọ não nhẹ ở trẻ em",
+   "sub": "Quy tắc PECARN · PREDICT 2021",
+   "target": "Cấp cứu nhi",
+   "function": "Phân tầng nguy cơ ciTBI, chỉ định CT sọ não, hướng dẫn về nhà",
+   "range": "0–18 tuổi"
+  },
+  {
+   "order": 14,
+   "id": "dka",
+   "group": "paedem",
+   "abcde": "E",
+   "icon": "syringe",
+   "short": "Nhiễm toan ceton (DKA)",
+   "title": "Nhiễm toan ceton do đái tháo đường (DKA)",
+   "sub": "ISPAD 2022",
+   "target": "Nhi / Nội tiết",
+   "function": "Bù dịch 48 giờ, insulin truyền, kali, Na⁺ hiệu chỉnh, xử trí phù não",
+   "range": "3–150 kg"
+  },
+  {
+   "order": 15,
+   "id": "burns",
+   "group": "paedem",
+   "abcde": "E",
+   "icon": "fire",
+   "short": "Bỏng",
+   "title": "Bỏng – hồi sức dịch",
+   "sub": "Parkland · ABA · Lund–Browder",
+   "target": "Cấp cứu / Bỏng",
+   "function": "Dịch 24 giờ (Parkland/ABA), dịch duy trì, nước tiểu đích, tiêu chí chuyển viện",
+   "range": "0,4–150 kg"
+  },
+  {
+   "order": 16,
+   "id": "tpn",
+   "group": "fluid",
+   "icon": "droplet",
+   "short": "Nuôi dưỡng tĩnh mạch",
+   "title": "Nuôi dưỡng tĩnh mạch (PN)",
+   "sub": "ESPGHAN/ESPEN 2018 · ASPEN",
+   "target": "NICU / Dược lâm sàng",
+   "function": "Thành phần túi PN, GIR, protein, lipid, điện giải, áp lực thẩm thấu, Ca×P, phiếu pha chế",
+   "range": "0,3–10 kg"
+  },
+  {
+   "order": 17,
+   "id": "adhoc",
+   "group": "fluid",
+   "icon": "alembic",
+   "short": "Pha dung dịch truyền",
+   "title": "Pha dung dịch truyền",
+   "sub": "Dextrose · NaCl theo nồng độ đích",
+   "target": "Dược / Điều dưỡng",
+   "function": "Pha dextrose, NaCl theo nồng độ và thể tích cần thiết",
+   "range": "–"
+  },
+  {
+   "order": 18,
+   "id": "guide",
+   "group": "info",
+   "icon": "book",
+   "short": "Hướng dẫn sử dụng",
+   "title": "Hướng dẫn sử dụng",
+   "sub": "Phạm vi · cách dùng · viết tắt"
+  },
+  {
+   "order": 19,
+   "id": "refs",
+   "group": "info",
+   "icon": "books",
+   "short": "Tài liệu tham khảo",
+   "title": "Tài liệu tham khảo",
+   "sub": "Nguồn bằng chứng · sổ dữ liệu"
+  }
+ ]
+}
+</script>
 <!-- ═══ DỮ LIỆU LÂM SÀNG (JSON) – sửa liều tại đây, tăng "version" và cập nhật "updated"/"source" ═══ -->
 <script type="application/json" id="data-eos-models">
 {
@@ -5677,7 +5931,7 @@ document.querySelectorAll('script[type="application/json"][id^="data-"]').forEac
   try{const o=JSON.parse(s.textContent);if(!Array.isArray(o.records)||!o.records.length)throw new Error('records rỗng');DATA[s.id.slice(5)]=o}
   catch(e){DATA_ERR.push(s.id+': '+e.message)}
 });
-['eos-models','neo-abx','neo-fluids','drug-doses','tpn-products'].forEach(k=>{if(!DATA[k])DATA_ERR.push('Thiếu bảng dữ liệu data-'+k)});
+['eos-models','neo-abx','neo-fluids','drug-doses','tpn-products','modules'].forEach(k=>{if(!DATA[k])DATA_ERR.push('Thiếu bảng dữ liệu data-'+k)});
 function rec(table,id){const t=DATA[table];const r=t&&t.records.find(x=>x.id===id);if(!r)throw new Error('Thiếu dữ liệu '+table+' / '+id);return r}
 function P(id){return rec('drug-doses',id).value}                       // tham số phác đồ
 function band(id,wt){return rec('drug-doses',id).bands.find(b=>wt<b.wt_max)}
@@ -5727,6 +5981,60 @@ function neoFluids(wt,ga,pna){
   const [lo,hi]=g.days[idx];
   return{lo,hi,grp:g.label,day:idx+1,loH:r1(lo*wt/24),hiH:r1(hi*wt/24)};
 }
+// ===== CẤU TRÚC MODULE – sinh điều hướng, trang chủ, tiêu đề module, tiêu đề bản in và bảng tổng quan từ data-modules =====
+// Đổi tên/thứ tự/nhóm/icon: chỉ sửa khối data-modules (một nguồn duy nhất).
+function buildModuleUI(){
+  const MD=DATA['modules'];if(!MD)return;
+  const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const G=MD.groups, mods=[...MD.records].sort((a,b)=>a.order-b.order);
+  const ico=k=>`<i class="i3d i3d-${k}" aria-hidden="true"></i>`;
+  // 1. Thanh điều hướng
+  const nav=document.querySelector('nav.sidebar');
+  if(nav){
+    nav.innerHTML=`<div class="nav-item active" onclick="showModule('home')"><span class="nav-icon">${ico('home')}</span><span>Trang chủ</span></div>`+
+      G.map(g=>{const ms=mods.filter(m=>m.group===g.id);if(!ms.length)return'';
+        return`<div class="nav-section" style="--gc:${g.color}"><span class="gdot"></span>${esc(g.title)}</div>`+
+          ms.map(m=>`<div class="nav-item" style="--gc:${g.color}" onclick="showModule('${m.id}')" title="${esc(m.title)}"><span class="nav-icon">${ico(m.icon)}</span><span>${esc(m.short)}</span>${m.abcde?`<b class="abcde">${m.abcde}</b>`:''}</div>`).join('')}).join('');
+  }
+  // 2. Trang chủ – nhóm theo chuyên môn, mã màu theo nhóm
+  const home=document.getElementById('home-groups');
+  if(home){
+    home.innerHTML=G.map(g=>{const ms=mods.filter(m=>m.group===g.id);if(!ms.length)return'';
+      return`<section class="home-group" style="--gc:${g.color};--gt:${g.tint}">
+        <h3 class="home-group-title"><span class="gdot"></span>${esc(g.title)} <small>${esc(g.en)} · ${ms.length} module</small></h3>
+        <div class="home-grid">${ms.map(m=>`<div class="home-card" role="button" tabindex="0" onclick="showModule('${m.id}')" onkeydown="if(event.key==='Enter')showModule('${m.id}')">
+          ${m.abcde?`<b class="abcde" title="Tiếp cận ABCDE">${m.abcde}</b>`:''}
+          <div class="home-ico">${ico(m.icon)}</div>
+          <div class="home-card-title">${esc(m.short)}</div>
+          <div class="home-card-sub">${esc(m.sub)}</div></div>`).join('')}</div></section>`}).join('')+
+      `<div class="abcde-legend"><b>ABCDE</b>: A – Đường thở · B – Hô hấp · C – Tuần hoàn · D – Thần kinh · E – Toàn thân/chuyển hóa (APLS/PALS)</div>`;
+  }
+  // 3. Tiêu đề module và tiêu đề bản in
+  mods.forEach(m=>{
+    const el=document.getElementById(m.id);if(!el)return;
+    const g=G.find(x=>x.id===m.group)||{};
+    el.style.setProperty('--gc',g.color||'');
+    const t=el.querySelector('.module-topbar .module-title, .module-title');
+    if(t)t.innerHTML=`${ico(m.icon)} ${esc(m.title)}`;
+    const p=[...el.querySelectorAll('.module-print-hdr .prt-sub')].find(x=>x.getAttribute('style'));
+    if(p)p.textContent=m.title;
+    const top=el.querySelector('.module-topbar');
+    if(top&&top.firstElementChild&&top.firstElementChild.classList.contains('module-title')){const w=document.createElement('div');top.insertBefore(w,top.firstElementChild);w.appendChild(w.nextElementSibling)}   // bọc tiêu đề để chèn nhãn nhóm phía trên
+    if(top&&!top.querySelector('.module-group-chip'))top.firstElementChild.insertAdjacentHTML('afterbegin',`<div class="module-group-chip" style="--gc:${g.color};--gt:${g.tint}"><span class="gdot"></span>${esc(g.title)}${m.abcde?' · '+m.abcde:''}</div>`);
+  });
+  // 4. Bảng tổng quan trong trang Hướng dẫn
+  const ov=document.getElementById('module-overview');
+  if(ov){
+    const list=mods.filter(m=>m.group!=='info');
+    ov.innerHTML=`<table class="result-table"><thead><tr><th>Module</th><th>Nhóm</th><th>Đối tượng</th><th>Chức năng chính</th><th>Phạm vi</th></tr></thead><tbody>${
+      list.map(m=>{const g=G.find(x=>x.id===m.group);return`<tr><td><b>${ico(m.icon)} ${esc(m.short)}</b><br><small style="color:var(--muted)">${esc(m.title)}</small></td><td><span class="module-group-chip" style="--gc:${g.color};--gt:${g.tint}"><span class="gdot"></span>${esc(g.title)}${m.abcde?' · '+m.abcde:''}</span></td><td>${esc(m.target||'')}</td><td>${esc(m.function||'')}</td><td>${esc(m.range||'')}</td></tr>`}).join('')
+    }</tbody></table>`;
+    const h=ov.closest('.card')&&ov.closest('.card').querySelector('.card-title');
+    if(h)h.textContent=`🗂️ Tổng quan ${list.length} module lâm sàng`;
+  }
+}
+try{buildModuleUI()}catch(e){console.error(e)}
+
 // ===== Sổ dữ liệu: liệt kê version/nguồn/bản ghi để người duyệt đối chiếu =====
 function renderDataRegistry(){
   const el=document.getElementById('data-registry');if(!el)return;
@@ -6630,7 +6938,7 @@ function printCurrentModule(){
   // 2. Update footer
   const footer = document.getElementById('print-footer-bar');
   if(footer) footer.textContent =
-    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.5 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
+    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.6 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
 
   // 3. Print — CSS @media print sẽ tự ẩn sidebar/header, chỉ hiện module active
   window.print();
@@ -7364,7 +7672,7 @@ function printTPNReport(){
     <div class="sig-box"><div class="sig-line"></div><b>Bác sĩ Điều trị</b><br><small>${d.dr||'(Ký &amp; ghi rõ họ tên)'}</small></div>
   </div>
   <div style="text-align:center;font-size:10px;color:#999;margin-top:10px;border-top:1px solid #ddd;padding-top:6px">
-    BV Phương Nam · Tập Đoàn Y Tế Phương Châu · Máy Tính Lâm Sàng v1.0 · 2026 · DSCKI. Lê Mới Em · ${new Date().toLocaleString('vi-VN')}
+    BV Phương Nam · Tập Đoàn Y Tế Phương Châu · Máy Tính Lâm Sàng v1.6 · 2026 · DSCKI. Lê Mới Em · ${new Date().toLocaleString('vi-VN')}
   </div>
   <script>setTimeout(()=>window.print(),900);<\/script>
   </body></html>`);

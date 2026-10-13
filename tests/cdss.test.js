@@ -359,6 +359,68 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     await page.evaluate(() => showModule('home'));
   }
 
+  console.log('23. Chế độ sáng/tối');
+  {
+    const ctx = await browser.newContext({ colorScheme: 'dark' });
+    const dp = await ctx.newPage(); const derr = []; dp.on('pageerror', e => derr.push(e.message));
+    await dp.goto('file://' + path); await dp.waitForTimeout(300);
+    const st = () => dp.evaluate(() => ({ dark: document.body.classList.contains('mode-dark'), aria: document.getElementById('mode-toggle').getAttribute('aria-checked'), bg: getComputedStyle(document.body).backgroundColor, label: document.querySelector('.mode-label').textContent }));
+    let s = await st();
+    ok('Lần đầu: theo hệ điều hành (prefers-color-scheme: dark)', s.dark && s.aria === 'true' && s.label === 'Tối', JSON.stringify(s));
+    ok('Nền tối thật sự (#0e1716)', s.bg === 'rgb(14, 23, 22)', s.bg);
+    await dp.click('#mode-toggle'); await dp.waitForTimeout(150); s = await st();
+    ok('Bấm nút → sáng, aria-checked=false', !s.dark && s.aria === 'false' && s.label === 'Sáng', JSON.stringify(s));
+    await dp.reload(); await dp.waitForTimeout(300); s = await st();
+    ok('Lựa chọn được nhớ sau khi tải lại (ưu tiên hơn hệ điều hành)', !s.dark, JSON.stringify(s));
+    await dp.keyboard.press('Tab'); await dp.focus('#mode-toggle'); await dp.keyboard.press('Enter'); await dp.waitForTimeout(150); s = await st();
+    ok('Dùng được bằng bàn phím (Enter)', s.dark, JSON.stringify(s));
+    // màu inline: đảo độ sáng nhưng giữ sắc độ, có bản gốc để in
+    await dp.evaluate(() => { showModule('home'); const d = document.createElement('div'); d.id = 'dk-probe'; d.setAttribute('style', 'background:#ffebee;color:#c62828;border:1px solid #ef9a9a'); d.textContent = 'x'; document.getElementById('home').appendChild(d); });
+    await dp.waitForTimeout(100);
+    const pr = await dp.evaluate(() => { const d = document.getElementById('dk-probe'), s = getComputedStyle(d); return { bg: s.backgroundColor, fg: s.color, light: d.dataset.lightStyle }; });
+    const rgb = c => c.match(/\d+/g).map(Number), lum = c => { const [r, g, b] = rgb(c); return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255; };
+    ok('Nền inline sáng (#ffebee) → tối, vẫn ngả đỏ', lum(pr.bg) < 0.25 && rgb(pr.bg)[0] > rgb(pr.bg)[1], pr.bg);
+    ok('Chữ inline đỏ đậm (#c62828) → đỏ sáng đọc được trên nền tối', lum(pr.fg) > 0.5 && rgb(pr.fg)[0] > rgb(pr.fg)[1] + 40, pr.fg);
+    ok('Lưu bản gốc để in (data-light-style)', /#ffebee/.test(pr.light || ''), pr.light);
+    await dp.evaluate(() => window.dispatchEvent(new Event('beforeprint'))); await dp.waitForTimeout(100);
+    ok('Trước khi in: trả về màu gốc (nền trắng)', await dp.evaluate(() => getComputedStyle(document.getElementById('dk-probe')).backgroundColor === 'rgb(255, 235, 238)'));
+    await dp.evaluate(() => window.dispatchEvent(new Event('afterprint'))); await dp.waitForTimeout(100);
+    ok('Sau khi in: quay lại màu tối', await dp.evaluate(() => getComputedStyle(document.getElementById('dk-probe')).backgroundColor !== 'rgb(255, 235, 238)'));
+    await dp.evaluate(() => toggleMode()); await dp.waitForTimeout(100);
+    ok('Chuyển về sáng: khôi phục đúng style gốc', await dp.evaluate(() => document.getElementById('dk-probe').getAttribute('style') === 'background:#ffebee;color:#c62828;border:1px solid #ef9a9a'));
+    // tương phản chữ/nền ở chế độ tối trên mọi module (sau khi tính toán)
+    await dp.goto('file://' + path + '?mode=dark'); await dp.waitForTimeout(300);
+    // bấm tính toán trước, đo ở lượt sau (MutationObserver chuyển màu ở microtask, trước khi trình duyệt vẽ)
+    const ids = await dp.evaluate(() => [...document.querySelectorAll('.module')].map(m => m.id)); const bad = [];
+    for (const id of ids) {
+      await dp.evaluate(id => { showModule(id); document.getElementById(id).querySelectorAll('button.btn').forEach(b => { const oc = b.getAttribute('onclick') || ''; if (/calc|compute|update|apply|estimate/i.test(oc) && !/AI|print/i.test(oc)) try { b.click(); } catch (e) { } }); }, id);
+      await dp.waitForTimeout(60);
+      bad.push(...await dp.evaluate(id => {
+      const P = c => { const m = c.match(/rgba?\(([^)]+)\)/); if (!m) return null; const v = m[1].split(/[ ,\/]+/).map(Number); return { r: v[0], g: v[1], b: v[2], a: v[3] == null ? 1 : v[3] }; };
+      const L = ({ r, g, b }) => { const f = x => { x /= 255; return x <= .03928 ? x / 12.92 : Math.pow((x + .055) / 1.055, 2.4); }; return .2126 * f(r) + .7152 * f(g) + .0722 * f(b); };
+      const bgOf = el => { for (let e = el; e; e = e.parentElement) { const s = getComputedStyle(e); if (s.backgroundImage !== 'none') { const m = s.backgroundImage.match(/rgba?\([^)]+\)/); if (m) return P(m[0]); } const c = P(s.backgroundColor); if (c && c.a > .5) return c; } return { r: 14, g: 23, b: 22 }; };
+      const out = [];
+      { const root = document.getElementById(id);
+        for (const el of root.querySelectorAll('*')) {
+          if (!el.getClientRects().length || el.closest('.comp-bar')) continue;
+          if (![...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim())) continue;
+          const s = getComputedStyle(el); const fg = P(s.color), bg = bgOf(el); const a = L(fg), b = L(bg);
+          const cr = (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+          if (cr < 4) out.push(id + ':' + (el.className || el.tagName) + ' ' + cr.toFixed(1));
+        }
+      }
+      return out;
+    }, id));
+    }
+    await dp.evaluate(() => showModule('home'));
+    ok('Chế độ tối: mọi chữ đạt tương phản ≥4:1 (mọi module, sau khi tính toán)', bad.length === 0, bad.slice(0, 8).join(' | '));
+    const mob = await ctx.newPage(); await mob.setViewportSize({ width: 320, height: 640 }); await mob.goto('file://' + path + '?mode=dark'); await mob.waitForTimeout(300);
+    const mv = await mob.evaluate(() => { const r = document.getElementById('mode-toggle').getBoundingClientRect(); return { sw: document.documentElement.scrollWidth, vis: r.width > 0 && r.right <= innerWidth && r.top < 80 }; });
+    ok('Điện thoại 320 px: nút hiển thị trên header, không tràn ngang', mv.vis && mv.sw <= 320, JSON.stringify(mv));
+    ok('Không có lỗi runtime ở chế độ tối', derr.length === 0, derr.join(' | '));
+    await ctx.close();
+  }
+
   console.log('14. Lỗi runtime trên trang');
   ok('Không có pageerror', errors.length === 0, errors.join(' | '));
 

@@ -71,6 +71,7 @@ input[type=number]:focus,input[type=text]:focus,select:focus{outline:none;border
 .result-table th{background:linear-gradient(90deg,#fce4ec,#fff0f5);color:var(--primary-dark);font-weight:700;padding:.55rem .75rem;text-align:left;border:1px solid var(--border)}
 .result-table td{padding:.45rem .75rem;border:1px solid var(--border);vertical-align:top;line-height:1.45}
 .result-table tr:nth-child(even) td{background:#fff9fb}
+.result-table tr[style*="background"] td{background:transparent}  /* giữ màu nền đặt riêng cho hàng (vd. dòng LIPID/TỐC ĐỘ của phiếu TPN) */
 .result-table .highlight-row td{background:#fff8e1;font-weight:600;color:#5d4037}
 .result-table .danger-row td{background:#ffebee;color:#c62828;font-weight:600}
 .result-table .warn-row td{background:#fff3e0;color:#e65100}
@@ -211,6 +212,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
   .result-table th           { background:#fce4ec!important; color:#7c004c!important; padding:3px 5px!important; font-size:9.5px!important }
   .result-table td           { padding:3px 5px!important; line-height:1.4!important }
   .result-table tr:nth-child(even) td { background:#fff9fb!important }
+  .result-table tr[style*="background"] td { background:transparent!important }
   .highlight-row td          { background:#fff8e1!important; font-weight:600!important }
   .danger-row td             { background:#ffebee!important; color:#c62828!important; font-weight:600!important }
   .warn-row td               { background:#fff3e0!important; color:#e65100!important }
@@ -294,6 +296,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
 .data-tag{font-size:11px;color:var(--muted);border-top:1px dashed var(--border);margin-top:.75rem;padding-top:.4rem;line-height:1.6}
 .data-tag .unv{color:#b45309;font-weight:700}
 .data-reg td,.data-reg th{vertical-align:top}
+.ref-sec{font-weight:700;color:#fff;padding:5px 10px;border-radius:6px;margin:.75rem 0 .4rem;font-size:12px}
 /* ── RESPONSIVE ĐIỆN THOẠI (đặt cuối để không bị ghi đè) ── */
 @media screen and (max-width:700px){
   /* Điện thoại: thanh điều hướng ngang cuộn được phía trên nội dung – không chiếm chiều rộng nội dung */
@@ -373,7 +376,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
 
   <div class="hdr-right">
     <div class="hdr-author">DSCKI. Lê Mới Em</div>
-    <div class="ver-badge">Phiên bản 1.3 · 2026</div>
+    <div class="ver-badge">Phiên bản 1.4 · 2026</div>
   </div>
 </div>
 
@@ -1181,11 +1184,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
     <div class="tpn-grid4">
       <div class="form-group"><label>Phân loại</label>
         <select id="tpn-type" onchange="applyDefaults();calcTPN()">
-          <option value="elbw">ELBW (&lt;1000g)</option>
-          <option value="vlbw" selected>VLBW (1000–1499g)</option>
-          <option value="lbw">LBW (1500–2499g)</option>
-          <option value="term">Đủ tháng (≥37T)</option>
-          <option value="sick">Bệnh cấp tính / Phẫu thuật</option>
+          <!-- sinh từ data-tpn-products -->
         </select>
       </div>
       <div class="form-group"><label>Chẩn đoán chính</label><input type="text" id="tpn-dx" value="Sơ sinh non tháng, suy hô hấp"></div>
@@ -1197,20 +1196,14 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
       </div>
       <div class="form-group"><label>Nguồn Amino Acid</label>
         <select id="tpn-aa" onchange="calcTPN()">
-          <option value="primene">Primene 10%</option>
-          <option value="trophamine">TrophAmine 6%</option>
-          <option value="aminoven">Aminoven Infant 10%</option>
-          <option value="vaminolact">Vaminolact 6.5%</option>
+          <!-- sinh từ data-tpn-products -->
         </select>
       </div>
     </div>
     <div class="tpn-grid4">
       <div class="form-group"><label>Nguồn Lipid</label>
         <select id="tpn-lipid-src" onchange="calcTPN()">
-          <option value="smoflipid20">SMOFlipid 20%</option>
-          <option value="intralipid20">Intralipid 20%</option>
-          <option value="clinolipid20">ClinOleic 20%</option>
-          <option value="intralipid10">Intralipid 10%</option>
+          <!-- sinh từ data-tpn-products -->
         </select>
       </div>
       <div class="form-group"><label>Thể tích Nuôi ăn đường miệng/sonde (mL/kg/ng)</label><input type="number" id="tpn-enteral" min="0" max="160" step="5" value="0" oninput="calcTPN()"></div>
@@ -1542,115 +1535,10 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
   <!-- ── DRUG DOSING REFERENCE CARD ── -->
   <div class="card">
     <div class="card-title">💊 Bảng Liều Thuốc Tham Khảo (mg/kg) – Sơ Sinh &amp; Nhi Khoa</div>
-    <div class="alert alert-danger">🚨 Bảng liều này chỉ mang tính tham khảo. Liều thực tế được tính toán tự động theo cân nặng trong từng module. Luôn kiểm tra với Dược thư Quốc gia VN và ANMF trước khi y lệnh.</div>
+    <div class="alert alert-danger">🚨 Bảng liều này chỉ mang tính tham khảo và được sinh tự động từ cùng bộ dữ liệu mà các module tính liều sử dụng (một nguồn duy nhất). Luôn kiểm tra với Dược thư Quốc gia VN và ANMF trước khi y lệnh.</div>
 
-    <!-- RESUS DRUGS -->
-    <div style="font-weight:700;background:linear-gradient(90deg,#c62828,#e53935);color:#fff;padding:5px 10px;border-radius:6px;margin:.75rem 0 .4rem;font-size:12px">🆘 THUỐC HỒI SỨC &amp; CẤP CỨU</div>
-    <table class="result-table" style="font-size:12px;margin-bottom:.75rem">
-      <thead><tr><th>Thuốc</th><th>Liều</th><th>Đường dùng</th><th>Ghi chú lâm sàng</th><th>TLTK</th></tr></thead>
-      <tbody>
-        <tr class="danger-row"><td><b>Adrenaline (Epinephrine)</b></td><td>0.01–0.03 mg/kg (1:10,000 = 0.1–0.3 mL/kg)<br><small>NKQ: 0.05–0.1 mg/kg</small></td><td>IV/IO nhanh, NKQ</td><td>Ngừng tim. Lặp mỗi 3–5 phút. IV/IO ưu tiên hơn NKQ</td><td>ANZCOR 2023; ANMF</td></tr>
-        <tr><td><b>Adenosine</b></td><td>Liều 1: 0.1 mg/kg (max 6 mg)<br>Liều 2: 0.2 mg/kg (max 12 mg)<br>Liều 3: 0.3 mg/kg (max 12 mg)</td><td>IV bolus nhanh + tráng NaCl 0,9% (kỹ thuật 2 bơm)</td><td>SVT. TM gần tim nhất. Lặp sau 1–2 phút nếu không đáp ứng. Ghi ECG khi tiêm</td><td>PALS 2020; APLS</td></tr>
-        <tr><td><b>Amiodarone</b></td><td>5 mg/kg (max 300 mg)</td><td>IV 20–60 phút</td><td>VF/VT kháng trị. Không dùng cùng Flecainide</td><td>APLS 7th Ed; Drug Doses Shann</td></tr>
-        <tr><td><b>Atropine</b></td><td>0.02 mg/kg (nhi: min 0.1 mg, max 0.5 mg; sơ sinh: không áp dụng liều tối thiểu)</td><td>IV/IO</td><td>Nhịp chậm do cường phế vị/ngộ độc cholinergic. Nhịp chậm do thiếu oxy: ưu tiên thông khí + adrenaline</td><td>PALS 2020; ANMF</td></tr>
-        <tr class="danger-row"><td><b>Ca Gluconate 10%</b></td><td>Hồi sức: 0.5–1 mL/kg (max 20 mL)<br>Tăng K: 0.5 mL/kg</td><td>IV chậm 5–10 phút</td><td>Monitor ECG liên tục. Không tiêm nhanh (rung thất). Không trộn NaHCO₃</td><td>ANMF; RCH Guidelines</td></tr>
-        <tr><td><b>Dextrose 10%</b></td><td>Bolus: 2 mL/kg (= 200 mg/kg); sơ sinh: 2–2,5 mL/kg</td><td>IV 5–10 phút, sau đó truyền liên tục</td><td>Hạ glucose máu có triệu chứng. Đo lại glucose sau 15–30 phút. Tránh D25–50% ở trẻ em</td><td>AAP 2011; BAPM 2017; APLS</td></tr>
-        <tr><td><b>Glucagon</b></td><td>0.2 mg/kg (max 1 mg)</td><td>IM / SC</td><td>Hạ đường huyết nặng, không có đường IV. Tác dụng chậm hơn Dextrose IV</td><td>ANMF; Drug Doses Shann</td></tr>
-        <tr><td><b>Natri bicarbonat</b></td><td>1–2 mmol/kg<br>Nhi: 8,4% (1 mmol/mL)<br>Sơ sinh: 4,2% (0,5 mmol/mL)</td><td>IV chậm 10–30 phút</td><td>Không thường quy trong ngừng tim. Chỉ khi đã thông khí hiệu quả; tăng K⁺, ngộ độc TCA</td><td>ANZCOR 2023; ANMF</td></tr>
-      </tbody>
-    </table>
-
-    <!-- ANTIBIOTICS -->
-    <div style="font-weight:700;background:linear-gradient(90deg,#1565c0,#1976d2);color:#fff;padding:5px 10px;border-radius:6px;margin:.75rem 0 .4rem;font-size:12px">💊 KHÁNG SINH – SƠ SINH (NICU)</div>
-    <table class="result-table" style="font-size:12px;margin-bottom:.75rem">
-      <thead><tr><th>Thuốc</th><th>Liều</th><th>Khoảng cách</th><th>Chỉ định / Ghi chú</th><th>TLTK</th></tr></thead>
-      <tbody>
-        <tr class="highlight-row"><td><b>Ampicillin</b></td><td>50 mg/kg/liều (viêm màng não: 100 mg/kg/liều)</td><td>GA ≤34T: PNA ≤7 ngày mỗi 12h; 8–28 ngày 75 mg/kg mỗi 12h<br>GA &gt;34T: mỗi 8h</td><td>EOS: GBS, Listeria, Enterococcus. Phối hợp gentamicin</td><td>AAP Red Book 2021–2024</td></tr>
-        <tr><td><b>Gentamicin</b></td><td>PMA ≤29T: PNA 0–7 ngày 5 mg/kg mỗi 48h; 8–28 ngày 4 mg/kg mỗi 36h; ≥29 ngày 4 mg/kg mỗi 24h<br>PMA 30–34T: PNA 0–7 ngày 4,5 mg/kg mỗi 36h; ≥8 ngày 4 mg/kg mỗi 24h<br>PMA ≥35T: 4 mg/kg mỗi 24h</td><td>Theo PMA &amp; PNA</td><td>IV 30 phút. TDM: Cmin &lt;1 mg/L (trước liều 2–3); kéo dài khoảng cách khi hạ thân nhiệt/suy thận</td><td>NeoFax; ANMF</td></tr>
-        <tr class="highlight-row"><td><b>Cefotaxime</b></td><td>50 mg/kg/liều</td><td>PMA ≤29T: mỗi 12h (PNA ≤28 ngày) / 8h<br>PMA 30–36T: 12h (≤14 ngày) / 8h<br>PMA 37–44T: 12h (≤7 ngày) / 8h<br>PMA ≥45T: 6h</td><td>Thay gentamicin khi nghi viêm màng não Gram âm/suy thận; không dùng thường quy</td><td>NeoFax; AAP Red Book</td></tr>
-        <tr><td><b>Vancomycin</b></td><td>10–15 mg/kg/liều</td><td>PMA ≤29T: 18h (PNA ≤14 ngày) / 12h<br>PMA 30–36T: 12h (≤14 ngày) / 8h<br>PMA 37–44T: 12h (≤7 ngày) / 8h<br>PMA ≥45T: 6h</td><td>MRSA, CoNS (LOS liên quan catheter). IV 60 phút. TDM theo AUC₂₄/MIC 400–600 (ưu tiên Bayesian), không dùng trough đơn độc</td><td>ASHP/IDSA/PIDS/SIDP 2020; NeoFax</td></tr>
-        <tr><td><b>Aciclovir</b></td><td>20 mg/kg/liều</td><td>PMA &lt;30T: mỗi 12h; PMA ≥30T: mỗi 8h</td><td>Nghi/xác định HSV sơ sinh. IV 60 phút, đủ nước. 14 ngày (da–mắt–miệng), 21 ngày (TKTW/lan tỏa)</td><td>AAP Red Book; NeoFax</td></tr>
-        <tr class="highlight-row"><td><b>Fluconazole</b></td><td>Điều trị: nạp 25 mg/kg → 12 mg/kg/liều<br>Dự phòng: 3–6 mg/kg/liều</td><td>Điều trị: mỗi 24h<br>Dự phòng: 2 lần/tuần</td><td>Điều trị candida xâm lấn: ≥2 tuần sau cấy âm tính. Dự phòng: trẻ &lt;1000 g tại NICU có tỷ lệ candida cao</td><td>IDSA Candidiasis 2016</td></tr>
-        <tr><td><b>Metronidazole</b></td><td>7.5 mg/kg/liều</td><td>Mỗi 12h (SS non) / Mỗi 8h (đủ tháng)</td><td>Kỵ khí, NEC nặng. IV 30 phút</td><td>ANMF; Drug Doses Shann</td></tr>
-      </tbody>
-    </table>
-
-    <!-- ANTIBIOTICS PAED -->
-    <div style="font-weight:700;background:linear-gradient(90deg,#1565c0,#1976d2);color:#fff;padding:5px 10px;border-radius:6px;margin:.75rem 0 .4rem;font-size:12px">💊 KHÁNG SINH – NHI KHOA (SEPSIS)</div>
-    <table class="result-table" style="font-size:12px;margin-bottom:.75rem">
-      <thead><tr><th>Thuốc</th><th>Liều</th><th>Đường/Tần suất</th><th>Chỉ định</th><th>TLTK</th></tr></thead>
-      <tbody>
-        <tr class="highlight-row"><td><b>Ceftriaxone</b></td><td>50 mg/kg mỗi 24h (max 2 g)<br>Viêm màng não: 100 mg/kg/ngày chia 1–2 lần (max 4 g/ngày)</td><td>IV 30 phút</td><td>Sepsis cộng đồng, viêm màng não (kể cả não mô cầu – lựa chọn hàng đầu). Chống chỉ định: sơ sinh vàng da, dùng cùng dịch chứa calci IV ở sơ sinh</td><td>eTG; AAP Red Book; QĐ 708/QĐ-BYT</td></tr>
-        <tr><td><b>Piperacillin-Tazobactam</b></td><td>100 mg/kg/liều (Pip phần) (max 4 g Pip)</td><td>IV 30 phút · mỗi 6–8h</td><td>Sepsis bệnh viện, ESBL nghi ngờ, suy giảm miễn dịch</td><td>eTG; SCHN Guidelines</td></tr>
-        <tr class="highlight-row"><td><b>Meropenem</b></td><td>20–40 mg/kg/liều (max 2 g)</td><td>IV 30 phút · mỗi 8h</td><td>Sepsis nặng đa kháng, viêm màng não Gr âm, NDM</td><td>eTG; Drug Doses Shann</td></tr>
-        <tr><td><b>Gentamicin (Nhi)</b></td><td>5–7.5 mg/kg/ngày</td><td>IV 30 phút · mỗi 24h</td><td>Phối hợp sepsis Gr âm. TDM bắt buộc nếu &gt;48h</td><td>eTG; ANMF</td></tr>
-        <tr class="highlight-row"><td><b>Vancomycin (Nhi)</b></td><td>15 mg/kg/liều (60–80 mg/kg/ngày; khởi đầu ≤3600 mg/ngày)</td><td>IV ≥60 phút · mỗi 6h</td><td>MRSA, sepsis liên quan catheter. TDM: AUC₂₄/MIC 400–600</td><td>ASHP/IDSA/PIDS/SIDP 2020</td></tr>
-      </tbody>
-    </table>
-
-    <!-- NEUROLOGICAL -->
-    <div style="font-weight:700;background:linear-gradient(90deg,#4a148c,#7b1fa2);color:#fff;padding:5px 10px;border-radius:6px;margin:.75rem 0 .4rem;font-size:12px">⚡ THUỐC THẦN KINH – ĐỘNG KINH &amp; AN THẦN</div>
-    <table class="result-table" style="font-size:12px;margin-bottom:.75rem">
-      <thead><tr><th>Thuốc</th><th>Liều</th><th>Đường/Tần suất</th><th>Ghi chú lâm sàng</th><th>TLTK</th></tr></thead>
-      <tbody>
-        <tr class="highlight-row"><td><b>Midazolam (má/mũi/IM)</b></td><td>Má: 0.3–0.5 mg/kg · Mũi: 0.2 mg/kg (max 10 mg)<br>IM: 13–40 kg 5 mg; &gt;40 kg 10 mg</td><td>Đường má, nhỏ mũi (MAD), IM</td><td>Co giật – bước 1 khi chưa có đường truyền</td><td>AES 2016; APLS</td></tr>
-        <tr><td><b>Lorazepam</b></td><td>0.1 mg/kg (max 4 mg)</td><td>IV chậm</td><td>Động kinh cấp cứu trong BV. Bước 1 IV. Có thể lặp 1 lần</td><td>SCHN 2017; APLS 7th Ed</td></tr>
-        <tr class="highlight-row"><td><b>Diazepam</b></td><td>IV: 0.25 mg/kg (max 10 mg)<br>PR: 0.5 mg/kg (max 20 mg)</td><td>IV chậm hoặc PR</td><td>Động kinh. Tác dụng ngắn hơn Lorazepam</td><td>Drug Doses Shann; APLS</td></tr>
-        <tr><td><b>Levetiracetam</b></td><td>60 mg/kg (max 4500 mg)</td><td>IV 10–15 phút</td><td>Bước 2 trạng thái động kinh – hiệu quả tương đương fosphenytoin/valproate (ESETT)</td><td>Kapur J. NEJM 2019; AES 2016</td></tr>
-        <tr class="highlight-row"><td><b>Phenobarbital</b></td><td>Nạp: 20 mg/kg (max 1000 mg)<br>Duy trì sơ sinh: 3–5 mg/kg/ngày</td><td>IV 20–30 phút</td><td>Thuốc hàng đầu co giật sơ sinh; bước 2 trạng thái động kinh nhi. Theo dõi ức chế hô hấp</td><td>ANMF; AES 2016</td></tr>
-        <tr><td><b>Fosphenytoin / Phenytoin</b></td><td>20 mg PE/kg (max 1500 mg PE) / 20 mg/kg (max 1500 mg)</td><td>Fosphenytoin ≤3 mg PE/kg/phút (≤150 mg PE/phút); phenytoin ≤1 mg/kg/phút (≤50 mg/phút) · ECG</td><td>Bước 2 động kinh. Monitor ECG + huyết áp; phenytoin chỉ pha NaCl 0,9%</td><td>AES 2016; ESETT</td></tr>
-        <tr class="highlight-row"><td><b>Midazolam (IV – an thần)</b></td><td>Bolus: 0.05–0.15 mg/kg (max 10 mg)<br>Truyền: 0.05–0.4 mg/kg/h</td><td>IV</td><td>An thần NICU/ICU. Giảm dần từng bước khi cai</td><td>ANMF; Drug Doses Shann</td></tr>
-        <tr><td><b>Morphine</b></td><td>0.05–0.1 mg/kg/liều (max 10–15 mg)<br>Truyền SS: 10–30 mcg/kg/h</td><td>IV chậm 5 phút</td><td>Giảm đau sau PT, an thần thở máy. Chuẩn bị Naloxone đối kháng</td><td>ANMF; Drug Doses Shann</td></tr>
-        <tr class="highlight-row"><td><b>Fentanyl</b></td><td>Bolus: 1–4 mcg/kg<br>Truyền: 1–5 mcg/kg/h</td><td>IV</td><td>Giảm đau mạnh, ít hạ HA hơn Morphine. Phù hợp NICU</td><td>ANMF; Drug Doses Shann</td></tr>
-        <tr><td><b>Ketamine</b></td><td>RSI: 1–2 mg/kg IV hoặc 4 mg/kg IM<br>Thủ thuật: 1–2 mg/kg IV</td><td>IV / IM</td><td>An thần-giảm đau thủ thuật, RSI, co thắt PQ. Giãn phế quản</td><td>APLS 7th Ed; Drug Doses Shann</td></tr>
-      </tbody>
-    </table>
-
-    <!-- CARDIOVASCULAR -->
-    <div style="font-weight:700;background:linear-gradient(90deg,#b71c1c,#c62828);color:#fff;padding:5px 10px;border-radius:6px;margin:.75rem 0 .4rem;font-size:12px">❤️ THUỐC TIM MẠCH &amp; VẬN MẠCH</div>
-    <table class="result-table" style="font-size:12px;margin-bottom:.75rem">
-      <thead><tr><th>Thuốc</th><th>Liều</th><th>Đường dùng</th><th>Ghi chú</th><th>TLTK</th></tr></thead>
-      <tbody>
-        <tr class="highlight-row"><td><b>Dopamine</b></td><td>2–20 mcg/kg/phút (truyền)</td><td>IV liên tục</td><td>Sốc giảm thể tích, suy tim. Tăng liều từng bước</td><td>ANMF; Drug Doses Shann</td></tr>
-        <tr><td><b>Dobutamine</b></td><td>5–20 mcg/kg/phút (truyền)</td><td>IV liên tục</td><td>Suy tim, cung lượng tim thấp. Phối hợp Dopamine nếu cần</td><td>ANMF; Drug Doses Shann</td></tr>
-        <tr class="highlight-row"><td><b>Noradrenaline</b></td><td>0.05–2 mcg/kg/phút (truyền)</td><td>IV liên tục – ưu tiên đường trung tâm; có thể khởi đầu qua TM ngoại vi/IO</td><td>Sốc nhiễm khuẩn “ấm”/giãn mạch. SSC 2020: adrenaline hoặc noradrenaline là lựa chọn đầu tay</td><td>SSC Pediatric 2020</td></tr>
-        <tr><td><b>Prostaglandin E1 (Alprostadil)</b></td><td>0.01–0.1 mcg/kg/phút</td><td>IV liên tục</td><td>Bệnh tim bẩm sinh phụ thuộc ống động mạch. Chuẩn bị đặt NKQ</td><td>ANMF; Drug Doses Shann</td></tr>
-        <tr class="highlight-row"><td><b>Adenosine</b></td><td>Xem bảng Thuốc Cấp Cứu ở trên</td><td>IV bolus</td><td>SVT</td><td>SCHN 2021</td></tr>
-        <tr><td><b>Digoxin</b></td><td>Tổng liều tải (TDD) IV: non tháng 15–20, đủ tháng 20–30 mcg/kg, chia ½ – ¼ – ¼ trong 24h<br>Duy trì: 4–10 mcg/kg/ngày chia 2</td><td>IV / PO (PO ≈ 1,25 × IV)</td><td>Suy tim, kiểm soát tần số. Kiểm tra K⁺, Mg²⁺, chức năng thận; TDM</td><td>NeoFax; ANMF</td></tr>
-      </tbody>
-    </table>
-
-    <!-- RESPIRATORY -->
-    <div style="font-weight:700;background:linear-gradient(90deg,#00695c,#00897b);color:#fff;padding:5px 10px;border-radius:6px;margin:.75rem 0 .4rem;font-size:12px">💨 THUỐC HÔ HẤP &amp; SURFACTANT</div>
-    <table class="result-table" style="font-size:12px;margin-bottom:.75rem">
-      <thead><tr><th>Thuốc</th><th>Liều</th><th>Đường dùng</th><th>Ghi chú</th><th>TLTK</th></tr></thead>
-      <tbody>
-        <tr class="highlight-row"><td><b>Surfactant (Poractant alfa – Curosurf)</b></td><td>Liều đầu: 200 mg/kg (= 2.5 mL/kg)<br>Liều 2+3: 100 mg/kg</td><td>IT qua NKQ</td><td>RDS. Bơm qua NKQ nhanh. Tư thế đầu nghiêng P/T từng phần</td><td>ANMF; QĐ 1269/QĐ-BYT 2026</td></tr>
-        <tr><td><b>Caffeine Citrate</b></td><td>Tải: 20 mg/kg (= 10 mg/kg caffeine base)<br>Duy trì: 5–10 mg/kg/ng</td><td>IV 30 phút hoặc PO</td><td>Cơn ngừng thở SS non. Bắt đầu từ ngày 1 cho GA&lt;34T</td><td>ANMF; QĐ 1269/QĐ-BYT 2026</td></tr>
-        <tr class="highlight-row"><td><b>Salbutamol (khí dung)</b></td><td>&lt;25 kg: 2.5 mg/liều<br>≥25 kg: 5 mg/liều</td><td>Khí dung O₂ 6–8 L/phút</td><td>Hen phế quản. Lặp mỗi 20 phút hoặc liên tục nếu nặng</td><td>QĐ 4888/QĐ-BYT 2016; SCHN</td></tr>
-        <tr><td><b>Salbutamol (IV)</b></td><td>Bolus: 15 mcg/kg (max 250 mcg) IV 10 phút<br>Duy trì: 1–2 mcg/kg/phút (max 5)</td><td>IV liên tục (PICU/HDU)</td><td>Hen nặng không đáp ứng khí dung. Theo dõi K⁺, lactat, nhịp tim</td><td>BTS/SIGN 2019; BNFc</td></tr>
-        <tr class="highlight-row"><td><b>Ipratropium (khí dung)</b></td><td>&lt;6 tuổi (~&lt;20 kg): 250 mcg<br>≥6 tuổi: 500 mcg</td><td>Khí dung mỗi 20 phút × 3 liều giờ đầu</td><td>Cơn hen nặng/nguy kịch. Phối hợp salbutamol</td><td>NAC Australia; GINA 2024</td></tr>
-        <tr><td><b>Magnesi sulfat 50% (500 mg/mL)</b></td><td>Hen: 40 mg/kg (max 2 g) IV 20 phút<br>Hạ Mg²⁺: 25–50 mg/kg IV 30–60 phút</td><td>IV chậm – pha loãng ≤10–20%</td><td>Hen nặng bổ sung. Theo dõi huyết áp, phản xạ gân xương, nhịp thở</td><td>BTS/SIGN 2019; GINA 2024; BNFc</td></tr>
-        <tr class="highlight-row"><td><b>Hydrocortisone</b></td><td>Hen: 4 mg/kg/liều (max 100 mg) mỗi 6h<br>Suy thượng thận cấp: 2 mg/kg (max 100 mg) bolus</td><td>IV</td><td>Khi không uống được. Chuyển prednisolone PO khi ổn</td><td>BNFc; GINA 2024</td></tr>
-        <tr><td><b>Prednisolone</b></td><td>1–2 mg/kg/ngày (max 40 mg; ≤5 tuổi: 20–30 mg)</td><td>PO · 3–5 ngày</td><td>Cơn hen trung bình–nặng. Không cần giảm liều nếu ≤7 ngày</td><td>GINA 2024; QĐ 4888/QĐ-BYT 2016</td></tr>
-      </tbody>
-    </table>
-
-    <!-- NEONATAL SPECIFIC -->
-    <div style="font-weight:700;background:linear-gradient(90deg,#880e4f,#c2185b);color:#fff;padding:5px 10px;border-radius:6px;margin:.75rem 0 .4rem;font-size:12px">🍼 THUỐC ĐẶC THÙ SƠ SINH – NICU</div>
-    <table class="result-table" style="font-size:12px;margin-bottom:.75rem">
-      <thead><tr><th>Thuốc</th><th>Liều</th><th>Đường/Tần suất</th><th>Ghi chú lâm sàng</th><th>TLTK</th></tr></thead>
-      <tbody>
-        <tr class="highlight-row"><td><b>Vitamin K (Phytonadione)</b></td><td>&lt;1500g: 0.5 mg<br>≥1500g: 1 mg</td><td>IM · ngay sau sinh</td><td>Phòng xuất huyết SS. Bắt buộc ngay sau sinh</td><td>ANMF; QĐ 1269/QĐ-BYT 2026</td></tr>
-        <tr><td><b>Dexamethasone</b></td><td>DART: 0,075 mg/kg/liều × 2 lần/ngày × 3 ngày → 0,05 × 3 ngày → 0,025 × 2 ngày → 0,01 × 2 ngày (tổng 0,89 mg/kg/10 ngày)<br>Croup: 0.15–0.6 mg/kg (max 8 mg)</td><td>IV / PO</td><td>Hỗ trợ rút ống VLBW phụ thuộc máy thở (phác đồ DART). Croup</td><td>Doyle LW. Pediatrics 2006; ANMF</td></tr>
-        <tr class="highlight-row"><td><b>Indomethacin</b></td><td>0.1–0.25 mg/kg (3 liều, cách 12–24h)</td><td>IV chậm 30 phút</td><td>Đóng PDA. Không dùng nếu Cr&gt;150, tiểu cầu&lt;50, NEC</td><td>ANMF; QĐ 1269/QĐ-BYT 2026</td></tr>
-        <tr><td><b>Ibuprofen</b></td><td>10 mg/kg liều 1, 5 mg/kg liều 2 &amp; 3 (cách 24h)</td><td>IV hoặc PO</td><td>Đóng PDA thay thế Indomethacin. Ít ảnh hưởng thận hơn</td><td>ANMF; Drug Doses Shann</td></tr>
-        <tr class="highlight-row"><td><b>Phenobarbital (sơ sinh)</b></td><td>Nạp: 20 mg/kg IV (thêm 10 mg/kg, tối đa tổng 40 mg/kg)<br>Duy trì: 3–5 mg/kg/ngày sau 12–24h</td><td>IV 20 phút / IV hoặc PO duy trì</td><td>Co giật sơ sinh – thuốc hàng đầu (NEOLEV2). TDM 15–40 mg/L</td><td>ANMF; WHO 2011</td></tr>
-        <tr><td><b>Erythropoietin (EPO)</b></td><td>200–400 đv/kg × 3 lần/tuần</td><td>SC</td><td>Thiếu máu SS non &lt;32T. Phối hợp Sắt uống</td><td>ANMF; Drug Doses Shann</td></tr>
-        <tr class="highlight-row"><td><b>Mannitol 20%</b></td><td>0.5–1 g/kg (= 2.5–5 mL/kg)</td><td>IV 15–30 phút</td><td>Phù não (DKA, chấn thương). Theo dõi điện giải</td><td>Drug Doses Shann; APLS</td></tr>
-        <tr><td><b>Insulin Regular (IV)</b></td><td>Tăng ĐH: 0.05–0.1 đv/kg/h<br>DKA: 0.05–0.1 đv/kg/h</td><td>IV liên tục</td><td>Monitor glucose mỗi 1h. Không cho K &lt;3.5 mEq/L</td><td>SCHN DKA Guideline; ANMF</td></tr>
-      </tbody>
-    </table>
+    <!-- Bảng liều sinh tự động từ data-drug-doses (ref_row) và data-neo-abx – sửa liều trong JSON, không sửa HTML -->
+    <div id="dose-reference"></div>
 
     <div class="alert alert-info" style="margin-top:.5rem">
       📚 <strong>Nguồn tham khảo liều:</strong> Dược thư Quốc gia VN (QĐ 3445/QĐ-BYT 2022) · ANMF (Australasian Neonatal Medicines Formulary) · Drug Doses – Frank Shann 17th Ed · QĐ 1269, 1270, 426/QĐ-BYT 2026 · QĐ 4888/QĐ-BYT 2016 · APLS ANZ 7th Ed · eTG Antibiotic 2025 · MIMS Việt Nam 2024
@@ -1831,7 +1719,8 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
   <div class="card">
     <div class="card-title">📝 Lịch Sử Cập Nhật</div>
     <table class="result-table"><thead><tr><th>Phiên bản</th><th>Ngày</th><th>Nội dung</th></tr></thead><tbody>
-      <tr class="highlight-row"><td>v1.3</td><td>10/2026</td><td>Mô hình EOS Kaiser cập nhật 2024 (Puopolo, Pediatrics 2024) làm mặc định, giữ mô hình 2017 để so sánh; tách toàn bộ liều theo cân nặng, luật kháng sinh sơ sinh, bảng dịch ESPGHAN và hệ số EOS thành 4 khối JSON có version/updated/source/status; nhãn phiên bản dữ liệu ở cuối mỗi module; Sổ dữ liệu ở trang TLTK; sửa tràn ngang trên điện thoại (điều hướng ngang, header gọn, bảng cuộn trong thẻ)</td></tr>
+      <tr class="highlight-row"><td>v1.4</td><td>10/2026</td><td>Thêm khối data-tpn-products (chế phẩm acid amin/lipid, dung dịch gốc, vi chất–vitamin, phác đồ mặc định, lịch tăng dần, ngưỡng an toàn và khoảng tham chiếu) – module TPN, phiếu in và prompt AI đọc từ dữ liệu; bảng liều tham khảo sinh tự động từ data-drug-doses (ref_row) và data-neo-abx – bỏ bảng HTML tĩnh; gộp bản ghi trùng (hy_d10, hy_glucagon)</td></tr>
+      <tr><td>v1.3</td><td>10/2026</td><td>Mô hình EOS Kaiser cập nhật 2024 (Puopolo, Pediatrics 2024) làm mặc định, giữ mô hình 2017 để so sánh; tách toàn bộ liều theo cân nặng, luật kháng sinh sơ sinh, bảng dịch ESPGHAN và hệ số EOS thành 4 khối JSON có version/updated/source/status; nhãn phiên bản dữ liệu ở cuối mỗi module; Sổ dữ liệu ở trang TLTK; sửa tràn ngang trên điện thoại (điều hướng ngang, header gọn, bảng cuộn trong thẻ)</td></tr>
       <tr><td>v1.2</td><td>10/2026</td><td>Rà soát logic & thuật toán toàn bộ module: sửa công thức UVC/UAC, Na⁺ hiệu chỉnh DKA (ISPAD 2022), MgSO₄ (mL), fentanyl truyền, tỷ lệ I:T; liều kháng sinh sơ sinh thống nhất theo PMA/PNA (Red Book/NeoFax); dịch sơ sinh theo ESPGHAN 2018; EOS theo phương trình logistic Kaiser gốc; bilirubin theo ngưỡng AAP 2022 tra biểu đồ; chấn thương đầu theo PECARN; TPN: thể tích túi theo dịch toàn phần, K⁺ từ KH₂PO₄, Ca×P theo nồng độ; thuật ngữ quốc tế (INN)</td></tr>
       <tr><td>v1.1</td><td>2026</td><td>Bổ sung module 🦠 Nguy Cơ NKH Sơ Sinh Sớm (EOS Risk Calculator – Kaiser Permanente 2024) · Cập nhật TLTK EOS · Từ viết tắt &amp; bảng liều thuốc hoàn chỉnh</td></tr>
       <tr><td>v1.0</td><td>2026</td><td>Phát hành chính thức: 17 module lâm sàng (Hồi sức SS, Sơ sinh NICU, Nhi khoa, Bỏng, Sepsis, DKA, Động kinh, Hen, SVT, Tăng Kali, Bilirubin, Hạ ĐH, HIE, TPN AI, Chấn thương đầu, Pha dịch, Hướng dẫn &amp; TLTK) · Phân tích AI Claude · In báo cáo TPN</td></tr>
@@ -1843,7 +1732,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
 
 <!-- ── PRINT FOOTER (ẩn trên màn hình, hiện khi in) ── -->
 <div id="print-footer-bar">
-  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.3 · 2026 · DSCKI. Lê Mới Em
+  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.4 · 2026 · DSCKI. Lê Mới Em
 </div>
 
 </div>
@@ -2364,10 +2253,10 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
 </script>
 <script type="application/json" id="data-drug-doses">
 {
- "version": "1.0.0",
+ "version": "1.1.0",
  "updated": "2026-10-13",
  "status": "unverified",
- "title": "Liều thuốc theo cân nặng và tham số phác đồ",
+ "title": "Liều thuốc theo cân nặng, tham số phác đồ và bố cục bảng liều tham khảo",
  "source": "1. ANZCOR Neonatal Guidelines 13.x; 2023. 2. Topjian AA, et al. Pediatric Basic and Advanced Life Support: 2020 AHA Guidelines. Circulation. 2020;142(16 Suppl 2):S469-523. 3. Advanced Paediatric Life Support (APLS) ANZ. 7th ed. Wiley; 2024. 4. Glauser T, et al. AES Guideline: Convulsive Status Epilepticus. Epilepsy Curr. 2016;16(1):48-61. 5. Kapur J, et al. ESETT. N Engl J Med. 2019;381(22):2103-13. 6. Glaser N, et al. ISPAD 2022: DKA and HHS. Pediatr Diabetes. 2022;23(7):835-56. 7. Weiss SL, et al. Surviving Sepsis Campaign Pediatric 2020. Pediatr Crit Care Med. 2020;21(2):e52-106. 8. GINA 2024; BTS/SIGN 2019; NAC Australia. 9. BNF for Children; ANMF; NeoFax. 10. Pham TN, et al. ABA Practice Guidelines: Burn Shock Resuscitation. J Burn Care Res. 2008;29(1):257-66.",
  "verification_note": "Giá trị chép từ logic đã rà soát ở v1.2. Mỗi bản ghi ghi nguồn rút gọn ở trường source; cần đối chiếu nguồn gốc trước khi áp dụng lâm sàng.",
  "records": [
@@ -2467,6 +2356,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "round": 0,
    "per_kg_lo": 3,
    "per_kg_hi": 5,
+   "per_unit": "mg/kg/ngày",
    "source": "ANMF; NeoFax"
   },
   {
@@ -2526,6 +2416,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "round": 0,
    "per_kg_lo": 5,
    "per_kg_hi": 10,
+   "per_unit": "mg/kg/ngày",
    "source": "ANMF; NeoFax"
   },
   {
@@ -2567,6 +2458,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "unit": "mg",
    "round": 1,
    "per_kg": 6,
+   "per_unit": "mg/kg pha đủ 50 mL",
    "rate": "1 mL/h = 2 mcg/kg/phút (liều 5–20 mcg/kg/phút)",
    "source": "ANMF; NeoFax"
   },
@@ -2577,6 +2469,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "unit": "mg",
    "round": 1,
    "per_kg": 6,
+   "per_unit": "mg/kg pha đủ 50 mL",
    "rate": "1 mL/h = 2 mcg/kg/phút (liều 5–20 mcg/kg/phút)",
    "source": "ANMF; NeoFax"
   },
@@ -2587,6 +2480,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "unit": "mg",
    "round": 2,
    "per_kg": 0.3,
+   "per_unit": "mg/kg pha đủ 50 mL",
    "rate": "1 mL/h = 0,1 mcg/kg/phút (liều 0,05–1 mcg/kg/phút)",
    "source": "ANMF; NeoFax"
   },
@@ -2597,6 +2491,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "unit": "mcg",
    "round": 0,
    "per_kg": 50,
+   "per_unit": "mcg/kg pha đủ 50 mL",
    "rate": "1 mL/h = 1 mcg/kg/giờ (liều 0,5–3 mcg/kg/giờ)",
    "source": "ANMF; NeoFax"
   },
@@ -2607,6 +2502,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "unit": "mg",
    "round": 2,
    "per_kg": 0.5,
+   "per_unit": "mg/kg pha đủ 50 mL",
    "rate": "1 mL/h = 10 mcg/kg/giờ (liều 10–20 mcg/kg/giờ)",
    "source": "ANMF; NeoFax"
   },
@@ -2617,6 +2513,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "unit": "mg",
    "round": 2,
    "per_kg": 0.3,
+   "per_unit": "mg/kg pha đủ 50 mL",
    "rate": "1 mL/h = 0,1 mcg/kg/phút (liều 0,01–0,1) – theo dõi ngừng thở",
    "source": "ANMF; NeoFax"
   },
@@ -2627,6 +2524,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "unit": "IU",
    "round": 1,
    "per_kg": 5,
+   "per_unit": "IU/kg pha đủ 50 mL",
    "rate": "1 mL/h = 0,1 IU/kg/giờ (liều 0,01–0,1) – mồi dây 20 phút",
    "source": "ANMF; NeoFax"
   },
@@ -2637,6 +2535,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "unit": "mg",
    "round": 1,
    "per_kg": 3,
+   "per_unit": "mg/kg pha đủ 50 mL",
    "rate": "1 mL/h = 1 mcg/kg/phút (= 0,06 mg/kg/giờ)",
    "source": "ANMF; NeoFax"
   },
@@ -2890,15 +2789,18 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "bands": [
     {
      "wt_max": 13,
-     "per_kg": 0.2
+     "per_kg": 0.2,
+     "label": "<13 kg"
     },
     {
      "wt_max": 40.0001,
-     "fixed": 5
+     "fixed": 5,
+     "label": "13–40 kg"
     },
     {
      "wt_max": 999,
-     "fixed": 10
+     "fixed": 10,
+     "label": ">40 kg"
     }
    ],
    "source": "AES 2016; ESETT 2019"
@@ -3094,6 +2996,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "per_kg_lo": 1,
    "per_kg_hi": 2,
    "max": 40,
+   "per_unit": "mg/kg/ngày",
    "source": "GINA 2024"
   },
   {
@@ -3335,6 +3238,256 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "source": "IDSA 2016"
   },
   {
+   "id": "ref_ampicillin_mening",
+   "drug": "Ampicillin – viêm màng não",
+   "route": "IV",
+   "unit": "mg",
+   "round": 0,
+   "per_kg": 100,
+   "per_unit": "mg/kg/liều",
+   "source": "AAP Red Book"
+  },
+  {
+   "id": "ref_ceftriaxone_mening",
+   "drug": "Ceftriaxone – viêm màng não",
+   "route": "IV",
+   "unit": "mg",
+   "round": 0,
+   "per_kg": 100,
+   "max": 4000,
+   "per_unit": "mg/kg/ngày",
+   "source": "AAP Red Book; eTG"
+  },
+  {
+   "id": "ref_meropenem",
+   "drug": "Meropenem",
+   "route": "IV mỗi 8 giờ",
+   "unit": "mg",
+   "round": 0,
+   "per_kg_lo": 20,
+   "per_kg_hi": 40,
+   "max": 2000,
+   "source": "eTG; Drug Doses (Shann)"
+  },
+  {
+   "id": "ref_metronidazole_neo",
+   "drug": "Metronidazole (sơ sinh)",
+   "route": "IV",
+   "unit": "mg",
+   "round": 1,
+   "per_kg": 7.5,
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_midazolam_sed",
+   "drug": "Midazolam – an thần",
+   "route": "IV",
+   "unit": "mg",
+   "round": 2,
+   "per_kg_lo": 0.05,
+   "per_kg_hi": 0.15,
+   "max": 10,
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_midazolam_inf",
+   "drug": "Midazolam – truyền liên tục",
+   "route": "IV",
+   "unit": "mg/h",
+   "round": 2,
+   "per_kg_lo": 0.05,
+   "per_kg_hi": 0.4,
+   "per_unit": "mg/kg/giờ",
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_morphine_inf_neo",
+   "drug": "Morphine – truyền sơ sinh",
+   "route": "IV",
+   "unit": "mcg/h",
+   "round": 0,
+   "per_kg_lo": 10,
+   "per_kg_hi": 30,
+   "per_unit": "mcg/kg/giờ",
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_fentanyl_inf",
+   "drug": "Fentanyl – truyền liên tục",
+   "route": "IV",
+   "unit": "mcg/h",
+   "round": 1,
+   "per_kg_lo": 1,
+   "per_kg_hi": 5,
+   "per_unit": "mcg/kg/giờ",
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_dopamine",
+   "drug": "Dopamine",
+   "route": "IV liên tục",
+   "unit": "mcg/phút",
+   "round": 1,
+   "per_kg_lo": 2,
+   "per_kg_hi": 20,
+   "per_unit": "mcg/kg/phút",
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_dobutamine",
+   "drug": "Dobutamine",
+   "route": "IV liên tục",
+   "unit": "mcg/phút",
+   "round": 1,
+   "per_kg_lo": 5,
+   "per_kg_hi": 20,
+   "per_unit": "mcg/kg/phút",
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_noradrenaline",
+   "drug": "Noradrenaline",
+   "route": "IV liên tục",
+   "unit": "mcg/phút",
+   "round": 2,
+   "per_kg_lo": 0.05,
+   "per_kg_hi": 2,
+   "per_unit": "mcg/kg/phút",
+   "source": "SSC Pediatric 2020"
+  },
+  {
+   "id": "ref_alprostadil",
+   "drug": "Alprostadil (PGE₁)",
+   "route": "IV liên tục",
+   "unit": "mcg/phút",
+   "round": 3,
+   "per_kg_lo": 0.01,
+   "per_kg_hi": 0.1,
+   "per_unit": "mcg/kg/phút",
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_digoxin_tdd_preterm",
+   "drug": "Digoxin – tổng liều tải IV (non tháng)",
+   "route": "IV",
+   "unit": "mcg",
+   "round": 0,
+   "per_kg_lo": 15,
+   "per_kg_hi": 20,
+   "source": "NeoFax; ANMF"
+  },
+  {
+   "id": "ref_digoxin_tdd_term",
+   "drug": "Digoxin – tổng liều tải IV (đủ tháng)",
+   "route": "IV",
+   "unit": "mcg",
+   "round": 0,
+   "per_kg_lo": 20,
+   "per_kg_hi": 30,
+   "source": "NeoFax; ANMF"
+  },
+  {
+   "id": "ref_digoxin_maint",
+   "drug": "Digoxin – duy trì",
+   "route": "IV/PO chia 2",
+   "unit": "mcg",
+   "round": 0,
+   "per_kg_lo": 4,
+   "per_kg_hi": 10,
+   "per_unit": "mcg/kg/ngày",
+   "source": "NeoFax; ANMF"
+  },
+  {
+   "id": "ref_salb_iv_inf",
+   "drug": "Salbutamol IV – truyền duy trì",
+   "route": "IV liên tục",
+   "unit": "mcg/phút",
+   "round": 1,
+   "per_kg_lo": 1,
+   "per_kg_hi": 2,
+   "per_unit": "mcg/kg/phút",
+   "source": "BTS/SIGN 2019"
+  },
+  {
+   "id": "ref_mgso4_hypomg",
+   "drug": "Magnesi sulfat – hạ Mg²⁺",
+   "route": "IV 30–60 phút",
+   "unit": "mg",
+   "round": 0,
+   "per_kg_lo": 25,
+   "per_kg_hi": 50,
+   "source": "BNFc"
+  },
+  {
+   "id": "ref_hydrocort_adrenal",
+   "drug": "Hydrocortisone – suy thượng thận cấp",
+   "route": "IV bolus",
+   "unit": "mg",
+   "round": 0,
+   "per_kg": 2,
+   "max": 100,
+   "source": "BNFc"
+  },
+  {
+   "id": "ref_dexa_croup",
+   "drug": "Dexamethasone – croup",
+   "route": "PO/IV",
+   "unit": "mg",
+   "round": 2,
+   "per_kg_lo": 0.15,
+   "per_kg_hi": 0.6,
+   "max": 8,
+   "source": "Drug Doses (Shann); ANMF"
+  },
+  {
+   "id": "ref_indomethacin",
+   "drug": "Indomethacin – đóng PDA",
+   "route": "IV 30 phút",
+   "unit": "mg",
+   "round": 2,
+   "per_kg_lo": 0.1,
+   "per_kg_hi": 0.25,
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_ibuprofen_load",
+   "drug": "Ibuprofen – đóng PDA, liều 1",
+   "route": "IV/PO",
+   "unit": "mg",
+   "round": 1,
+   "per_kg": 10,
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_ibuprofen_maint",
+   "drug": "Ibuprofen – đóng PDA, liều 2 và 3",
+   "route": "IV/PO",
+   "unit": "mg",
+   "round": 1,
+   "per_kg": 5,
+   "source": "ANMF; NeoFax"
+  },
+  {
+   "id": "ref_epo",
+   "drug": "Erythropoietin (EPO)",
+   "route": "SC 3 lần/tuần",
+   "unit": "IU",
+   "round": 0,
+   "per_kg_lo": 200,
+   "per_kg_hi": 400,
+   "per_unit": "IU/kg/liều",
+   "source": "ANMF; Drug Doses (Shann)"
+  },
+  {
+   "id": "ref_phenobarb_neo_extra",
+   "drug": "Phenobarbital – liều nạp bổ sung (sơ sinh)",
+   "route": "IV",
+   "unit": "mg",
+   "round": 0,
+   "per_kg": 10,
+   "source": "ANMF; NeoFax"
+  },
+  {
    "id": "dka_bolus",
    "drug": "Bolus dịch DKA",
    "route": "IV 20–30 phút",
@@ -3352,6 +3505,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "round": 2,
    "per_kg_lo": 0.05,
    "per_kg_hi": 0.1,
+   "per_unit": "IU/kg/giờ",
    "source": "ISPAD 2022"
   },
   {
@@ -3399,15 +3553,6 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "source": "ISPAD 2022"
   },
   {
-   "id": "hy_d10",
-   "drug": "Dextrose 10% – bolus",
-   "route": "IV 5–10 phút",
-   "unit": "mL",
-   "round": 1,
-   "per_kg": 2,
-   "source": "AAP 2011; BAPM 2017"
-  },
-  {
    "id": "hy_gel",
    "drug": "Gel dextrose 40%",
    "route": "Niêm mạc má",
@@ -3415,16 +3560,6 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "round": 1,
    "per_kg": 0.5,
    "source": "Harris 2013 (Sugar Babies)"
-  },
-  {
-   "id": "hy_glucagon",
-   "drug": "Glucagon",
-   "route": "IM/SC/IV",
-   "unit": "mg",
-   "round": 2,
-   "per_kg": 0.2,
-   "max": 1,
-   "source": "BNFc"
   },
   {
    "id": "bu_parkland",
@@ -3473,6 +3608,1992 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
    "unit": "%TBSA",
    "label": "Ngưỡng hồi sức dịch trẻ em",
    "source": "ANZBA EMSB; ABA"
+  },
+  {
+   "id": "ref-resus-01",
+   "type": "ref_row",
+   "section": "resus",
+   "order": 1,
+   "drug": "Adrenaline (epinephrine) 0,1 mg/mL",
+   "items": [
+    {
+     "label": "Nhi – ngừng tim",
+     "dose": "p_adr_arrest"
+    },
+    {
+     "label": "Sơ sinh IV/IO",
+     "dose": "neo_adr_iv"
+    },
+    {
+     "label": "Sơ sinh qua ETT",
+     "dose": "neo_adr_ett"
+    }
+   ],
+   "route": "IV/IO nhanh; ETT",
+   "note": "Lặp mỗi 3–5 phút. IV/IO ưu tiên hơn ETT",
+   "cls": "danger-row"
+  },
+  {
+   "id": "ref-resus-02",
+   "type": "ref_row",
+   "section": "resus",
+   "order": 2,
+   "drug": "Adenosine",
+   "items": [
+    {
+     "label": "Liều 1",
+     "dose": "p_adenosine1"
+    },
+    {
+     "label": "Liều 2",
+     "dose": "p_adenosine2"
+    },
+    {
+     "label": "Liều 3",
+     "dose": "p_adenosine3"
+    },
+    {
+     "label": "Sơ sinh khởi đầu",
+     "dose": "neo_adenosine"
+    }
+   ],
+   "route": "IV nhanh + tráng NaCl 0,9% (kỹ thuật 2 bơm)",
+   "note": "SVT. TM gần tim nhất; ghi ECG khi tiêm"
+  },
+  {
+   "id": "ref-resus-03",
+   "type": "ref_row",
+   "section": "resus",
+   "order": 3,
+   "drug": "Amiodarone",
+   "items": [
+    {
+     "dose": "p_amiodarone"
+    }
+   ],
+   "route": "IV/IO: bolus khi ngừng tim; 20–60 phút nếu còn mạch",
+   "note": "VF/pVT kháng sốc; SVT/VT kháng trị (hội chẩn)"
+  },
+  {
+   "id": "ref-resus-04",
+   "type": "ref_row",
+   "section": "resus",
+   "order": 4,
+   "drug": "Atropine",
+   "items": [
+    {
+     "label": "Nhi",
+     "dose": "p_atropine"
+    },
+    {
+     "label": "Sơ sinh (không áp liều tối thiểu)",
+     "dose": "neo_atropine"
+    }
+   ],
+   "route": "IV/IO",
+   "note": "Nhịp chậm do cường phế vị/ngộ độc cholinergic. Nhịp chậm do thiếu oxy: ưu tiên thông khí + adrenaline"
+  },
+  {
+   "id": "ref-resus-05",
+   "type": "ref_row",
+   "section": "resus",
+   "order": 5,
+   "drug": "Calci gluconat 10%",
+   "items": [
+    {
+     "label": "Nhi",
+     "dose": "p_cagluc"
+    },
+    {
+     "label": "Tăng K⁺",
+     "dose": "hk_cagluc"
+    },
+    {
+     "label": "Sơ sinh",
+     "dose": "neo_cagluc"
+    }
+   ],
+   "route": "IV chậm 5–10 phút",
+   "note": "Theo dõi ECG. Không tiêm nhanh. Không trộn với bicarbonat",
+   "cls": "danger-row"
+  },
+  {
+   "id": "ref-resus-06",
+   "type": "ref_row",
+   "section": "resus",
+   "order": 6,
+   "drug": "Dextrose 10% / gel dextrose 40%",
+   "items": [
+    {
+     "label": "Nhi",
+     "dose": "p_d10"
+    },
+    {
+     "label": "Sơ sinh / hạ glucose máu",
+     "dose": "neo_d10"
+    },
+    {
+     "label": "Gel 40% niêm mạc má (sơ sinh)",
+     "dose": "hy_gel"
+    }
+   ],
+   "route": "IV 5–10 phút, sau đó truyền liên tục",
+   "note": "Đo lại glucose sau 15–30 phút. Tránh D25–50% ở trẻ em"
+  },
+  {
+   "id": "ref-resus-07",
+   "type": "ref_row",
+   "section": "resus",
+   "order": 7,
+   "drug": "Glucagon",
+   "items": [
+    {
+     "dose": "neo_glucagon"
+    }
+   ],
+   "route": "IM / SC / IV",
+   "note": "Hạ glucose máu nặng khi chưa có đường truyền; kém hiệu quả khi cạn glycogen"
+  },
+  {
+   "id": "ref-resus-08",
+   "type": "ref_row",
+   "section": "resus",
+   "order": 8,
+   "drug": "Natri bicarbonat",
+   "items": [
+    {
+     "label": "Nhi – 8,4% (1 mmol/mL)",
+     "dose": "p_bicarb"
+    },
+    {
+     "label": "Sơ sinh – 4,2% (0,5 mmol/mL)",
+     "dose": "neo_bicarb42"
+    }
+   ],
+   "route": "IV chậm 10–30 phút",
+   "note": "Không thường quy trong ngừng tim; chỉ khi đã thông khí hiệu quả; tăng K⁺, ngộ độc TCA"
+  },
+  {
+   "id": "ref-resus-09",
+   "type": "ref_row",
+   "section": "resus",
+   "order": 9,
+   "drug": "Điều trị tăng kali máu",
+   "items": [
+    {
+     "label": "Insulin regular",
+     "dose": "hk_insulin"
+    },
+    {
+     "label": "Kèm Dextrose 10%",
+     "dose": "hk_d10"
+    },
+    {
+     "label": "Natri bicarbonat (nếu toan)",
+     "dose": "hk_bicarb"
+    },
+    {
+     "label": "Furosemide",
+     "dose": "hk_furosemide"
+    },
+    {
+     "label": "Nhựa trao đổi ion",
+     "dose": "hk_resin"
+    },
+    {
+     "label": "Salbutamol IV sơ sinh",
+     "dose": "hk_salb_iv_neo"
+    }
+   ],
+   "route": "IV / PO / PR",
+   "note": "Calci gluconat trước (xem dòng Calci gluconat). Tránh nhựa trao đổi ion ở sơ sinh non tháng",
+   "cls": "warn-row"
+  },
+  {
+   "id": "ref-resus-10",
+   "type": "ref_row",
+   "section": "resus",
+   "order": 10,
+   "drug": "NaCl 0,9% – bù thể tích",
+   "items": [
+    {
+     "label": "Sơ sinh",
+     "dose": "neo_volume"
+    },
+    {
+     "label": "Nhi – sốc nhiễm khuẩn (bolus)",
+     "dose": "sp_bolus"
+    }
+   ],
+   "route": "IV 5–20 phút",
+   "note": "Đánh giá lại sau mỗi bolus"
+  },
+  {
+   "id": "ref-abx_neo-01",
+   "type": "ref_row",
+   "section": "abx_neo",
+   "order": 1,
+   "drug": "Ampicillin",
+   "items": [
+    {
+     "rules": "ampicillin"
+    },
+    {
+     "label": "Viêm màng não",
+     "dose": "ref_ampicillin_mening"
+    }
+   ],
+   "route": "IV",
+   "note": "EOS: GBS, Listeria, Enterococcus. Phối hợp gentamicin",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-abx_neo-02",
+   "type": "ref_row",
+   "section": "abx_neo",
+   "order": 2,
+   "drug": "Gentamicin",
+   "items": [
+    {
+     "rules": "gentamicin"
+    }
+   ],
+   "route": "IV 30 phút",
+   "note": "TDM: Cmin <1 mg/L (trước liều 2–3); kéo dài khoảng cách khi hạ thân nhiệt/suy thận"
+  },
+  {
+   "id": "ref-abx_neo-03",
+   "type": "ref_row",
+   "section": "abx_neo",
+   "order": 3,
+   "drug": "Cefotaxime",
+   "items": [
+    {
+     "rules": "cefotaxime"
+    }
+   ],
+   "route": "IV",
+   "note": "Thay gentamicin khi nghi viêm màng não Gram âm/suy thận; không dùng thường quy",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-abx_neo-04",
+   "type": "ref_row",
+   "section": "abx_neo",
+   "order": 4,
+   "drug": "Vancomycin",
+   "items": [
+    {
+     "rules": "vancomycin"
+    }
+   ],
+   "route": "IV 60 phút",
+   "note": "MRSA, CoNS (LOS liên quan catheter). TDM theo AUC₂₄/MIC 400–600 (ưu tiên Bayesian)"
+  },
+  {
+   "id": "ref-abx_neo-05",
+   "type": "ref_row",
+   "section": "abx_neo",
+   "order": 5,
+   "drug": "Aciclovir",
+   "items": [
+    {
+     "rules": "aciclovir"
+    }
+   ],
+   "route": "IV 60 phút, đủ nước",
+   "note": "HSV sơ sinh: 14 ngày (da–mắt–miệng), 21 ngày (TKTW/lan tỏa)"
+  },
+  {
+   "id": "ref-abx_neo-06",
+   "type": "ref_row",
+   "section": "abx_neo",
+   "order": 6,
+   "drug": "Fluconazole",
+   "items": [
+    {
+     "label": "Điều trị – nạp",
+     "dose": "neo_flucon_load"
+    },
+    {
+     "label": "Điều trị – duy trì mỗi 24 giờ",
+     "dose": "neo_flucon_maint"
+    },
+    {
+     "label": "Dự phòng 2 lần/tuần",
+     "dose": "neo_flucon_proph"
+    }
+   ],
+   "route": "IV/PO",
+   "note": "Candida xâm lấn: ≥2 tuần sau cấy âm tính. Dự phòng: trẻ <1000 g tại NICU có tỷ lệ candida cao (IDSA 2016)",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-abx_neo-07",
+   "type": "ref_row",
+   "section": "abx_neo",
+   "order": 7,
+   "drug": "Metronidazole",
+   "items": [
+    {
+     "dose": "ref_metronidazole_neo"
+    }
+   ],
+   "route": "IV 30 phút · mỗi 12 giờ (non tháng) / 8 giờ (đủ tháng)",
+   "note": "Kỵ khí, NEC nặng"
+  },
+  {
+   "id": "ref-abx_paed-01",
+   "type": "ref_row",
+   "section": "abx_paed",
+   "order": 1,
+   "drug": "Ceftriaxone",
+   "items": [
+    {
+     "label": "Sepsis – mỗi 24 giờ",
+     "dose": "sp_ceftriaxone"
+    },
+    {
+     "label": "Viêm màng não (chia 1–2 lần)",
+     "dose": "ref_ceftriaxone_mening"
+    }
+   ],
+   "route": "IV 30 phút",
+   "note": "Lựa chọn hàng đầu cả cho não mô cầu. Chống chỉ định sơ sinh vàng da/dùng cùng calci IV",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-abx_paed-02",
+   "type": "ref_row",
+   "section": "abx_paed",
+   "order": 2,
+   "drug": "Cefotaxime + ampicillin (trẻ <3 tháng)",
+   "items": [
+    {
+     "label": "Cefotaxime",
+     "dose": "sp_cefotaxime"
+    },
+    {
+     "label": "Ampicillin",
+     "dose": "sp_ampicillin"
+    }
+   ],
+   "route": "IV mỗi 6–8 giờ",
+   "note": "Phủ Listeria, Enterococcus"
+  },
+  {
+   "id": "ref-abx_paed-03",
+   "type": "ref_row",
+   "section": "abx_paed",
+   "order": 3,
+   "drug": "Piperacillin–tazobactam",
+   "items": [
+    {
+     "dose": "sp_piptazo"
+    }
+   ],
+   "route": "IV 30 phút · mỗi 6–8 giờ",
+   "note": "Nhiễm khuẩn bệnh viện, ổ bụng, giảm bạch cầu hạt"
+  },
+  {
+   "id": "ref-abx_paed-04",
+   "type": "ref_row",
+   "section": "abx_paed",
+   "order": 4,
+   "drug": "Meropenem",
+   "items": [
+    {
+     "dose": "ref_meropenem"
+    }
+   ],
+   "route": "IV 30 phút · mỗi 8 giờ",
+   "note": "Nghi ESBL/đa kháng; viêm màng não: 40 mg/kg mỗi 8 giờ",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-abx_paed-05",
+   "type": "ref_row",
+   "section": "abx_paed",
+   "order": 5,
+   "drug": "Gentamicin (liều một lần/ngày)",
+   "items": [
+    {
+     "dose": "sp_gentamicin"
+    }
+   ],
+   "route": "IV 30 phút · mỗi 24 giờ",
+   "note": "TDM nếu dùng >48 giờ; cân nặng hiệu chỉnh nếu béo phì"
+  },
+  {
+   "id": "ref-abx_paed-06",
+   "type": "ref_row",
+   "section": "abx_paed",
+   "order": 6,
+   "drug": "Vancomycin",
+   "items": [
+    {
+     "dose": "sp_vancomycin"
+    }
+   ],
+   "route": "IV ≥60 phút · mỗi 6 giờ",
+   "note": "60–80 mg/kg/ngày (khởi đầu ≤3600 mg/ngày); TDM theo AUC₂₄/MIC 400–600",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-abx_paed-07",
+   "type": "ref_row",
+   "section": "abx_paed",
+   "order": 7,
+   "drug": "Metronidazole",
+   "items": [
+    {
+     "dose": "sp_metronidazole"
+    }
+   ],
+   "route": "IV mỗi 8 giờ",
+   "note": "Nghi ổ bụng/kỵ khí"
+  },
+  {
+   "id": "ref-neuro-01",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 1,
+   "drug": "Midazolam (má / mũi / IM)",
+   "items": [
+    {
+     "label": "Đường má",
+     "dose": "p_midazolam_buccal"
+    },
+    {
+     "label": "Nhỏ mũi",
+     "dose": "p_midazolam_in"
+    },
+    {
+     "label": "IM",
+     "dose": "p_midazolam_im"
+    }
+   ],
+   "route": "Đường má, nhỏ mũi (MAD), IM",
+   "note": "Co giật – bước 1 khi chưa có đường truyền",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-neuro-02",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 2,
+   "drug": "Midazolam IV (co giật)",
+   "items": [
+    {
+     "label": "Bước 1",
+     "dose": "p_midazolam_iv"
+    },
+    {
+     "label": "Liều nạp gây mê (PICU)",
+     "dose": "p_midazolam_load"
+    }
+   ],
+   "route": "IV",
+   "note": "Bước 1 khi có đường truyền; truyền 0,05–2 mg/kg/giờ khi động kinh kháng trị"
+  },
+  {
+   "id": "ref-neuro-03",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 3,
+   "drug": "Lorazepam",
+   "items": [
+    {
+     "dose": "p_lorazepam"
+    }
+   ],
+   "route": "IV chậm",
+   "note": "Bước 1 IV; có thể lặp 1 lần",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-neuro-04",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 4,
+   "drug": "Diazepam",
+   "items": [
+    {
+     "label": "IV",
+     "dose": "p_diazepam_iv"
+    },
+    {
+     "label": "PR",
+     "dose": "p_diazepam_pr"
+    }
+   ],
+   "route": "IV chậm hoặc PR",
+   "note": "Tác dụng ngắn hơn lorazepam"
+  },
+  {
+   "id": "ref-neuro-05",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 5,
+   "drug": "Levetiracetam",
+   "items": [
+    {
+     "dose": "p_levetiracetam"
+    }
+   ],
+   "route": "IV 10–15 phút",
+   "note": "Bước 2 – hiệu quả tương đương fosphenytoin/valproate (ESETT)",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-neuro-06",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 6,
+   "drug": "Fosphenytoin (mg PE) / Phenytoin",
+   "items": [
+    {
+     "dose": "p_phenytoin"
+    }
+   ],
+   "route": "Fosphenytoin ≤3 mg PE/kg/phút (≤150 mg PE/phút); phenytoin ≤1 mg/kg/phút (≤50 mg/phút)",
+   "note": "Bước 2. Monitor ECG + huyết áp; phenytoin chỉ pha NaCl 0,9%"
+  },
+  {
+   "id": "ref-neuro-07",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 7,
+   "drug": "Valproate",
+   "items": [
+    {
+     "dose": "p_valproate"
+    }
+   ],
+   "route": "IV 10 phút",
+   "note": "Bước 2; tránh <2 tuổi, bệnh gan/ty thể"
+  },
+  {
+   "id": "ref-neuro-08",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 8,
+   "drug": "Phenobarbital",
+   "items": [
+    {
+     "label": "Nhi – bước 2",
+     "dose": "p_phenobarb"
+    },
+    {
+     "label": "Sơ sinh – nạp",
+     "dose": "neo_phenobarb_load"
+    },
+    {
+     "label": "Sơ sinh – nạp bổ sung (tổng ≤40 mg/kg)",
+     "dose": "ref_phenobarb_neo_extra"
+    },
+    {
+     "label": "Sơ sinh – duy trì",
+     "dose": "neo_phenobarb_maint"
+    }
+   ],
+   "route": "IV 20–30 phút; duy trì IV/PO",
+   "note": "Thuốc hàng đầu co giật sơ sinh (NEOLEV2). TDM 15–40 mg/L",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-neuro-09",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 9,
+   "drug": "Thiopental",
+   "items": [
+    {
+     "dose": "p_thiopental"
+    }
+   ],
+   "route": "IV bolus, sau đó truyền",
+   "note": "Động kinh kháng trị – PICU, thở máy, EEG liên tục"
+  },
+  {
+   "id": "ref-neuro-10",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 10,
+   "drug": "Midazolam (an thần)",
+   "items": [
+    {
+     "label": "Bolus nhi",
+     "dose": "ref_midazolam_sed"
+    },
+    {
+     "label": "Bolus sơ sinh",
+     "dose": "neo_midazolam"
+    },
+    {
+     "label": "Truyền",
+     "dose": "ref_midazolam_inf"
+    },
+    {
+     "label": "Pha bơm sơ sinh",
+     "dose": "inf_midazolam"
+    }
+   ],
+   "route": "IV",
+   "note": "An thần NICU/PICU; giảm dần khi cai"
+  },
+  {
+   "id": "ref-neuro-11",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 11,
+   "drug": "Morphine",
+   "items": [
+    {
+     "label": "Nhi – bolus",
+     "dose": "p_morphine"
+    },
+    {
+     "label": "Sơ sinh – bolus",
+     "dose": "neo_morphine"
+    },
+    {
+     "label": "Sơ sinh – truyền",
+     "dose": "ref_morphine_inf_neo"
+    },
+    {
+     "label": "Pha bơm sơ sinh",
+     "dose": "inf_morphine"
+    }
+   ],
+   "route": "IV chậm ≥5 phút",
+   "note": "Chuẩn bị naloxone; nguy cơ ngừng thở ở sơ sinh",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-neuro-12",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 12,
+   "drug": "Fentanyl",
+   "items": [
+    {
+     "label": "IV bolus",
+     "dose": "p_fentanyl"
+    },
+    {
+     "label": "Nhỏ mũi",
+     "dose": "p_fentanyl_in"
+    },
+    {
+     "label": "Truyền",
+     "dose": "ref_fentanyl_inf"
+    },
+    {
+     "label": "Pha bơm sơ sinh",
+     "dose": "inf_fentanyl"
+    }
+   ],
+   "route": "IV / IN",
+   "note": "Ít hạ huyết áp hơn morphine; cứng thành ngực nếu tiêm nhanh liều cao"
+  },
+  {
+   "id": "ref-neuro-13",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 13,
+   "drug": "Paracetamol / Ondansetron",
+   "items": [
+    {
+     "label": "Paracetamol mỗi 4–6 giờ (≤60 mg/kg/ngày)",
+     "dose": "p_paracetamol"
+    },
+    {
+     "label": "Ondansetron",
+     "dose": "p_ondansetron"
+    }
+   ],
+   "route": "PO/PR/IV; IV/PO",
+   "note": "Giảm đau – hạ sốt; chống nôn"
+  },
+  {
+   "id": "ref-neuro-14",
+   "type": "ref_row",
+   "section": "neuro",
+   "order": 14,
+   "drug": "Ketamine",
+   "items": [
+    {
+     "label": "IV (RSI/thủ thuật)",
+     "dose": "p_ketamine_iv"
+    },
+    {
+     "label": "IM",
+     "dose": "p_ketamine_im"
+    },
+    {
+     "label": "An thần trước sốc điện",
+     "dose": "p_ketamine_sed"
+    }
+   ],
+   "route": "IV / IM",
+   "note": "Giãn phế quản; ưu tiên khi huyết động không ổn định"
+  },
+  {
+   "id": "ref-cardio-01",
+   "type": "ref_row",
+   "section": "cardio",
+   "order": 1,
+   "drug": "Dopamine",
+   "items": [
+    {
+     "label": "Liều",
+     "dose": "ref_dopamine"
+    },
+    {
+     "label": "Pha bơm sơ sinh",
+     "dose": "inf_dopamine"
+    }
+   ],
+   "route": "IV liên tục",
+   "note": "Tăng liều từng bước",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-cardio-02",
+   "type": "ref_row",
+   "section": "cardio",
+   "order": 2,
+   "drug": "Dobutamine",
+   "items": [
+    {
+     "label": "Liều",
+     "dose": "ref_dobutamine"
+    },
+    {
+     "label": "Pha bơm sơ sinh",
+     "dose": "inf_dobutamine"
+    }
+   ],
+   "route": "IV liên tục",
+   "note": "Cung lượng tim thấp"
+  },
+  {
+   "id": "ref-cardio-03",
+   "type": "ref_row",
+   "section": "cardio",
+   "order": 3,
+   "drug": "Adrenaline – truyền",
+   "items": [
+    {
+     "label": "Pha bơm sơ sinh",
+     "dose": "inf_adrenaline"
+    }
+   ],
+   "route": "IV liên tục",
+   "note": "Sốc “lạnh”; SSC 2020: adrenaline hoặc noradrenaline là lựa chọn đầu tay",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-cardio-04",
+   "type": "ref_row",
+   "section": "cardio",
+   "order": 4,
+   "drug": "Noradrenaline",
+   "items": [
+    {
+     "dose": "ref_noradrenaline"
+    }
+   ],
+   "route": "IV liên tục – ưu tiên đường trung tâm; có thể khởi đầu qua TM ngoại vi/IO",
+   "note": "Sốc “ấm”/giãn mạch"
+  },
+  {
+   "id": "ref-cardio-05",
+   "type": "ref_row",
+   "section": "cardio",
+   "order": 5,
+   "drug": "Alprostadil (PGE₁)",
+   "items": [
+    {
+     "label": "Liều",
+     "dose": "ref_alprostadil"
+    },
+    {
+     "label": "Pha bơm",
+     "dose": "inf_alprostadil"
+    }
+   ],
+   "route": "IV liên tục",
+   "note": "Tim bẩm sinh phụ thuộc ống động mạch; chuẩn bị đặt ETT (ngừng thở)",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-cardio-06",
+   "type": "ref_row",
+   "section": "cardio",
+   "order": 6,
+   "drug": "Digoxin",
+   "items": [
+    {
+     "label": "Tải IV – non tháng",
+     "dose": "ref_digoxin_tdd_preterm"
+    },
+    {
+     "label": "Tải IV – đủ tháng",
+     "dose": "ref_digoxin_tdd_term"
+    },
+    {
+     "text": "Chia ½ – ¼ – ¼ trong 24 giờ"
+    },
+    {
+     "label": "Duy trì",
+     "dose": "ref_digoxin_maint"
+    }
+   ],
+   "route": "IV / PO (PO ≈ 1,25 × IV)",
+   "note": "Kiểm tra K⁺, Mg²⁺, chức năng thận; TDM"
+  },
+  {
+   "id": "ref-cardio-07",
+   "type": "ref_row",
+   "section": "cardio",
+   "order": 7,
+   "drug": "Procainamide",
+   "items": [
+    {
+     "dose": "p_procainamide"
+    }
+   ],
+   "route": "IV 30–60 phút",
+   "note": "SVT/VT kháng trị – hội chẩn; không phối hợp amiodarone khi chưa hội chẩn"
+  },
+  {
+   "id": "ref-cardio-08",
+   "type": "ref_row",
+   "section": "cardio",
+   "order": 8,
+   "drug": "Flecainide",
+   "items": [
+    {
+     "dose": "p_flecainide"
+    }
+   ],
+   "route": "IV 10 phút",
+   "note": "Tránh nếu bệnh tim cấu trúc"
+  },
+  {
+   "id": "ref-cardio-09",
+   "type": "ref_row",
+   "section": "cardio",
+   "order": 9,
+   "drug": "Sốc điện",
+   "items": [
+    {
+     "label": "Khử rung",
+     "dose": "p_defib"
+    },
+    {
+     "label": "Chuyển nhịp đồng bộ – lần 1",
+     "dose": "p_cardiov1"
+    },
+    {
+     "label": "Chuyển nhịp – lần sau",
+     "dose": "p_cardiov2"
+    }
+   ],
+   "route": "Biphasic",
+   "note": "Không vượt liều người lớn (120–200 J)",
+   "cls": "danger-row"
+  },
+  {
+   "id": "ref-resp-01",
+   "type": "ref_row",
+   "section": "resp",
+   "order": 1,
+   "drug": "Surfactant – poractant alfa (Curosurf 80 mg/mL)",
+   "items": [
+    {
+     "label": "Liều đầu",
+     "dose": "neo_poractant"
+    },
+    {
+     "label": "Liều nhắc",
+     "dose": "neo_poractant_rep"
+    }
+   ],
+   "route": "Qua ETT / LISA",
+   "note": "RDS",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-resp-02",
+   "type": "ref_row",
+   "section": "resp",
+   "order": 2,
+   "drug": "Caffeine citrate",
+   "items": [
+    {
+     "label": "Nạp",
+     "dose": "neo_caffeine_load"
+    },
+    {
+     "label": "Duy trì",
+     "dose": "neo_caffeine_maint"
+    }
+   ],
+   "route": "IV 30 phút hoặc PO",
+   "note": "Cơn ngừng thở ở trẻ non tháng (20 mg/kg citrate = 10 mg/kg caffeine base)"
+  },
+  {
+   "id": "ref-resp-03",
+   "type": "ref_row",
+   "section": "resp",
+   "order": 3,
+   "drug": "Salbutamol (khí dung / MDI)",
+   "items": [
+    {
+     "label": "Khí dung",
+     "dose": "p_salb_neb"
+    },
+    {
+     "label": "MDI 100 mcg + buồng đệm",
+     "dose": "p_salb_mdi"
+    }
+   ],
+   "route": "Lặp mỗi 20 phút trong giờ đầu",
+   "note": "Nặng: khí dung liên tục",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-resp-04",
+   "type": "ref_row",
+   "section": "resp",
+   "order": 4,
+   "drug": "Salbutamol IV",
+   "items": [
+    {
+     "label": "Bolus",
+     "dose": "p_salb_iv_bolus"
+    },
+    {
+     "label": "Truyền duy trì (tối đa 5)",
+     "dose": "ref_salb_iv_inf"
+    }
+   ],
+   "route": "IV liên tục (PICU/HDU)",
+   "note": "Theo dõi K⁺, lactat, nhịp tim"
+  },
+  {
+   "id": "ref-resp-05",
+   "type": "ref_row",
+   "section": "resp",
+   "order": 5,
+   "drug": "Ipratropium bromide",
+   "items": [
+    {
+     "label": "Khí dung",
+     "dose": "p_iprat_neb"
+    },
+    {
+     "label": "MDI 21 mcg",
+     "dose": "p_iprat_mdi"
+    }
+   ],
+   "route": "Mỗi 20 phút × 3 liều giờ đầu",
+   "note": "Cơn hen nặng/nguy kịch",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-resp-06",
+   "type": "ref_row",
+   "section": "resp",
+   "order": 6,
+   "drug": "Magnesi sulfat 50% (500 mg/mL)",
+   "items": [
+    {
+     "label": "Hen",
+     "dose": "p_mgso4"
+    },
+    {
+     "label": "Hạ Mg²⁺",
+     "dose": "ref_mgso4_hypomg"
+    }
+   ],
+   "route": "IV chậm – pha loãng ≤10–20%",
+   "note": "Theo dõi huyết áp, phản xạ gân xương"
+  },
+  {
+   "id": "ref-resp-07",
+   "type": "ref_row",
+   "section": "resp",
+   "order": 7,
+   "drug": "Corticosteroid toàn thân",
+   "items": [
+    {
+     "label": "Prednisolone",
+     "dose": "p_prednisolone"
+    },
+    {
+     "label": "Methylprednisolone",
+     "dose": "p_methylpred"
+    },
+    {
+     "label": "Hydrocortisone – hen",
+     "dose": "p_hydrocort"
+    },
+    {
+     "label": "Hydrocortisone – suy thượng thận cấp",
+     "dose": "ref_hydrocort_adrenal"
+    }
+   ],
+   "route": "PO / IV",
+   "note": "Prednisolone 3–5 ngày, ≤5 tuổi tối đa 20–30 mg",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-neo-01",
+   "type": "ref_row",
+   "section": "neo",
+   "order": 1,
+   "drug": "Vitamin K₁ (phytomenadione)",
+   "items": [
+    {
+     "dose": "neo_vitk"
+    }
+   ],
+   "route": "IM ngay sau sinh",
+   "note": "Phòng xuất huyết do thiếu vitamin K",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-neo-02",
+   "type": "ref_row",
+   "section": "neo",
+   "order": 2,
+   "drug": "Dexamethasone",
+   "items": [
+    {
+     "text": "DART: 0,075 mg/kg/liều × 2 lần/ngày × 3 ngày → 0,05 × 3 ngày → 0,025 × 2 ngày → 0,01 × 2 ngày (tổng 0,89 mg/kg/10 ngày)"
+    },
+    {
+     "label": "Croup",
+     "dose": "ref_dexa_croup"
+    }
+   ],
+   "route": "IV / PO",
+   "note": "Hỗ trợ rút ống VLBW phụ thuộc máy thở (Doyle 2006); croup"
+  },
+  {
+   "id": "ref-neo-03",
+   "type": "ref_row",
+   "section": "neo",
+   "order": 3,
+   "drug": "Indomethacin (đóng PDA)",
+   "items": [
+    {
+     "dose": "ref_indomethacin"
+    },
+    {
+     "text": "3 liều cách 12–24 giờ"
+    }
+   ],
+   "route": "IV 30 phút",
+   "note": "Chống chỉ định: creatinin >150 µmol/L, tiểu cầu <50 G/L, NEC",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-neo-04",
+   "type": "ref_row",
+   "section": "neo",
+   "order": 4,
+   "drug": "Ibuprofen (đóng PDA)",
+   "items": [
+    {
+     "label": "Liều 1",
+     "dose": "ref_ibuprofen_load"
+    },
+    {
+     "label": "Liều 2 và 3 (cách 24 giờ)",
+     "dose": "ref_ibuprofen_maint"
+    }
+   ],
+   "route": "IV hoặc PO",
+   "note": "Ít ảnh hưởng thận hơn indomethacin"
+  },
+  {
+   "id": "ref-neo-05",
+   "type": "ref_row",
+   "section": "neo",
+   "order": 5,
+   "drug": "Erythropoietin (EPO)",
+   "items": [
+    {
+     "dose": "ref_epo"
+    }
+   ],
+   "route": "SC 3 lần/tuần",
+   "note": "Thiếu máu trẻ non tháng <32 tuần; phối hợp sắt",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-neo-06",
+   "type": "ref_row",
+   "section": "neo",
+   "order": 6,
+   "drug": "Mannitol 20% (0,5–1 g/kg)",
+   "items": [
+    {
+     "dose": "dka_mannitol"
+    }
+   ],
+   "route": "IV 10–15 phút",
+   "note": "Phù não (DKA, chấn thương); có thể lặp sau 30 phút"
+  },
+  {
+   "id": "ref-neo-07",
+   "type": "ref_row",
+   "section": "neo",
+   "order": 7,
+   "drug": "NaCl 3%",
+   "items": [
+    {
+     "dose": "dka_hts"
+    }
+   ],
+   "route": "IV 10–15 phút",
+   "note": "Phù não – thay thế mannitol",
+   "cls": "highlight-row"
+  },
+  {
+   "id": "ref-neo-08",
+   "type": "ref_row",
+   "section": "neo",
+   "order": 8,
+   "drug": "Insulin regular (IV)",
+   "items": [
+    {
+     "label": "DKA / tăng glucose máu",
+     "dose": "dka_insulin"
+    },
+    {
+     "label": "Pha bơm sơ sinh",
+     "dose": "inf_insulin"
+    },
+    {
+     "label": "Tăng K⁺ (kèm D10%)",
+     "dose": "hk_insulin"
+    }
+   ],
+   "route": "IV liên tục",
+   "note": "Theo dõi glucose mỗi 1 giờ; không bắt đầu khi K⁺ <3,5 mmol/L (DKA)"
+  }
+ ],
+ "reference_sections": [
+  {
+   "id": "resus",
+   "title": "🆘 THUỐC HỒI SỨC & CẤP CỨU",
+   "color": "#c62828,#e53935",
+   "col3": "Đường dùng"
+  },
+  {
+   "id": "abx_neo",
+   "title": "💊 KHÁNG SINH – SƠ SINH (NICU)",
+   "color": "#1565c0,#1976d2",
+   "col3": "Đường dùng / khoảng cách"
+  },
+  {
+   "id": "abx_paed",
+   "title": "💊 KHÁNG SINH – NHI KHOA (SEPSIS)",
+   "color": "#1565c0,#1976d2",
+   "col3": "Đường / tần suất"
+  },
+  {
+   "id": "neuro",
+   "title": "⚡ THUỐC THẦN KINH – ĐỘNG KINH & AN THẦN",
+   "color": "#4a148c,#7b1fa2",
+   "col3": "Đường / tần suất"
+  },
+  {
+   "id": "cardio",
+   "title": "❤️ THUỐC TIM MẠCH, VẬN MẠCH & SỐC ĐIỆN",
+   "color": "#b71c1c,#c62828",
+   "col3": "Đường dùng"
+  },
+  {
+   "id": "resp",
+   "title": "💨 THUỐC HÔ HẤP & SURFACTANT",
+   "color": "#00695c,#00897b",
+   "col3": "Đường dùng"
+  },
+  {
+   "id": "neo",
+   "title": "🍼 THUỐC ĐẶC THÙ SƠ SINH – NICU & KHÁC",
+   "color": "#880e4f,#c2185b",
+   "col3": "Đường / tần suất"
+  }
+ ]
+}
+</script>
+<script type="application/json" id="data-tpn-products">
+{
+ "version": "1.0.0",
+ "updated": "2026-10-13",
+ "status": "unverified",
+ "title": "Nuôi dưỡng tĩnh mạch sơ sinh/nhi – chế phẩm, dung dịch gốc, phác đồ mặc định và ngưỡng an toàn",
+ "source": "1. Mihatsch WA, Braegger C, Bronsky J, et al. ESPGHAN/ESPEN/ESPR/CSPEN guidelines on pediatric parenteral nutrition. Clin Nutr. 2018;37(6 Pt B):2303-429 (loạt khuyến cáo: năng lượng, acid amin, lipid, carbohydrate, dịch–điện giải, Ca/P/Mg, vi chất, vitamin). 2. Mirtallo J, Canada T, Johnson D, et al. ASPEN Safe practices for parenteral nutrition. JPEN J Parenter Enteral Nutr. 2004;28(6):S39-70. 3. Tờ thông tin sản phẩm (SmPC) của nhà sản xuất: Primene, TrophAmine, Aminoven Infant, Vaminolact, SMOFlipid, Intralipid, ClinOleic, Peditrace, Soluvit N, Vitalipid N Infant.",
+ "verification_note": "Áp lực thẩm thấu, nồng độ chế phẩm và dung dịch gốc phải đối chiếu tờ hướng dẫn của lô thuốc đang dùng tại khoa Dược; ngưỡng cảnh báo là tham khảo, chưa thẩm định tại đơn vị.",
+ "records": [
+  {
+   "id": "primene",
+   "kind": "amino_acid",
+   "name": "Primene 10%",
+   "pct": 10,
+   "osm_mOsm_L": 780,
+   "note": "Đặc hiệu sơ sinh: giàu taurine, cystine, tyrosine"
+  },
+  {
+   "id": "trophamine",
+   "kind": "amino_acid",
+   "name": "TrophAmine 6%",
+   "pct": 6,
+   "osm_mOsm_L": 525,
+   "note": "pH thấp → tăng độ hòa tan Ca/P"
+  },
+  {
+   "id": "aminoven",
+   "kind": "amino_acid",
+   "name": "Aminoven Infant 10%",
+   "pct": 10,
+   "osm_mOsm_L": 885,
+   "note": "Đặc hiệu trẻ em"
+  },
+  {
+   "id": "vaminolact",
+   "kind": "amino_acid",
+   "name": "Vaminolact 6,5%",
+   "pct": 6.5,
+   "osm_mOsm_L": 510,
+   "note": "Phổ acid amin gần sữa mẹ"
+  },
+  {
+   "id": "smoflipid20",
+   "kind": "lipid",
+   "name": "SMOFlipid 20%",
+   "conc_g_mL": 0.2,
+   "kcal_g": 10,
+   "note": "Dầu đậu nành/MCT/ô liu/cá – ưu tiên trẻ non tháng"
+  },
+  {
+   "id": "intralipid20",
+   "kind": "lipid",
+   "name": "Intralipid 20%",
+   "conc_g_mL": 0.2,
+   "kcal_g": 10,
+   "note": "Dầu đậu nành"
+  },
+  {
+   "id": "clinolipid20",
+   "kind": "lipid",
+   "name": "ClinOleic 20%",
+   "conc_g_mL": 0.2,
+   "kcal_g": 10,
+   "note": "Ô liu + đậu nành, ít PUFA"
+  },
+  {
+   "id": "intralipid10",
+   "kind": "lipid",
+   "name": "Intralipid 10%",
+   "conc_g_mL": 0.1,
+   "kcal_g": 11,
+   "note": "10%: tỷ lệ phospholipid/TG cao hơn – chỉ dùng khi cần"
+  },
+  {
+   "id": "dextrose50",
+   "kind": "stock",
+   "name": "Dextrose 50% (D50%)",
+   "conc": 0.5,
+   "conc_unit": "g/mL"
+  },
+  {
+   "id": "nacl234",
+   "kind": "stock",
+   "name": "NaCl 23,4%",
+   "conc": 4,
+   "conc_unit": "mmol/mL"
+  },
+  {
+   "id": "kcl15",
+   "kind": "stock",
+   "name": "KCl 15%",
+   "conc": 2,
+   "conc_unit": "mmol/mL"
+  },
+  {
+   "id": "cagluc10",
+   "kind": "stock",
+   "name": "Calci gluconat 10%",
+   "conc": 0.46,
+   "conc_unit": "mEq/mL",
+   "note": "0,23 mmol Ca²⁺/mL"
+  },
+  {
+   "id": "kh2po4",
+   "kind": "stock",
+   "name": "Kali dihydrophosphat (KH₂PO₄)",
+   "conc": 1,
+   "conc_unit": "mmol P/mL",
+   "k_per_mmol_p": 1
+  },
+  {
+   "id": "mgso4_50",
+   "kind": "stock",
+   "name": "MgSO₄ 50%",
+   "conc": 4,
+   "conc_unit": "mEq/mL"
+  },
+  {
+   "id": "peditrace",
+   "kind": "additive",
+   "name": "Peditrace",
+   "ml_per_kg": 1,
+   "max_ml": 15,
+   "zn_mcg_per_ml": 250,
+   "bag": "aqueous",
+   "note": "Zn, Cu, Mn, Se, F, I"
+  },
+  {
+   "id": "soluvit",
+   "kind": "additive",
+   "name": "Soluvit N",
+   "ml_per_kg": 1,
+   "max_ml": 10,
+   "bag": "aqueous",
+   "note": "Vitamin tan trong nước"
+  },
+  {
+   "id": "vitalipid",
+   "kind": "additive",
+   "name": "Vitalipid N Infant",
+   "ml_per_kg": 4,
+   "max_ml": 10,
+   "bag": "lipid",
+   "note": "Vitamin tan trong dầu – pha vào lipid"
+  },
+  {
+   "id": "elbw",
+   "kind": "regimen",
+   "label": "ELBW (<1000 g)",
+   "n_loss_g_kg": 0.2,
+   "defaults": {
+    "tf": 140,
+    "gir": 5,
+    "pro": 3.5,
+    "lip": 0.5,
+    "na": 0,
+    "k": 0,
+    "ca": 2.5,
+    "phos": 1.8,
+    "mg": 0.25,
+    "zn": 450
+   },
+   "targets": {
+    "tfR": "130–180",
+    "girR": "4–6→12",
+    "proR": "3,5–4,5",
+    "lipR": "0,5→3,5",
+    "calR": "105–135",
+    "caR": "2,5–4,0",
+    "phosR": "1,8–2,5"
+   },
+   "note": "ELBW: bắt đầu acid amin 2–3 g/kg ngay sau sinh. Chưa cho Na/K ngày 1–2. Lipid tăng dần. GIR khởi đầu 4–6."
+  },
+  {
+   "id": "vlbw",
+   "kind": "regimen",
+   "label": "VLBW (1000–1499 g)",
+   "n_loss_g_kg": 0.2,
+   "defaults": {
+    "tf": 120,
+    "gir": 8,
+    "pro": 3.0,
+    "lip": 2.0,
+    "na": 2,
+    "k": 2,
+    "ca": 2.0,
+    "phos": 1.5,
+    "mg": 0.3,
+    "zn": 400
+   },
+   "targets": {
+    "tfR": "120–150",
+    "girR": "6–8→12",
+    "proR": "3,0–4,0",
+    "lipR": "1,0→3,5",
+    "calR": "105–130",
+    "caR": "2,0–3,5",
+    "phosR": "1,5–2,2"
+   },
+   "note": "VLBW: acid amin ngay ngày 1. Theo dõi glucose mỗi 3–6 giờ và TG khi tăng lipid. Tăng GIR 1–2 mg/kg/phút mỗi 12 giờ."
+  },
+  {
+   "id": "lbw",
+   "kind": "regimen",
+   "label": "LBW (1500–2499 g)",
+   "n_loss_g_kg": 0.15,
+   "defaults": {
+    "tf": 110,
+    "gir": 7,
+    "pro": 2.5,
+    "lip": 2.0,
+    "na": 2,
+    "k": 2,
+    "ca": 1.5,
+    "phos": 1.2,
+    "mg": 0.25,
+    "zn": 350
+   },
+   "targets": {
+    "tfR": "110–140",
+    "girR": "6–8→10",
+    "proR": "2,5–3,5",
+    "lipR": "1,0→3,0",
+    "calR": "100–120",
+    "caR": "1,5–2,5",
+    "phosR": "1,2–2,0"
+   },
+   "note": "LBW: ưu tiên nuôi ăn đường tiêu hóa sớm; TPN là bổ sung. Cai TPN khi EN đạt 100–120 mL/kg/ngày."
+  },
+  {
+   "id": "term",
+   "kind": "regimen",
+   "label": "Đủ tháng (≥37 tuần)",
+   "n_loss_g_kg": 0.15,
+   "defaults": {
+    "tf": 90,
+    "gir": 6,
+    "pro": 2.0,
+    "lip": 1.5,
+    "na": 2,
+    "k": 2,
+    "ca": 1.5,
+    "phos": 1.0,
+    "mg": 0.2,
+    "zn": 250
+   },
+   "targets": {
+    "tfR": "90–120",
+    "girR": "5–8",
+    "proR": "1,5–2,5",
+    "lipR": "1,0–2,5",
+    "calR": "90–110",
+    "caR": "1,5–2,0",
+    "phosR": "1,0–1,5"
+   },
+   "note": "Đủ tháng: ưu tiên sữa mẹ/sữa công thức sớm; TPN ngắn hạn. Cai khi uống được 80% nhu cầu."
+  },
+  {
+   "id": "sick",
+   "kind": "regimen",
+   "label": "Bệnh cấp tính / Phẫu thuật",
+   "n_loss_g_kg": 0.15,
+   "defaults": {
+    "tf": 80,
+    "gir": 5,
+    "pro": 2.5,
+    "lip": 1.5,
+    "na": 2,
+    "k": 2,
+    "ca": 1.5,
+    "phos": 1.2,
+    "mg": 0.25,
+    "zn": 300
+   },
+   "targets": {
+    "tfR": "80–120",
+    "girR": "4–8",
+    "proR": "2,0–3,5",
+    "lipR": "0,5→2,5",
+    "calR": "80–100",
+    "caR": "1,5–2,0",
+    "phosR": "1,0–1,5"
+   },
+   "note": "Bệnh nặng/phẫu thuật: hạn chế dịch, tăng protein. Thận trọng lipid khi nhiễm khuẩn nặng (TG cao)."
+  },
+  {
+   "id": "prog-elbw",
+   "kind": "progression",
+   "applies_to": [
+    "elbw"
+   ],
+   "rows": [
+    {
+     "d": "N1",
+     "tf": 140,
+     "gir": 4,
+     "pro": 2.5,
+     "lip": 0.5,
+     "na": 0,
+     "k": 0
+    },
+    {
+     "d": "N2",
+     "tf": 140,
+     "gir": 5,
+     "pro": 3.0,
+     "lip": 1.0,
+     "na": 1.5,
+     "k": 1.5
+    },
+    {
+     "d": "N3",
+     "tf": 140,
+     "gir": 8,
+     "pro": 3.5,
+     "lip": 1.5,
+     "na": 2,
+     "k": 2
+    },
+    {
+     "d": "N4",
+     "tf": 150,
+     "gir": 9,
+     "pro": 4.0,
+     "lip": 2.0,
+     "na": 2.5,
+     "k": 2.5
+    },
+    {
+     "d": "N5",
+     "tf": 160,
+     "gir": 10,
+     "pro": 4.0,
+     "lip": 2.5,
+     "na": 3,
+     "k": 3
+    },
+    {
+     "d": "N7+",
+     "tf": 160,
+     "gir": 11,
+     "pro": 4.0,
+     "lip": 3.0,
+     "na": 3,
+     "k": 3
+    }
+   ]
+  },
+  {
+   "id": "prog-other",
+   "kind": "progression",
+   "applies_to": [
+    "vlbw",
+    "lbw",
+    "term",
+    "sick"
+   ],
+   "rows": [
+    {
+     "d": "N1",
+     "tf": 120,
+     "gir": 6,
+     "pro": 2.0,
+     "lip": 0.5,
+     "na": 0,
+     "k": 0
+    },
+    {
+     "d": "N2",
+     "tf": 120,
+     "gir": 7,
+     "pro": 2.5,
+     "lip": 1.0,
+     "na": 1.5,
+     "k": 1.5
+    },
+    {
+     "d": "N3",
+     "tf": 140,
+     "gir": 8,
+     "pro": 3.0,
+     "lip": 1.5,
+     "na": 2,
+     "k": 2
+    },
+    {
+     "d": "N4",
+     "tf": 150,
+     "gir": 9,
+     "pro": 3.0,
+     "lip": 2.0,
+     "na": 2.5,
+     "k": 2.5
+    },
+    {
+     "d": "N5",
+     "tf": 160,
+     "gir": 10,
+     "pro": 3.5,
+     "lip": 2.5,
+     "na": 3,
+     "k": 3
+    },
+    {
+     "d": "N7+",
+     "tf": 160,
+     "gir": 11,
+     "pro": 3.5,
+     "lip": 3.0,
+     "na": 3,
+     "k": 3
+    }
+   ]
+  },
+  {
+   "id": "kcal_glucose",
+   "kind": "param",
+   "value": 3.4,
+   "unit": "kcal/g",
+   "label": "Dextrose monohydrat IV",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "kcal_protein",
+   "kind": "param",
+   "value": 4,
+   "unit": "kcal/g",
+   "label": "Protein",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "kcal_enteral_cho",
+   "kind": "param",
+   "value": 3.8,
+   "unit": "kcal/g",
+   "label": "Carbohydrate đường tiêu hóa (ước tính)",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "enteral_fat_g_mL",
+   "kind": "param",
+   "value": 0.035,
+   "unit": "g/mL",
+   "label": "Lipid trong sữa (ước tính 3,5 g/100 mL)",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "kcal_fat_enteral",
+   "kind": "param",
+   "value": 9,
+   "unit": "kcal/g",
+   "label": "Lipid đường tiêu hóa",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "osm_dextrose_pct",
+   "kind": "param",
+   "value": 50.5,
+   "unit": "mOsm/L mỗi 1%",
+   "label": "Dextrose monohydrat",
+   "source": "ASPEN 2004"
+  },
+  {
+   "id": "osm_na_k",
+   "kind": "param",
+   "value": 2,
+   "unit": "mOsm/mmol",
+   "label": "Na⁺/K⁺ (kèm anion)",
+   "source": "ASPEN 2004"
+  },
+  {
+   "id": "osm_ca",
+   "kind": "param",
+   "value": 1.4,
+   "unit": "mOsm/mEq",
+   "label": "Calci gluconat",
+   "source": "ASPEN 2004"
+  },
+  {
+   "id": "osm_mg",
+   "kind": "param",
+   "value": 1,
+   "unit": "mOsm/mEq",
+   "label": "Magnesi sulfat",
+   "source": "ASPEN 2004"
+  },
+  {
+   "id": "osm_p",
+   "kind": "param",
+   "value": 1,
+   "unit": "mOsm/mmol",
+   "label": "Phosphat",
+   "source": "ASPEN 2004"
+  },
+  {
+   "id": "osm_limit_peripheral",
+   "kind": "param",
+   "value": 900,
+   "unit": "mOsm/L",
+   "label": "Giới hạn TM ngoại vi",
+   "source": "ASPEN 2004"
+  },
+  {
+   "id": "osm_limit_central",
+   "kind": "param",
+   "value": 3000,
+   "unit": "mOsm/L",
+   "label": "Giới hạn hiển thị TM trung tâm",
+   "source": "ASPEN 2004"
+  },
+  {
+   "id": "gluc_max_peripheral_pct",
+   "kind": "param",
+   "value": 12.5,
+   "unit": "%",
+   "label": "Dextrose tối đa qua TM ngoại vi",
+   "source": "ASPEN 2004"
+  },
+  {
+   "id": "gluc_caution_peripheral_pct",
+   "kind": "param",
+   "value": 10,
+   "unit": "%",
+   "label": "Dextrose cần thận trọng qua ngoại vi",
+   "source": "ASPEN 2004"
+  },
+  {
+   "id": "cap_product_limit",
+   "kind": "param",
+   "value": 200,
+   "unit": "mEq/L × mmol/L",
+   "label": "Ca×P theo nồng độ (tham khảo)",
+   "source": "Đường cong hòa tan của nhà sản xuất"
+  },
+  {
+   "id": "gir_max",
+   "kind": "param",
+   "value": 12,
+   "unit": "mg/kg/phút",
+   "label": "GIR tối đa",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "gir_warn",
+   "kind": "param",
+   "value": 13,
+   "unit": "mg/kg/phút",
+   "label": "GIR nguy hiểm",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "protein_max",
+   "kind": "param",
+   "value": 4,
+   "unit": "g/kg/ngày",
+   "label": "Protein tối đa",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "protein_warn",
+   "kind": "param",
+   "value": 4.5,
+   "unit": "g/kg/ngày",
+   "label": "Protein nguy hiểm",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "lipid_max",
+   "kind": "param",
+   "value": 4,
+   "unit": "g/kg/ngày",
+   "label": "Lipid tối đa",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "kcal_iv_min",
+   "kind": "param",
+   "value": 80,
+   "unit": "kcal/kg/ngày",
+   "label": "Năng lượng IV tối thiểu cảnh báo",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "kcal_iv_ok",
+   "kind": "param",
+   "value": 100,
+   "unit": "kcal/kg/ngày",
+   "label": "Năng lượng IV đạt",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "npc_n_min",
+   "kind": "param",
+   "value": 100,
+   "unit": "kcal/g N",
+   "label": "NPC:N tối thiểu",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "npc_n_max",
+   "kind": "param",
+   "value": 250,
+   "unit": "kcal/g N",
+   "label": "NPC:N tối đa",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "tg_reduce",
+   "kind": "param",
+   "value": 3.0,
+   "unit": "mmol/L",
+   "label": "TG cần giảm lipid",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "tg_min_dose",
+   "kind": "param",
+   "value": 4.5,
+   "unit": "mmol/L",
+   "label": "TG cần giảm lipid xuống liều tối thiểu",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "gluc_low",
+   "kind": "param",
+   "value": 2.6,
+   "unit": "mmol/L",
+   "label": "Hạ glucose máu",
+   "source": "AAP 2011"
+  },
+  {
+   "id": "gluc_high",
+   "kind": "param",
+   "value": 10,
+   "unit": "mmol/L",
+   "label": "Tăng glucose máu",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "k_low",
+   "kind": "param",
+   "value": 3.5,
+   "unit": "mmol/L",
+   "label": "Hạ kali máu",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "k_high",
+   "kind": "param",
+   "value": 6.0,
+   "unit": "mmol/L",
+   "label": "Tăng kali máu",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "na_low",
+   "kind": "param",
+   "value": 130,
+   "unit": "mmol/L",
+   "label": "Hạ natri máu",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "na_high",
+   "kind": "param",
+   "value": 150,
+   "unit": "mmol/L",
+   "label": "Tăng natri máu",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "dbili_cholestasis",
+   "kind": "param",
+   "value": 34,
+   "unit": "µmol/L",
+   "label": "Bilirubin trực tiếp – ứ mật",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "dbili_high",
+   "kind": "param",
+   "value": 85,
+   "unit": "µmol/L",
+   "label": "Bilirubin trực tiếp – nặng",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "alt_high",
+   "kind": "param",
+   "value": 40,
+   "unit": "U/L",
+   "label": "ALT tăng",
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "pnac_dol",
+   "kind": "param",
+   "value": 14,
+   "unit": "ngày",
+   "label": "PNAC heuristic – ngày tuổi",
+   "source": "Heuristic, chưa thẩm định"
+  },
+  {
+   "id": "pnac_enteral",
+   "kind": "param",
+   "value": 30,
+   "unit": "mL/kg/ngày",
+   "label": "PNAC heuristic – EN thấp",
+   "source": "Heuristic, chưa thẩm định"
+  },
+  {
+   "id": "pnac_dbili",
+   "kind": "param",
+   "value": 50,
+   "unit": "µmol/L",
+   "label": "PNAC heuristic – bilirubin trực tiếp",
+   "source": "Heuristic, chưa thẩm định"
+  },
+  {
+   "id": "lab_ranges",
+   "kind": "lab_ranges",
+   "ranges": {
+    "na": [
+     135,
+     145
+    ],
+    "k": [
+     3.5,
+     5.5
+    ],
+    "ca": [
+     1.1,
+     1.35
+    ],
+    "phos": [
+     1.5,
+     2.5
+    ],
+    "mg": [
+     0.7,
+     1.0
+    ],
+    "gluc": [
+     2.6,
+     10
+    ]
+   },
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
+  },
+  {
+   "id": "elec_ref",
+   "kind": "text",
+   "values": {
+    "na": "2–4 mEq/kg/ngày",
+    "k": "2–3 mEq/kg/ngày",
+    "mg": "0,2–0,5 mEq/kg/ngày",
+    "weight_gain": "+15–20 g/kg/ngày (VLBW)"
+   },
+   "source": "ESPGHAN/ESPEN/ESPR/CSPEN 2018"
   }
  ]
 }
@@ -3496,7 +5617,7 @@ document.querySelectorAll('script[type="application/json"][id^="data-"]').forEac
   try{const o=JSON.parse(s.textContent);if(!Array.isArray(o.records)||!o.records.length)throw new Error('records rỗng');DATA[s.id.slice(5)]=o}
   catch(e){DATA_ERR.push(s.id+': '+e.message)}
 });
-['eos-models','neo-abx','neo-fluids','drug-doses'].forEach(k=>{if(!DATA[k])DATA_ERR.push('Thiếu bảng dữ liệu data-'+k)});
+['eos-models','neo-abx','neo-fluids','drug-doses','tpn-products'].forEach(k=>{if(!DATA[k])DATA_ERR.push('Thiếu bảng dữ liệu data-'+k)});
 function rec(table,id){const t=DATA[table];const r=t&&t.records.find(x=>x.id===id);if(!r)throw new Error('Thiếu dữ liệu '+table+' / '+id);return r}
 function P(id){return rec('drug-doses',id).value}                       // tham số phác đồ
 function band(id,wt){return rec('drug-doses',id).bands.find(b=>wt<b.wt_max)}
@@ -3518,7 +5639,7 @@ function dlab(id){
   if(r.bands)return'';
   const pk=r.per_kg!=null?f(r.per_kg):f(r.per_kg_lo)+'–'+f(r.per_kg_hi);
   const mx=r.max!=null?f(r.max):r.max_hi!=null?(r.max_lo!=null?f(r.max_lo)+'–':'')+f(r.max_hi):null;
-  return pk+' '+r.unit+'/kg'+(r.min!=null?', tối thiểu '+f(r.min)+' '+r.unit:'')+(mx?', tối đa '+mx+' '+r.unit:'');
+  return pk+' '+(r.per_unit||r.unit+'/kg')+(r.min!=null?', tối thiểu '+f(r.min)+' '+r.unit:'')+(mx?', tối đa '+mx+' '+r.unit:'');
 }
 // Nhãn phiên bản dữ liệu ở cuối mỗi module (bắt buộc hiện "chưa kiểm chứng" khi status = unverified)
 function dataTag(...tables){
@@ -3552,14 +5673,58 @@ function renderDataRegistry(){
   const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const rows=Object.entries(DATA).map(([k,t])=>`<tr><td><b>data-${k}</b><br><small>${esc(t.title||'')}</small></td><td>v${t.version}<br><small>${t.updated}</small></td><td>${t.status==='verified'?'<span class="tag tag-green">Đã đối chiếu</span>':'<span class="tag tag-orange">Chưa kiểm chứng</span>'}</td><td>${t.records.length}</td><td style="font-size:11.5px">${esc(t.source)}${t.verification_note?'<br><i>'+esc(t.verification_note)+'</i>':''}</td></tr>`).join('');
   const dd=DATA['drug-doses'];
-  const doseRows=dd?dd.records.map(r=>`<tr><td><code>${r.id}</code></td><td>${esc(r.drug||r.label||'')}</td><td>${esc(r.route||'')}</td><td>${r.type==='param'?r.value+' '+esc(r.unit):r.bands?r.bands.map(b=>(b.wt_max>=999?'còn lại':'<'+b.wt_max+' kg')+': '+(b.text||(b.fixed!=null?b.fixed+' '+r.unit:b.per_kg+' '+r.unit+'/kg'))).join('; '):esc(dlab(r.id))}${r.conc?' · '+r.conc+' '+r.unit+'/mL':''}</td><td>${esc(r.source)}</td></tr>`).join(''):'';
+  const doseRows=dd?dd.records.filter(r=>r.type!=='ref_row').map(r=>`<tr><td><code>${r.id}</code></td><td>${esc(r.drug||r.label||'')}</td><td>${esc(r.route||'')}</td><td>${r.type==='param'?r.value+' '+esc(r.unit):r.bands?r.bands.map(b=>(b.wt_max>=999?'còn lại':'<'+b.wt_max+' kg')+': '+(b.text||(b.fixed!=null?b.fixed+' '+r.unit:b.per_kg+' '+r.unit+'/kg'))).join('; '):esc(dlab(r.id))}${r.conc?' · '+r.conc+' '+r.unit+'/mL':''}</td><td>${esc(r.source)}</td></tr>`).join(''):'';
   el.innerHTML=`<table class="result-table data-reg"><thead><tr><th>Bảng</th><th>Phiên bản</th><th>Trạng thái</th><th>Bản ghi</th><th>Nguồn</th></tr></thead><tbody>${rows}</tbody></table>
-  <details style="margin-top:.75rem"><summary style="cursor:pointer;font-weight:700;color:var(--primary)">Xem ${dd?dd.records.length:0} bản ghi liều (data-drug-doses)</summary>
+  <details style="margin-top:.75rem"><summary style="cursor:pointer;font-weight:700;color:var(--primary)">Xem ${dd?dd.records.filter(r=>r.type!=='ref_row').length:0} bản ghi liều (data-drug-doses; thêm ${dd?dd.records.filter(r=>r.type==='ref_row').length:0} dòng bố cục bảng tham khảo)</summary>
   <table class="result-table data-reg" style="margin-top:.5rem"><thead><tr><th>id</th><th>Thuốc / tham số</th><th>Đường dùng</th><th>Liều (từ dữ liệu)</th><th>Nguồn</th></tr></thead><tbody>${doseRows}</tbody></table></details>`;
 }
 if(DATA_ERR.length){
   const m=document.querySelector('.main');if(m)m.insertAdjacentHTML('afterbegin',`<div class="alert alert-danger">🚨 Lỗi dữ liệu lâm sàng: ${DATA_ERR.join(' · ')}. Không sử dụng công cụ cho đến khi sửa.</div>`)}
 try{renderDataRegistry()}catch(e){console.error(e)}
+
+// ===== Bảng liều tham khảo – sinh từ data-drug-doses (ref_row) + data-neo-abx; KHÔNG còn bảng HTML tĩnh =====
+const fmtN=v=>String(v).replace('.',',');
+function bandLab(id){
+  const r=rec('drug-doses',id);let prev=null;
+  return r.bands.map(b=>{const cond=b.label?b.label:b.wt_max>=999?(prev!=null?'≥'+fmtN(prev)+' kg':'mọi cân nặng'):'<'+fmtN(b.wt_max)+' kg';prev=b.wt_max;
+    return cond+': '+(b.text||(b.fixed!=null?fmtN(b.fixed)+' '+r.unit:fmtN(b.per_kg)+' '+r.unit+'/kg'))}).join('; ');
+}
+function doseText(id){const r=rec('drug-doses',id);
+  if(r.type==='param')return fmtN(r.value)+' '+r.unit;
+  const t=r.bands?bandLab(id):dlab(id);
+  return t+(r.conc?' ('+fmtN(r.conc)+' '+r.unit+'/mL)':'')+(r.rate?' → '+r.rate:'');
+}
+// Diễn giải luật PMA/PNA thành chữ
+function ruleText(drug){
+  const rs=DATA['neo-abx'].records.filter(x=>x.drug===drug);
+  const rng=(lo,hi,u)=>hi>=999?(lo>0?'≥'+fmtN(lo)+u:'mọi'+u):lo>0?fmtN(lo)+'–<'+fmtN(hi)+u:'<'+fmtN(hi)+u;
+  return rs.map(x=>`${x.basis==='ga'?'GA':'PMA'} ${rng(x.lo,x.hi,' tuần')}${x.pna_lo===0&&x.pna_hi>=999?'':', PNA '+rng(x.pna_lo,x.pna_hi,' ngày')}: <b>${fmtN(x.dose_mg_kg)} mg/kg mỗi ${x.interval_h} giờ</b>`).join('<br>');
+}
+function renderDoseReference(){
+  const el=document.getElementById('dose-reference');if(!el)return;
+  const dd=DATA['drug-doses'];const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const rows=dd.records.filter(r=>r.type==='ref_row');
+  el.innerHTML=(dd.reference_sections||[]).map(sec=>{
+    const rs=rows.filter(r=>r.section===sec.id).sort((a,b)=>a.order-b.order);if(!rs.length)return'';
+    const [c1,c2]=sec.color.split(',');
+    const body=rs.map(r=>{
+      const srcs=new Set();
+      const dose=r.items.map(it=>{
+        if(it.rules){srcs.add('AAP Red Book; NeoFax');return ruleText(it.rules)}
+        if(it.text)return esc(it.text);
+        const d=rec('drug-doses',it.dose);if(d.source)String(d.source).split(';').forEach(x=>{x=x.trim();if(x)srcs.add(x)});
+        return (it.label?esc(it.label)+': ':'')+esc(doseText(it.dose));
+      }).join('<br>');
+      // bỏ nguồn rút gọn đã nằm trong nguồn đầy đủ hơn (vd. "APLS" khi đã có "APLS 2023")
+      const src=[...srcs].filter(x=>![...srcs].some(y=>y!==x&&y.startsWith(x+' ')));
+      return`<tr${r.cls?` class="${r.cls}"`:''}><td><b>${esc(r.drug)}</b></td><td>${dose}</td><td>${esc(r.route||'')}</td><td>${esc(r.note||'')}</td><td>${esc(src.join('; '))}</td></tr>`;
+    }).join('');
+    return`<div class="ref-sec" style="background:linear-gradient(90deg,${c1},${c2})">${esc(sec.title)}</div>
+    <table class="result-table" style="font-size:12px;margin-bottom:.75rem"><thead><tr><th>Thuốc</th><th>Liều (từ dữ liệu)</th><th>${esc(sec.col3||'Đường dùng')}</th><th>Ghi chú lâm sàng</th><th>Nguồn</th></tr></thead><tbody>${body}</tbody></table>`;
+  }).join('')+dataTag('drug-doses','neo-abx');
+}
+try{renderDoseReference()}catch(e){console.error(e);const el=document.getElementById('dose-reference');if(el)el.innerHTML=`<div class="alert alert-danger">🚨 Lỗi dữ liệu bảng liều: ${e.message}</div>`}
+
 
 // Cỡ ống NKQ sơ sinh (không cuff) – NRP/ANZCOR: <1 kg 2,5 mm; 1–2 kg 3,0 mm; >2 kg 3,5 mm
 function ettNeo(wt){return wt<1?2.5:wt<=2?3.0:3.5}
@@ -4207,7 +6372,7 @@ function calcHypo(){
     <div class="card"><div class="card-title">🍬 Xử Trí Hạ Glucose Máu Sơ Sinh</div>
     <div class="step-card"><div class="step-num">1</div><div class="step-content"><div class="step-title">Không triệu chứng, glucose 1,0–2,6 mmol/L</div><div class="step-body">Cho bú mẹ/sữa ngay; có thể dùng gel dextrose 40% 0,5 mL/kg (200 mg/kg) xoa niêm mạc má = <strong>${dz('hy_gel',wt)} mL</strong>. Đo lại trước cữ bú tiếp theo (30–60 phút).</div></div></div>
     <div class="step-card"><div class="step-num">2</div><div class="step-content"><div class="step-title">Có triệu chứng, glucose &lt;2,0 mmol/L hoặc bất kỳ &lt;1,0 mmol/L → Bolus Dextrose 10%</div><div class="step-body">
-      <strong>${dz('hy_d10',wt)} mL</strong> Dextrose 10% IV trong 5–10 phút (${dlab('hy_d10')} = 200 mg/kg; BAPM: tới 2,5 mL/kg)<br>
+      <strong>${dz('neo_d10',wt)} mL</strong> Dextrose 10% IV trong 5–10 phút (${dlab('neo_d10')} = 200 mg/kg; BAPM: tới 2,5 mL/kg)<br>
       Ngay sau đó truyền liên tục; đo lại glucose sau 15–30 phút.
     </div></div></div>
     <div class="step-card"><div class="step-num">3</div><div class="step-content"><div class="step-title">Truyền glucose liên tục theo GIR</div><div class="step-body">
@@ -4216,7 +6381,7 @@ function calcHypo(){
       Công thức: GIR (mg/kg/phút) = tốc độ (mL/h) × nồng độ (%) × 10 / (CN × 60). Tăng 1–2 mg/kg/phút mỗi lần nếu chưa đạt đích.
     </div></div></div>
     <div class="step-card"><div class="step-num">4</div><div class="step-content"><div class="step-title">Glucagon (không đặt được đường truyền / hạ glucose kéo dài)</div><div class="step-body">
-      Glucagon ${dz('hy_glucagon',wt)} mg IM/SC/IV (${dlab('hy_glucagon')} – BNFc). Không hiệu quả khi cạn glycogen (IUGR, non tháng).
+      Glucagon ${dz('neo_glucagon',wt)} mg IM/SC/IV (${dlab('neo_glucagon')} – BNFc). Không hiệu quả khi cạn glycogen (IUGR, non tháng).
     </div></div></div>
     </div>
     <div class="card"><div class="card-title">🎯 Mục Tiêu & Theo Dõi</div>
@@ -4393,7 +6558,7 @@ function printCurrentModule(){
   // 2. Update footer
   const footer = document.getElementById('print-footer-bar');
   if(footer) footer.textContent =
-    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.3 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
+    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.4 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
 
   // 3. Print — CSS @media print sẽ tự ẩn sidebar/header, chỉ hiện module active
   window.print();
@@ -4613,18 +6778,31 @@ function calcEOS() {
 
 
 // ============================= TPN DEFAULTS =============================
-const TPN_DEFAULTS={
-  elbw:{tf:140,gir:5,pro:3.5,lip:0.5,na:0,k:0,ca:2.5,phos:1.8,mg:0.25,zn:450,note:'ELBW: Bắt đầu AA 2–3g/kg ngay sau sinh. Chưa cho Na/K ngày 1–2. Lipid 0.5g→tăng 0.5g/ng. GIR bắt đầu 4–6.'},
-  vlbw:{tf:120,gir:8,pro:3.0,lip:2.0,na:2,k:2,ca:2.0,phos:1.5,mg:0.30,zn:400,note:'VLBW: AA ngay ngày 1. Theo dõi glucose mỗi 3–6h và TG 24h sau Lipid. Tăng GIR 1–2 mg/kg/ph mỗi 12h.'},
-  lbw: {tf:110,gir:7,pro:2.5,lip:2.0,na:2,k:2,ca:1.5,phos:1.2,mg:0.25,zn:350,note:'LBW: Ưu tiên nuôi ăn đường tiêu hóa sớm. TPN là bổ sung. Cai TPN khi EN đạt 100–120 mL/kg/ng.'},
-  term:{tf:90, gir:6,pro:2.0,lip:1.5,na:2,k:2,ca:1.5,phos:1.0,mg:0.20,zn:250,note:'Đủ tháng: Ưu tiên sữa mẹ/công thức sớm. TPN ngắn hạn. Cai khi uống được 80% nhu cầu.'},
-  sick:{tf:80, gir:5,pro:2.5,lip:1.5,na:2,k:2,ca:1.5,phos:1.2,mg:0.25,zn:300,note:'Bệnh nặng/PT: Hạn chế dịch, tăng protein. Thận trọng Lipid nếu nhiễm trùng nặng (TG cao).'},
-};
+// Phác đồ mặc định, mục tiêu, chế phẩm, dung dịch gốc và ngưỡng: đọc từ data-tpn-products (không hard-code)
+function TPP(id){return rec('tpn-products',id)}                          // bản ghi bất kỳ
+function TP(id){return TPP(id).value}                                   // tham số số
+function tpnKind(k){return DATA['tpn-products'].records.filter(r=>r.kind===k)}
+function tpnRegimen(t){return tpnKind('regimen').find(r=>r.id===t)||TPP('vlbw')}
+function tpnProg(t){return tpnKind('progression').find(r=>r.applies_to.includes(t)).rows}
+function stockLbl(id){const r=TPP(id);return r.name+' ('+String(r.conc).replace('.',',')+' '+r.conc_unit+')'}
+function addVol(id,wt){const r=TPP(id);return Math.min(r.max_ml,r.ml_per_kg*wt)}       // thể tích phụ gia/ngày
+// Sinh danh sách chọn (phân loại, acid amin, lipid) từ dữ liệu – giữ lựa chọn hiện tại
+function buildTPNSelects(){
+  const fill=(id,list,lab,def)=>{const el=document.getElementById(id);if(!el)return;const cur=el.value;
+    el.innerHTML=list.map(r=>`<option value="${r.id}">${lab(r)}</option>`).join('');
+    if(list.some(r=>r.id===cur))el.value=cur;else if(def&&list.some(r=>r.id===def))el.value=def;};
+  fill('tpn-type',tpnKind('regimen'),r=>r.label,'vlbw');
+  fill('tpn-aa',tpnKind('amino_acid'),r=>r.name);
+  fill('tpn-lipid-src',tpnKind('lipid'),r=>r.name);
+  const v=document.querySelector('#tpn-vit option[value="yes"]');
+  if(v){const so=TPP('soluvit'),vl=TPP('vitalipid');v.textContent=`Có – ${so.name} ${so.ml_per_kg} mL/kg (≤${so.max_ml} mL) + ${vl.name} ${vl.ml_per_kg} mL/kg (≤${vl.max_ml} mL)`}
+}
+try{buildTPNSelects()}catch(e){console.error(e)}
 
 function applyDefaults(){
   const t=document.getElementById('tpn-type').value;
-  const d=TPN_DEFAULTS[t];
-  if(!d)return;
+  const reg=tpnRegimen(t);if(!reg)return;
+  const d=reg.defaults;
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v;};
   set('tpn-tf',d.tf);set('tpn-gir',d.gir);set('tpn-pro',d.pro);set('tpn-lip',d.lip);
   set('tpn-na',d.na);set('tpn-k',d.k);set('tpn-ca',d.ca);set('tpn-phos',d.phos);
@@ -4686,27 +6864,21 @@ function calcTPN(){
   if(!resDiv)return;
   if(wt<0.3||wt>10){resDiv.innerHTML='<div class="alert alert-warn">⚠️ Cân nặng ngoài phạm vi (0.3–10 kg)</div>';return;}
 
-  // ── AA & LIPID SOURCE DATA ──
-  const aaInfo={
-    primene:    {name:'Primene 10%',      pct:10, osmPerML:780, note:'Đặc hiệu SS: giàu Taurine, Cystine, Tyrosine'},
-    trophamine: {name:'TrophAmine 6%',    pct:6,  osmPerML:525, note:'pH thấp → tăng độ hoà tan Ca/P'},
-    aminoven:   {name:'Aminoven Infant 10%',pct:10,osmPerML:885,note:'Đặc hiệu trẻ em'},
-    vaminolact: {name:'Vaminolact 6.5%',  pct:6.5,osmPerML:510, note:'Phổ AA gần sữa mẹ'},
-  };
-  const lipInfo={
-    smoflipid20: {name:'SMOFlipid 20%', calG:10, concG:0.2, note:'SMOF (soy/MCT/olive/fish) – ưu tiên VLBW'},
-    intralipid20:{name:'Intralipid 20%',calG:10, concG:0.2, note:'Soy-based'},
-    clinolipid20:{name:'ClinOleic 20%', calG:10, concG:0.2, note:'Olive+Soy, ít PUFA'},
-    intralipid10:{name:'Intralipid 10%',calG:11, concG:0.1, note:'10%: dùng khi hạn chế thể tích'},
-  };
-  const aa  = aaInfo[aaSrc]||aaInfo.primene;
-  const lipE= lipInfo[lipSrc]||lipInfo.smoflipid20;
+  // ── CHẾ PHẨM (data-tpn-products) ──
+  const aaR = tpnKind('amino_acid').find(r=>r.id===aaSrc)||tpnKind('amino_acid')[0];
+  const lpR = tpnKind('lipid').find(r=>r.id===lipSrc)||tpnKind('lipid')[0];
+  const aa  = {name:aaR.name,pct:aaR.pct,osmPerML:aaR.osm_mOsm_L,note:aaR.note};
+  const lipE= {name:lpR.name,calG:lpR.kcal_g,concG:lpR.conc_g_mL,note:lpR.note};
+  const reg = tpnRegimen(type);
+  const LR  = TPP('lab_ranges').ranges, ER=TPP('elec_ref').values;
+  const st  = {d50:TPP('dextrose50'),na:TPP('nacl234'),k:TPP('kcl15'),ca:TPP('cagluc10'),p:TPP('kh2po4'),mg:TPP('mgso4_50')};
+  const ped = TPP('peditrace'), solu=TPP('soluvit'), vitl=TPP('vitalipid');
 
   // ── ENTERAL ──
   const entVolDay = r1(enteral*wt);
   const entGlucG  = r2(entVolDay*entGluc/100);
   const entProG   = r2(entVolDay*entPro/100);
-  const entCal    = R(entGlucG*3.8+entProG*4+entVolDay*0.035*9);
+  const entCal    = R(entGlucG*TP('kcal_enteral_cho')+entProG*TP('kcal_protein')+entVolDay*TP('enteral_fat_g_mL')*TP('kcal_fat_enteral'));
 
   // ── IV DAILY ──
   const proIV    = r2(pro*wt);
@@ -4719,8 +6891,8 @@ function calcTPN(){
   const phosIV   = r2(phos*wt);
   const mgIV     = r2(mg*wt);
   const znIV     = R(zn*wt);
-  const vitVol   = vit==='yes'?r1(Math.min(10,wt)):0;          // Soluvit N 1 mL/kg (≤10 mL) – vào túi dung dịch nước
-  const vitLipVol= vit==='yes'?r1(Math.min(10,4*wt)):0;        // Vitalipid N Infant 4 mL/kg (≤10 mL) – vào lipid
+  const vitVol   = vit==='yes'?r1(addVol('soluvit',wt)):0;     // vitamin tan trong nước – vào túi dung dịch nước
+  const vitLipVol= vit==='yes'?r1(addVol('vitalipid',wt)):0;   // vitamin tan trong dầu – vào lipid
 
   // ── VOLUMES (tính cho 24 giờ; túi dung dịch nước = tổng dịch IV − nhũ dịch lipid) ──
   const lipVol   = r1(lipIV/lipE.concG);
@@ -4730,38 +6902,39 @@ function calcTPN(){
   const prepVol  = Math.max(vol,aqVol);                        // thể tích pha chế (≥ thể tích truyền; phần dư để mồi dây)
   const f        = aqVol>0?prepVol/aqVol:1;                    // hệ số pha chế
   const aaVol    = r1(proIV/(aa.pct/100)*f);
-  const d50Vol   = r1(glucIV/0.5*f);
-  const kFromP   = phosIV;                                     // KH₂PO₄: 1 mmol K⁺ / 1 mmol phosphat
+  const d50Vol   = r1(glucIV/st.d50.conc*f);
+  const kFromP   = phosIV*(st.p.k_per_mmol_p||0);              // K⁺ đi kèm muối phosphat
   const kclIV    = Math.max(0,kIV-kFromP);
-  const naVol    = r1(naIV/4*f);           // NaCl 23,4% = 4 mmol/mL
-  const kVol     = r1(kclIV/2*f);          // KCl 15% = 2 mmol/mL
-  const caVol    = r1(caIV/0.46*f);        // Calci gluconat 10% = 0,46 mEq/mL (0,23 mmol/mL)
-  const phosVol  = r1(phosIV/1.0*f);       // KH₂PO₄ 1 mmol/mL
-  const mgVol    = r2(mgIV/4*f);           // MgSO₄ 50% = 4 mEq/mL
-  const traceVol = r1(Math.min(15,wt)*f);  // Peditrace 1 mL/kg (≤15 mL)
+  const naVol    = r1(naIV/st.na.conc*f);
+  const kVol     = r1(kclIV/st.k.conc*f);
+  const caVol    = r1(caIV/st.ca.conc*f);
+  const phosVol  = r1(phosIV/st.p.conc*f);
+  const mgVol    = r2(mgIV/st.mg.conc*f);
+  const traceVol = r1(addVol('peditrace',wt)*f);
   const vitVolP  = r1(vitVol*f);
   const elecVol  = naVol+kVol+caVol+phosVol+mgVol+traceVol+vitVolP;
   const wfiRaw   = prepVol-d50Vol-aaVol-elecVol;
   const wfiVol   = r1(Math.max(0,wfiRaw));
   const glucPct  = aqVol>0?r2(glucIV/aqVol*100):0;
+  const gMaxP    = TP('gluc_max_peripheral_pct'), gCauP=TP('gluc_caution_peripheral_pct');
   const bagRate  = r2(aqVol/24);
-  const znPedi   = R(250*Math.min(15,wt));                     // Peditrace: Zn 250 mcg/mL
+  const znPedi   = R(ped.zn_mcg_per_ml*addVol('peditrace',wt)); // Zn từ chế phẩm vi chất
   const znExtra  = Math.max(0,R(zn*wt-znPedi));
 
   // ── OSMOLARITY (ước tính, mOsm/L túi dung dịch nước) ──
   const cL=x=>aqVol>0?x/aqVol*1000:0;                          // lượng/ngày → nồng độ /L
-  const osmGluc  = R(glucPct*50.5);                            // dextrose monohydrat ~50,5 mOsm/L mỗi 1%
+  const osmGluc  = R(glucPct*TP('osm_dextrose_pct'));
   const osmAA    = R(aqVol>0?(proIV/(aa.pct/100))/aqVol*aa.osmPerML:0);
-  const osmNa    = R(cL(naIV)*2);
-  const osmK     = R(cL(kIV)*2);
-  const osmOther = R(cL(caIV)*1.4+cL(mgIV)*1+cL(phosIV)*1);      // hệ số ước tính ASPEN: Ca 1,4 mOsm/mEq; Mg 1 mOsm/mEq; phosphat 1 mOsm/mmol
+  const osmNa    = R(cL(naIV)*TP('osm_na_k'));
+  const osmK     = R(cL(kIV)*TP('osm_na_k'));
+  const osmOther = R(cL(caIV)*TP('osm_ca')+cL(mgIV)*TP('osm_mg')+cL(phosIV)*TP('osm_p'));   // hệ số ước tính ASPEN
   const osmTotal = R(osmGluc+osmAA+osmNa+osmK+osmOther);
-  const osmLimit = route==='peripheral'?900:3000;
+  const osmLimit = route==='peripheral'?TP('osm_limit_peripheral'):TP('osm_limit_central');
   const osmOK    = osmTotal<=osmLimit;
 
   // ── CALORIES ──
-  const calGluc  = R(glucIV*3.4);
-  const calPro   = R(proIV*4);
+  const calGluc  = R(glucIV*TP('kcal_glucose'));
+  const calPro   = R(proIV*TP('kcal_protein'));
   const calLip   = R(lipIV*lipE.calG);
   const calIV    = R(calGluc+calPro+calLip);
   const calKgIV  = r1(calIV/wt);
@@ -4770,62 +6943,50 @@ function calcTPN(){
   const npcCal   = R(calGluc+calLip);
   const nG       = r2(proIV/6.25);
   const npcRatio = nG>0?R(npcCal/nG):0;
-  const nLoss    = r2(wt*(type==='elbw'||type==='vlbw'?0.2:0.15));
+  const nLoss    = r2(wt*reg.n_loss_g_kg);                     // mất N ước tính (heuristic)
   const nBal     = r2(nG-nLoss);
 
   // ── CA×P ──
   // Nguy cơ kết tủa tính theo NỒNG ĐỘ trong túi: Ca (mEq/L) × P (mmol/L); ngưỡng tham khảo ≤200 (thay đổi theo AA, pH, nhiệt độ – đối chiếu đường cong hòa tan của nhà sản xuất)
   const caProd   = R(cL(caIV)*cL(phosIV));
   const caPMol   = phosIV>0?r2((caIV*0.5)/phosIV):0;          // tỷ lệ mol Ca:P
-  const caPOK    = caProd<=200;
+  const capLim   = TP('cap_product_limit');
+  const caPOK    = caProd<=capLim;
 
   // ── PNAC RISK ──
   let pnacSc=0;
-  if(dol>14)pnacSc++;if(type==='elbw'||type==='vlbw')pnacSc++;
-  if(enteral<30)pnacSc++;if(labBili>50)pnacSc++;if(labALT>40)pnacSc++;
+  if(dol>TP('pnac_dol'))pnacSc++;if(type==='elbw'||type==='vlbw')pnacSc++;
+  if(enteral<TP('pnac_enteral'))pnacSc++;if(labBili>TP('pnac_dbili'))pnacSc++;if(labALT>TP('alt_high'))pnacSc++;
   const pnacRisk=pnacSc>=4?'Cao':pnacSc>=2?'Trung bình':'Thấp';
 
   // ── TARGETS ──
-  const TGTS={
-    elbw:{tfR:'130–180',girR:'4–6→12',proR:'3.5–4.5',lipR:'0.5→3.5',calR:'105–135',caR:'2.5–4.0',phosR:'1.8–2.5'},
-    vlbw:{tfR:'120–150',girR:'6–8→12',proR:'3.0–4.0',lipR:'1.0→3.5',calR:'105–130',caR:'2.0–3.5',phosR:'1.5–2.2'},
-    lbw: {tfR:'110–140',girR:'6–8→10',proR:'2.5–3.5',lipR:'1.0→3.0',calR:'100–120',caR:'1.5–2.5',phosR:'1.2–2.0'},
-    term:{tfR:'90–120', girR:'5–8',    proR:'1.5–2.5',lipR:'1.0–2.5',calR:'90–110', caR:'1.5–2.0',phosR:'1.0–1.5'},
-    sick:{tfR:'80–120', girR:'4–8',    proR:'2.0–3.5',lipR:'0.5→2.5',calR:'80–100', caR:'1.5–2.0',phosR:'1.0–1.5'},
-  };
-  const tgt=TGTS[type]||TGTS.vlbw;
+  const tgt=reg.targets;
+  const npcMin=TP('npc_n_min'),npcMax=TP('npc_n_max'),tgR=TP('tg_reduce'),tgM=TP('tg_min_dose');
 
   // ── ALERTS ──
   const alerts=[];
-  if(!osmOK) alerts.push({t:'danger',m:`Osmolality ${osmTotal} mOsm/L vượt giới hạn ${route==='peripheral'?'ngoại vi (≤900)':'trung tâm (≤3000)'} mOsm/L!`});
-  if(!caPOK) alerts.push({t:'warn',m:`Ca×P = ${caProd} (mEq/L × mmol/L) >200 – Nguy cơ kết tủa calci phosphat! Tăng thể tích, giảm Ca/P hoặc dùng phosphat hữu cơ (glycerophosphat)`});
+  if(!osmOK) alerts.push({t:'danger',m:`Áp lực thẩm thấu ${osmTotal} mOsm/L vượt giới hạn ${route==='peripheral'?'ngoại vi':'trung tâm'} (≤${osmLimit} mOsm/L)!`});
+  if(!caPOK) alerts.push({t:'warn',m:`Ca×P = ${caProd} (mEq/L × mmol/L) >${capLim} – Nguy cơ kết tủa calci phosphat! Tăng thể tích, giảm Ca/P hoặc dùng phosphat hữu cơ (glycerophosphat)`});
   if(wfiRaw<0) alerts.push({t:'danger',m:`Tổng thể tích thành phần vượt thể tích túi ${R(prepVol)} mL – tăng tổng dịch hoặc giảm thành phần`});
-  if(kFromP>kIV) alerts.push({t:'warn',m:`K⁺ từ KH₂PO₄ (${r1(kFromP)} mmol) đã vượt K⁺ mục tiêu (${r1(kIV)} mmol) – cân nhắc natri glycerophosphat`});
+  if(kFromP>kIV) alerts.push({t:'warn',m:`K⁺ từ ${st.p.name} (${r1(kFromP)} mmol) đã vượt K⁺ mục tiêu (${r1(kIV)} mmol) – cân nhắc natri glycerophosphat`});
   if(vol<aqVol) alerts.push({t:'info',m:`Thể tích pha chế nhập (${vol} mL) nhỏ hơn thể tích cần truyền 24 giờ (${aqVol} mL) – đã tự dùng ${aqVol} mL`});
-  if(glucPct>12.5&&route==='peripheral') alerts.push({t:'danger',m:`Glucose ${glucPct}% – Phải dùng đường TRUNG TÂM (>12.5%)!`});
-  if(labTG>3.0&&labTG<=4.5) alerts.push({t:'warn',m:`TG ${labTG} mmol/L >3,0 – Giảm liều lipid (ESPGHAN 2018), kiểm tra lại 24–48 giờ`});
-  if(labTG>4.5) alerts.push({t:'danger',m:`TG ${labTG} mmol/L >4,5 – Giảm lipid xuống liều tối thiểu phòng thiếu acid béo thiết yếu (0,5–1 g/kg/ngày) hoặc tạm ngừng ngắn`});
-  if(labGluc>10) alerts.push({t:'warn',m:`Glucose máu ${labGluc} mmol/L >10 – Tăng glucose máu: giảm GIR; insulin nếu >10 mmol/L kéo dài dù đã giảm GIR (ESPGHAN 2018)`});
-  if(gir>12) alerts.push({t:'warn',m:`GIR ${gir} mg/kg/phút >12 – vượt mức tối đa khuyến cáo ở sơ sinh (ESPGHAN 2018)`});
-  if(pro>4) alerts.push({t:'warn',m:`Protein ${pro} g/kg/ngày >4 – vượt mức khuyến cáo ESPGHAN 2018 (non tháng 2,5–3,5)`});
-  if(labGluc<2.6) alerts.push({t:'danger',m:`Glucose máu ${labGluc} mmol/L – HẠ ĐH NẶNG! Tăng GIR ngay`});
-  if(lip>4) alerts.push({t:'danger',m:`Lipid ${lip} g/kg/ngày >4 – Vượt liều tối đa ESPGHAN 2018!`});
-  if(calKgIV<80) alerts.push({t:'warn',m:`Calo IV ${calKgIV} kcal/kg/ng thấp – Chưa đủ nhu cầu tối thiểu`});
-  if(npcRatio<100) alerts.push({t:'warn',m:`NPC:N = ${npcRatio}:1 <100 – Protein đang bị đốt cháy làm năng lượng`});
-  if(labK<3.5) alerts.push({t:'danger',m:`K ${labK} mmol/L – HẠ KALI! Tăng KCl trong TPN`});
-  if(labK>6.0) alerts.push({t:'danger',m:`K ${labK} mmol/L – TĂNG KALI! Bỏ K khỏi TPN, điều trị khẩn`});
-  if(labNa>150) alerts.push({t:'warn',m:`Na ${labNa} mmol/L – Tăng Na máu. Giảm Na, tăng nước tự do`});
-  if(labNa<130) alerts.push({t:'warn',m:`Na ${labNa} mmol/L – Hạ Na máu. Tăng Na trong TPN`});
+  if(glucPct>gMaxP&&route==='peripheral') alerts.push({t:'danger',m:`Glucose ${glucPct}% – Phải dùng đường TRUNG TÂM (>${gMaxP}%)!`});
+  if(labTG>tgR&&labTG<=tgM) alerts.push({t:'warn',m:`TG ${labTG} mmol/L >${tgR} – Giảm liều lipid (ESPGHAN 2018), kiểm tra lại 24–48 giờ`});
+  if(labTG>tgM) alerts.push({t:'danger',m:`TG ${labTG} mmol/L >${tgM} – Giảm lipid xuống liều tối thiểu phòng thiếu acid béo thiết yếu (0,5–1 g/kg/ngày) hoặc tạm ngừng ngắn`});
+  if(labGluc>TP('gluc_high')) alerts.push({t:'warn',m:`Glucose máu ${labGluc} mmol/L >${TP('gluc_high')} – Tăng glucose máu: giảm GIR; insulin nếu >10 mmol/L kéo dài dù đã giảm GIR (ESPGHAN 2018)`});
+  if(gir>TP('gir_max')) alerts.push({t:'warn',m:`GIR ${gir} mg/kg/phút >${TP('gir_max')} – vượt mức tối đa khuyến cáo ở sơ sinh (ESPGHAN 2018)`});
+  if(pro>TP('protein_max')) alerts.push({t:'warn',m:`Protein ${pro} g/kg/ngày >${TP('protein_max')} – vượt mức khuyến cáo ESPGHAN 2018 (non tháng 2,5–3,5)`});
+  if(labGluc<TP('gluc_low')) alerts.push({t:'danger',m:`Glucose máu ${labGluc} mmol/L – HẠ ĐH NẶNG! Tăng GIR ngay`});
+  if(lip>TP('lipid_max')) alerts.push({t:'danger',m:`Lipid ${lip} g/kg/ngày >${TP('lipid_max')} – Vượt liều tối đa ESPGHAN 2018!`});
+  if(calKgIV<TP('kcal_iv_min')) alerts.push({t:'warn',m:`Calo IV ${calKgIV} kcal/kg/ng thấp – Chưa đủ nhu cầu tối thiểu`});
+  if(npcRatio<npcMin) alerts.push({t:'warn',m:`NPC:N = ${npcRatio}:1 <${npcMin} – Protein đang bị đốt cháy làm năng lượng`});
+  if(labK<TP('k_low')) alerts.push({t:'danger',m:`K ${labK} mmol/L – HẠ KALI! Tăng KCl trong TPN`});
+  if(labK>TP('k_high')) alerts.push({t:'danger',m:`K ${labK} mmol/L – TĂNG KALI! Bỏ K khỏi TPN, điều trị khẩn`});
+  if(labNa>TP('na_high')) alerts.push({t:'warn',m:`Na ${labNa} mmol/L – Tăng Na máu. Giảm Na, tăng nước tự do`});
+  if(labNa<TP('na_low')) alerts.push({t:'warn',m:`Na ${labNa} mmol/L – Hạ Na máu. Tăng Na trong TPN`});
 
-  // ── PROGRESSION TABLE ──
-  const prog=[
-    {d:'N1',tf:type==='elbw'?140:120,gir:type==='elbw'?4:6,pro:type==='elbw'?2.5:2.0,lip:0.5,na:0,k:0},
-    {d:'N2',tf:type==='elbw'?140:120,gir:type==='elbw'?5:7,pro:type==='elbw'?3.0:2.5,lip:1.0,na:1.5,k:1.5},
-    {d:'N3',tf:140,gir:8,pro:type==='elbw'?3.5:3.0,lip:1.5,na:2,k:2},
-    {d:'N4',tf:150,gir:9,pro:type==='elbw'?4.0:3.0,lip:2.0,na:2.5,k:2.5},
-    {d:'N5',tf:160,gir:10,pro:type==='elbw'?4.0:3.5,lip:2.5,na:3,k:3},
-    {d:'N7+',tf:160,gir:11,pro:type==='elbw'?4.0:3.5,lip:3.0,na:3,k:3},
-  ];
+  // ── PROGRESSION TABLE (data-tpn-products) ──
+  const prog=tpnProg(type);
 
   // ── SAVE FOR AI / PRINT ──
   _tpnData={wt,bwt,ga,dol,type,ptName,mrn,dr,ptDate,dx,route,aaSrc,lipSrc,vit,
@@ -4836,7 +6997,7 @@ function calcTPN(){
     calGluc,calPro,calLip,calIV,calKgIV,calAll,calKgAll,npcRatio,nG,nBal,
     entVolDay,entGlucG,entProG,entCal,pnacSc,pnacRisk,
     labGluc,labNa,labK,labCa,labPhos,labMg,labTG,labBili,labCr,labBUN,labALT,labAlb,
-    aa,lipE,tgt,alerts,defNote:(TPN_DEFAULTS[type]||{}).note||''
+    aa,lipE,tgt,alerts,defNote:reg.note||'',stockNames:{d50:st.d50.name,na:stockLbl('nacl234'),k:stockLbl('kcl15'),ca:stockLbl('cagluc10'),p:stockLbl('kh2po4'),mg:stockLbl('mgso4_50')},ped:ped.name+' '+ped.ml_per_kg+' mL/kg (≤'+ped.max_ml+' mL)',solu:solu.name,vitl:vitl.name,capLim
   };
 
   // ── CALORIE BAR ──
@@ -4857,11 +7018,11 @@ function calcTPN(){
       ${metricCard('GIR',gir+' mg/kg/ph',glucKgD+' g/kg/ng')}
       ${metricCard('Protein IV',pro+' g/kg/ng',proIV+' g')}
       ${metricCard('Lipid',lip+' g/kg/ng',lipVol+' mL')}
-      ${metricCard('NPC:N',npcRatio+':1',npcRatio>=100&&npcRatio<=250?'✅ OK':'⚠️')}
+      ${metricCard('NPC:N',npcRatio+':1',npcRatio>=npcMin&&npcRatio<=npcMax?'✅ OK':'⚠️')}
       ${metricCard('Cân bằng N (ước tính)',(nBal>0?'+':'')+nBal+' gN',nBal>=0?'✅ Dương':'⚠️ Âm')}
       ${metricCard('Osmolality',osmTotal+' mOsm/L',osmOK?'✅ OK':'🚨 Vượt')}
-      ${metricCard('Ca×P (nồng độ)',caProd,caPOK?'✅ ≤200':'⚠️ >200')}
-      ${metricCard('Gluc túi',glucPct+'%',glucPct>12.5?'⚠️ TT':'✅')}
+      ${metricCard('Ca×P (nồng độ)',caProd,caPOK?'✅ ≤'+capLim:'⚠️ >'+capLim)}
+      ${metricCard('Gluc túi',glucPct+'%',glucPct>gMaxP?'⚠️ TT':'✅')}
       ${metricCard('Tốc độ túi nước',bagRate+' mL/h',aqVol+' mL/24h')}
       ${metricCard('PNAC Risk',pnacRisk,pnacSc+'/5')}
     </div>
@@ -4878,12 +7039,12 @@ function calcTPN(){
   <div class="card">
     <div class="card-title">🧮 Thành Phần Dinh Dưỡng (IV + EN)</div>
     <table class="result-table"><thead><tr><th>Thành phần</th><th>/kg/ng IV</th><th>IV/ng</th><th>EN/ng</th><th>Tổng/ng</th><th>Mục tiêu</th><th>TT</th></tr></thead><tbody>
-      <tr><td>🍬 Glucose (GIR)</td><td>${gir} mg/kg/ph<br><small>${glucKgD} g/kg</small></td><td>${glucIV} g</td><td>${entGlucG} g</td><td><b>${r2(glucIV+entGlucG)} g</b></td><td>${tgt.girR}</td><td>${rb(gir,12,13)}</td></tr>
-      <tr><td>🥚 Protein (${aa.name})</td><td>${pro} g</td><td>${proIV} g<br><small>${nG} g N</small></td><td>${entProG} g</td><td><b>${r2(proIV+entProG)} g (${r2((proIV+entProG)/wt)}/kg)</b></td><td>${tgt.proR}</td><td>${rb(pro,4,4.5)}</td></tr>
-      <tr><td>🛢️ Lipid (${lipE.name})</td><td>${lip} g</td><td>${lipIV} g<br><small>${lipVol} mL</small></td><td>–</td><td><b>${lipIV} g</b></td><td>${tgt.lipR}</td><td>${rb(lip,4,4)}</td></tr>
-      <tr class="highlight-row"><td>🔥 Calo tổng</td><td>${calKgIV} kcal/kg</td><td>${calIV} kcal</td><td>${entCal} kcal</td><td><b>${calAll} kcal (${calKgAll}/kg)</b></td><td>${tgt.calR}</td><td>${rb(calKgIV,80,100)}</td></tr>
+      <tr><td>🍬 Glucose (GIR)</td><td>${gir} mg/kg/ph<br><small>${glucKgD} g/kg</small></td><td>${glucIV} g</td><td>${entGlucG} g</td><td><b>${r2(glucIV+entGlucG)} g</b></td><td>${tgt.girR}</td><td>${rb(gir,TP('gir_max'),TP('gir_warn'))}</td></tr>
+      <tr><td>🥚 Protein (${aa.name})</td><td>${pro} g</td><td>${proIV} g<br><small>${nG} g N</small></td><td>${entProG} g</td><td><b>${r2(proIV+entProG)} g (${r2((proIV+entProG)/wt)}/kg)</b></td><td>${tgt.proR}</td><td>${rb(pro,TP('protein_max'),TP('protein_warn'))}</td></tr>
+      <tr><td>🛢️ Lipid (${lipE.name})</td><td>${lip} g</td><td>${lipIV} g<br><small>${lipVol} mL</small></td><td>–</td><td><b>${lipIV} g</b></td><td>${tgt.lipR}</td><td>${rb(lip,TP('lipid_max'),TP('lipid_max'))}</td></tr>
+      <tr class="highlight-row"><td>🔥 Calo tổng</td><td>${calKgIV} kcal/kg</td><td>${calIV} kcal</td><td>${entCal} kcal</td><td><b>${calAll} kcal (${calKgAll}/kg)</b></td><td>${tgt.calR}</td><td>${rb(calKgIV,TP('kcal_iv_min'),TP('kcal_iv_ok'))}</td></tr>
       <tr><td colspan="7" style="font-size:11.5px;padding:.35rem .75rem;background:#f8fdfd">
-        NPC:N = <b>${npcRatio}:1</b> (KH 100–250) · N Balance = <b>${nBal} g N/ng</b> · NPC = ${npcCal} kcal · N = ${nG} g
+        NPC:N = <b>${npcRatio}:1</b> (KH ${npcMin}–${npcMax}) · N Balance = <b>${nBal} g N/ng</b> · NPC = ${npcCal} kcal · N = ${nG} g
       </td></tr>
     </tbody></table>
   </div>
@@ -4891,32 +7052,32 @@ function calcTPN(){
   <div class="card">
     <div class="card-title">⚗️ Điện Giải &amp; Vi Chất</div>
     <table class="result-table"><thead><tr><th>Điện giải</th><th>/kg/ng</th><th>Lượng/ng</th><th>Dung dịch gốc</th><th>Thể tích (mL)</th><th>XN hiện tại</th><th>Khuyến cáo</th></tr></thead><tbody>
-      <tr><td>🧂 Natri Na⁺</td><td>${na} mEq</td><td>${naIV} mEq</td><td>NaCl 23.4% (4 mEq/mL)</td><td><b>${naVol}</b></td><td>${labBadge(labNa,135,145)}</td><td>2–4 mEq/kg/ng</td></tr>
-      <tr><td>⚗️ Kali K⁺</td><td>${k} mEq</td><td>${kIV} mEq<br><small>${r1(kFromP)} từ KH₂PO₄ + ${r1(kclIV)} từ KCl</small></td><td>KCl 15% (2 mEq/mL)</td><td><b>${kVol}</b></td><td>${labBadge(labK,3.5,5.5)}</td><td>2–3 mEq/kg/ng</td></tr>
-      <tr><td>🦴 Canxi Ca²⁺</td><td>${ca} mEq</td><td>${caIV} mEq</td><td>Ca Gluconate 10% (0.46 mEq/mL)</td><td><b>${caVol}</b></td><td>${labBadge(labCa,1.1,1.35)}</td><td>${tgt.caR}</td></tr>
-      <tr><td>🦷 Phosphat PO₄³⁻</td><td>${phos} mmol</td><td>${phosIV} mmol</td><td>KH₂PO₄ 1 mmol/mL</td><td><b>${phosVol}</b></td><td>${labBadge(labPhos,1.5,2.5)}</td><td>${tgt.phosR}</td></tr>
-      <tr><td>💊 Magie Mg²⁺</td><td>${mg} mEq</td><td>${mgIV} mEq</td><td>MgSO₄ 50% (4 mEq/mL)</td><td><b>${mgVol}</b></td><td>${labBadge(labMg,0.7,1.0)}</td><td>0.2–0.5 mEq/kg</td></tr>
-      <tr><td>🔬 Vi chất (Trace)</td><td>${zn} mcg Zn</td><td>${znIV} mcg</td><td>Peditrace (1 mL/kg; Zn 250 mcg/mL)</td><td><b>${traceVol}</b></td><td>–</td><td>Peditrace cung cấp ${znPedi} mcg Zn${znExtra>0?` – cần bổ sung kẽm riêng ${znExtra} mcg/ngày`:''}</td></tr>
-      <tr class="warn-row"><td>Tỷ lệ mol Ca:P</td><td colspan="2">${caPMol}:1</td><td colspan="4">ESPGHAN 2018: 0,8–1,0 (giai đoạn sớm) → ~1,3 (ổn định; ≈1,7:1 theo khối lượng) · Ca×P (nồng độ) = ${caProd} ${caPOK?'✅':'⚠️ >200'}</td></tr>
+      <tr><td>🧂 Natri Na⁺</td><td>${na} mEq</td><td>${naIV} mEq</td><td>${stockLbl('nacl234')}</td><td><b>${naVol}</b></td><td>${labBadge(labNa,...LR.na)}</td><td>${ER.na}</td></tr>
+      <tr><td>⚗️ Kali K⁺</td><td>${k} mEq</td><td>${kIV} mEq<br><small>${r1(kFromP)} từ muối phosphat + ${r1(kclIV)} từ KCl</small></td><td>${stockLbl('kcl15')}</td><td><b>${kVol}</b></td><td>${labBadge(labK,...LR.k)}</td><td>${ER.k}</td></tr>
+      <tr><td>🦴 Canxi Ca²⁺</td><td>${ca} mEq</td><td>${caIV} mEq</td><td>${stockLbl('cagluc10')}</td><td><b>${caVol}</b></td><td>${labBadge(labCa,...LR.ca)}</td><td>${tgt.caR}</td></tr>
+      <tr><td>🦷 Phosphat PO₄³⁻</td><td>${phos} mmol</td><td>${phosIV} mmol</td><td>${stockLbl('kh2po4')}</td><td><b>${phosVol}</b></td><td>${labBadge(labPhos,...LR.phos)}</td><td>${tgt.phosR}</td></tr>
+      <tr><td>💊 Magie Mg²⁺</td><td>${mg} mEq</td><td>${mgIV} mEq</td><td>${stockLbl('mgso4_50')}</td><td><b>${mgVol}</b></td><td>${labBadge(labMg,...LR.mg)}</td><td>${ER.mg}</td></tr>
+      <tr><td>🔬 Vi chất (Trace)</td><td>${zn} mcg Zn</td><td>${znIV} mcg</td><td>${ped.name} (${ped.ml_per_kg} mL/kg, ≤${ped.max_ml} mL; Zn ${ped.zn_mcg_per_ml} mcg/mL)</td><td><b>${traceVol}</b></td><td>–</td><td>${ped.name} cung cấp ${znPedi} mcg Zn${znExtra>0?` – cần bổ sung kẽm riêng ${znExtra} mcg/ngày`:''}</td></tr>
+      <tr class="warn-row"><td>Tỷ lệ mol Ca:P</td><td colspan="2">${caPMol}:1</td><td colspan="4">ESPGHAN 2018: 0,8–1,0 (giai đoạn sớm) → ~1,3 (ổn định; ≈1,7:1 theo khối lượng) · Ca×P (nồng độ) = ${caProd} ${caPOK?'✅':'⚠️ >'+capLim}</td></tr>
     </tbody></table>
   </div>
 
   <div class="card">
     <div class="card-title">📋 Y Lệnh Túi TPN – pha ${R(prepVol)} mL · truyền ${aqVol} mL (${bagRate} mL/giờ × 24h)</div>
-    <div class="alert alert-info">📌 Thứ tự pha chế: WFI → D50% → AA → Na → K → Phosphat (⚠️) → Ca Gluconate (⚠️) → Mg → Vi chất → Vitamin. Khuấy nhẹ sau mỗi bước. Lipid truyền riêng.</div>
+    <div class="alert alert-info">📌 Thứ tự pha chế: WFI → ${st.d50.name} → acid amin → Na → K → phosphat (⚠️) → calci (⚠️) → Mg → vi chất → vitamin. Khuấy nhẹ sau mỗi bước. Lipid truyền riêng.</div>
     <table class="result-table"><thead><tr><th>#</th><th>Thành phần</th><th>Dung dịch gốc</th><th style="text-align:center">Thể tích (mL)</th><th>Lượng &amp; Ghi chú</th></tr></thead><tbody>
       <tr style="background:#f0fdf4"><td>1</td><td>💧 Nước cất (WFI)</td><td>Water for Injection</td><td style="text-align:center;font-size:15px;font-weight:700">${wfiVol}</td><td>Thêm vào túi TRƯỚC, tráng đều</td></tr>
-      <tr><td>2</td><td>🍬 Dextrose</td><td>Dextrose 50% (D50%)</td><td style="text-align:center;font-size:15px;font-weight:700">${d50Vol}</td><td>${glucIV} g → ${glucPct}% trong túi · GIR ${gir} mg/kg/ph</td></tr>
+      <tr><td>2</td><td>🍬 Dextrose</td><td>${st.d50.name}</td><td style="text-align:center;font-size:15px;font-weight:700">${d50Vol}</td><td>${glucIV} g → ${glucPct}% trong túi · GIR ${gir} mg/kg/ph</td></tr>
       <tr><td>3</td><td>🥚 Amino Acid</td><td>${aa.name}</td><td style="text-align:center;font-size:15px;font-weight:700">${aaVol}</td><td>${proIV} g protein · ${aa.note}</td></tr>
-      <tr><td>4</td><td>🧂 Natri</td><td>NaCl 23.4% (4 mEq/mL)</td><td style="text-align:center;font-size:15px;font-weight:700">${naVol}</td><td>${naIV} mEq Na⁺</td></tr>
-      <tr><td>5</td><td>⚗️ Kali</td><td>KCl 15% (2 mEq/mL)</td><td style="text-align:center;font-size:15px;font-weight:700">${kVol}</td><td>${kIV} mEq K⁺</td></tr>
-      <tr style="background:#fff7ed"><td>6</td><td>⚠️ Phosphat – THÊM TRƯỚC</td><td>KH₂PO₄ 1 mmol/mL</td><td style="text-align:center;font-size:15px;font-weight:700">${phosVol}</td><td>${phosIV} mmol · Khuấy kỹ trước bước 7</td></tr>
-      <tr style="background:#fff7ed"><td>7</td><td>⚠️ Canxi – THÊM SAU</td><td>Ca Gluconate 10% (0.46 mEq/mL)</td><td style="text-align:center;font-size:15px;font-weight:700">${caVol}</td><td>${caIV} mEq · Ca×P product = ${caProd}</td></tr>
-      <tr><td>8</td><td>💊 Magie</td><td>MgSO₄ 50% (4 mEq/mL)</td><td style="text-align:center;font-size:15px;font-weight:700">${mgVol}</td><td>${mgIV} mEq Mg²⁺</td></tr>
-      <tr><td>9</td><td>🔬 Vi chất</td><td>Peditrace (1 mL/kg, max 15)</td><td style="text-align:center;font-size:15px;font-weight:700">${traceVol}</td><td>Zn ${znIV} mcg, Cu, Mn, Se, F, I</td></tr>
-      ${vit==='yes'?`<tr style="background:#fef3c7"><td>10</td><td>🫙 Vitamin tan trong nước</td><td>Soluvit N</td><td style="text-align:center;font-size:15px;font-weight:700">${vitVolP}</td><td>Soluvit N ${vitVol} mL/ngày (1 mL/kg, ≤10 mL)</td></tr>`:''}
+      <tr><td>4</td><td>🧂 Natri</td><td>${stockLbl('nacl234')}</td><td style="text-align:center;font-size:15px;font-weight:700">${naVol}</td><td>${naIV} mEq Na⁺</td></tr>
+      <tr><td>5</td><td>⚗️ Kali</td><td>${stockLbl('kcl15')}</td><td style="text-align:center;font-size:15px;font-weight:700">${kVol}</td><td>${kIV} mEq K⁺</td></tr>
+      <tr style="background:#fff7ed"><td>6</td><td>⚠️ Phosphat – THÊM TRƯỚC</td><td>${stockLbl('kh2po4')}</td><td style="text-align:center;font-size:15px;font-weight:700">${phosVol}</td><td>${phosIV} mmol · Khuấy kỹ trước bước 7</td></tr>
+      <tr style="background:#fff7ed"><td>7</td><td>⚠️ Canxi – THÊM SAU</td><td>${stockLbl('cagluc10')}</td><td style="text-align:center;font-size:15px;font-weight:700">${caVol}</td><td>${caIV} mEq · Ca×P product = ${caProd}</td></tr>
+      <tr><td>8</td><td>💊 Magie</td><td>${stockLbl('mgso4_50')}</td><td style="text-align:center;font-size:15px;font-weight:700">${mgVol}</td><td>${mgIV} mEq Mg²⁺</td></tr>
+      <tr><td>9</td><td>🔬 Vi chất</td><td>${ped.name} (${ped.ml_per_kg} mL/kg, ≤${ped.max_ml} mL)</td><td style="text-align:center;font-size:15px;font-weight:700">${traceVol}</td><td>Zn ${znIV} mcg, Cu, Mn, Se, F, I</td></tr>
+      ${vit==='yes'?`<tr style="background:#fef3c7"><td>10</td><td>🫙 Vitamin tan trong nước</td><td>${solu.name}</td><td style="text-align:center;font-size:15px;font-weight:700">${vitVolP}</td><td>${solu.name} ${vitVol} mL/ngày (${solu.ml_per_kg} mL/kg, ≤${solu.max_ml} mL)</td></tr>`:''}
       <tr style="background:#006d77;color:#fff"><td colspan="3"><b>🚀 TỐC ĐỘ TRUYỀN TPN (24h liên tục)</b></td><td style="text-align:center;font-size:16px;font-weight:800">${bagRate} mL/h</td><td>Bơm tiêm điện chính xác 0.1 mL/h</td></tr>
-      <tr style="background:#92400e;color:#fff"><td colspan="3"><b>🛢️ LIPID (${lipE.name}) – CHE ÁNH SÁNG</b></td><td style="text-align:center;font-size:16px;font-weight:800">${lipRate} mL/h</td><td>${lipVol} mL lipid ${vit==='yes'?`+ Vitalipid N Infant ${vitLipVol} mL (4 mL/kg, ≤10 mL)`:''} = ${lipTot} mL/24h</td></tr>
+      <tr style="background:#92400e;color:#fff"><td colspan="3"><b>🛢️ LIPID (${lipE.name}) – CHE ÁNH SÁNG</b></td><td style="text-align:center;font-size:16px;font-weight:800">${lipRate} mL/h</td><td>${lipVol} mL lipid ${vit==='yes'?`+ ${vitl.name} ${vitLipVol} mL (${vitl.ml_per_kg} mL/kg, ≤${vitl.max_ml} mL)`:''} = ${lipTot} mL/24h</td></tr>
     </tbody></table>
     <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.75rem">
       <div style="font-size:12px;padding:.4rem .75rem;background:var(--primary-light);border-radius:6px">📦 2–8°C · Dùng trong 24h</div>
@@ -4928,13 +7089,13 @@ function calcTPN(){
   <div class="card">
     <div class="card-title">🧪 Thẩm Thấu &amp; An Toàn</div>
     ${drugTable([
-      ['Áp lực thẩm thấu ước tính',osmTotal+' mOsm/L','Giới hạn '+(route==='peripheral'?'ngoại vi ≤900':'trung tâm')+' mOsm/L (ASPEN)',osmOK?'':'danger-row'],
-      ['Ca×P (nồng độ trong túi)',caProd+' (mEq/L × mmol/L)','≤200 tham khảo – đối chiếu đường cong hòa tan của nhà sản xuất AA',caPOK?'':'warn-row'],
+      ['Áp lực thẩm thấu ước tính',osmTotal+' mOsm/L','Giới hạn '+(route==='peripheral'?'ngoại vi':'trung tâm')+' ≤'+osmLimit+' mOsm/L (ASPEN)',osmOK?'':'danger-row'],
+      ['Ca×P (nồng độ trong túi)',caProd+' (mEq/L × mmol/L)','≤'+capLim+' tham khảo – đối chiếu đường cong hòa tan của nhà sản xuất AA',caPOK?'':'warn-row'],
       ['Tỷ lệ mol Ca:P',caPMol+' : 1','ESPGHAN 2018: 0,8–1,0 sớm → ~1,3 ổn định',''],
-      ['Glucose trong túi',glucPct+'%',glucPct>12.5?'BẮT BUỘC đường TT!':glucPct>10?'Ngoại vi thận trọng':'OK ngoại vi',glucPct>12.5?'danger-row':glucPct>10?'warn-row':''],
-      ['NPC:N Ratio',npcRatio+':1','KH 100–250:1 · <100: Protein làm NL · >250: Thừa NPC',npcRatio<100||npcRatio>250?'warn-row':''],
-      ['TG máu',labTG+' mmol/L',labTG<=3?'✅ ≤3,0 (ESPGHAN 2018)':labTG<=4.5?'⚠️ Giảm lipid':'🚨 Lipid liều tối thiểu/tạm ngừng',labTG>4.5?'danger-row':labTG>3?'warn-row':''],
-      ['Nguy cơ PNAC (điểm heuristic, chưa thẩm định)',pnacSc+'/5 – '+pnacRisk,'DoL>14, VLBW/ELBW, EN<30, bilirubin trực tiếp >50, ALT>40',pnacRisk==='Cao'?'danger-row':pnacRisk==='Trung bình'?'warn-row':''],
+      ['Glucose trong túi',glucPct+'%',glucPct>gMaxP?'BẮT BUỘC đường TT!':glucPct>gCauP?'Ngoại vi thận trọng':'OK ngoại vi',glucPct>gMaxP?'danger-row':glucPct>gCauP?'warn-row':''],
+      ['NPC:N Ratio',npcRatio+':1','KH '+npcMin+'–'+npcMax+':1 · <'+npcMin+': protein bị dùng làm năng lượng · >'+npcMax+': thừa NPC',npcRatio<npcMin||npcRatio>npcMax?'warn-row':''],
+      ['TG máu',labTG+' mmol/L',labTG<=tgR?'✅ ≤'+tgR+' (ESPGHAN 2018)':labTG<=tgM?'⚠️ Giảm lipid':'🚨 Lipid liều tối thiểu/tạm ngừng',labTG>tgM?'danger-row':labTG>tgR?'warn-row':''],
+      ['Nguy cơ PNAC (điểm heuristic, chưa thẩm định)',pnacSc+'/5 – '+pnacRisk,'DoL>'+TP('pnac_dol')+', VLBW/ELBW, EN<'+TP('pnac_enteral')+', bilirubin trực tiếp >'+TP('pnac_dbili')+', ALT>'+TP('alt_high'),pnacRisk==='Cao'?'danger-row':pnacRisk==='Trung bình'?'warn-row':''],
     ])}
   </div>
 
@@ -4943,23 +7104,25 @@ function calcTPN(){
     <table class="result-table"><thead><tr><th>Ngày</th><th>Dịch (mL/kg)</th><th>GIR</th><th>Protein (g/kg)</th><th>Lipid (g/kg)</th><th>Na</th><th>K</th></tr></thead><tbody>
       ${prog.map((p,i)=>`<tr ${i===0?'class="highlight-row"':''}><td><b>${p.d}</b></td><td>${p.tf}</td><td>${p.gir}</td><td>${p.pro}</td><td>${p.lip}</td><td>${p.na}</td><td>${p.k}</td></tr>`).join('')}
     </tbody></table>
-    <div class="alert alert-info" style="margin-top:.75rem">📌 ${(TPN_DEFAULTS[type]||{}).note||''}</div>
+    <div class="alert alert-info" style="margin-top:.75rem">📌 ${reg.note||''}</div>
   </div>
 
   <div class="card">
     <div class="card-title">🩺 Theo Dõi TPN</div>
     <table class="result-table"><thead><tr><th>Thông số</th><th>Tần suất</th><th>Mục tiêu</th><th>Hiện tại</th><th>TT</th></tr></thead><tbody>
-      <tr><td>Glucose máu</td><td>3–6h × 7ng → 1×/ng</td><td>2.6–10 mmol/L</td><td>${labGluc}</td><td>${labGluc>=2.6&&labGluc<=10?'<span class="tag tag-green">✓</span>':'<span class="tag tag-red">⚠</span>'}</td></tr>
-      <tr><td>Na, K, Cl</td><td>Hàng ngày × 5ng → 3×/tuần</td><td>Na 135–145 · K 3.5–5.5</td><td>Na:${labNa} K:${labK}</td><td>${labNa>=135&&labNa<=145&&labK>=3.5&&labK<=5.5?'<span class="tag tag-green">✓</span>':'<span class="tag tag-red">⚠</span>'}</td></tr>
-      <tr><td>Ca, P, Mg</td><td>3×/tuần → 1×/tuần</td><td>Ca 1.1–1.35 · P 1.5–2.5</td><td>Ca:${labCa} P:${labPhos}</td><td>${labCa>=1.1&&labCa<=1.35&&labPhos>=1.5&&labPhos<=2.5?'<span class="tag tag-green">✓</span>':'<span class="tag tag-orange">⚠</span>'}</td></tr>
-      <tr><td>Triglyceride</td><td>Mỗi lần tăng liều lipid → hàng tuần</td><td>≤3,0 mmol/L (ESPGHAN 2018)</td><td>${labTG}</td><td>${labTG<=3?'<span class="tag tag-green">✓</span>':labTG<=4.5?'<span class="tag tag-orange">⚠</span>':'<span class="tag tag-red">🚨</span>'}</td></tr>
-      <tr><td>Bilirubin trực tiếp</td><td>Hàng tuần</td><td>&lt;34 µmol/L</td><td>${labBili} µmol</td><td>${labBili<=34?'<span class="tag tag-green">✓</span>':labBili<=85?'<span class="tag tag-orange">⚠</span>':'<span class="tag tag-red">🚨</span>'}</td></tr>
-      <tr><td>ALT, AST</td><td>Hàng tuần</td><td>&lt;40 U/L</td><td>ALT:${labALT}</td><td>${labALT<=40?'<span class="tag tag-green">✓</span>':'<span class="tag tag-orange">⚠</span>'}</td></tr>
-      <tr class="highlight-row"><td>Cân nặng</td><td>Hàng ngày</td><td>+15–20 g/kg/ng (VLBW)</td><td>${wt} kg</td><td>${r2((wt-bwt)/bwt*100)}% so sinh</td></tr>
+      ${(()=>{const inR=(v,r)=>v>=r[0]&&v<=r[1],rg=r=>String(r[0]).replace('.',',')+'–'+String(r[1]).replace('.',','),ok='<span class="tag tag-green">✓</span>',wn='<span class="tag tag-orange">⚠</span>',bd='<span class="tag tag-red">⚠</span>',sv='<span class="tag tag-red">🚨</span>';
+        const dbC=TP('dbili_cholestasis'),dbH=TP('dbili_high'),alt=TP('alt_high');
+        return `<tr><td>Glucose máu</td><td>3–6h × 7ng → 1×/ng</td><td>${rg(LR.gluc)} mmol/L</td><td>${labGluc}</td><td>${inR(labGluc,LR.gluc)?ok:bd}</td></tr>
+      <tr><td>Na, K, Cl</td><td>Hàng ngày × 5ng → 3×/tuần</td><td>Na ${rg(LR.na)} · K ${rg(LR.k)}</td><td>Na:${labNa} K:${labK}</td><td>${inR(labNa,LR.na)&&inR(labK,LR.k)?ok:bd}</td></tr>
+      <tr><td>Ca, P, Mg</td><td>3×/tuần → 1×/tuần</td><td>Ca ${rg(LR.ca)} · P ${rg(LR.phos)} · Mg ${rg(LR.mg)}</td><td>Ca:${labCa} P:${labPhos} Mg:${labMg}</td><td>${inR(labCa,LR.ca)&&inR(labPhos,LR.phos)&&inR(labMg,LR.mg)?ok:wn}</td></tr>
+      <tr><td>Triglyceride</td><td>Mỗi lần tăng liều lipid → hàng tuần</td><td>≤${String(tgR).replace('.',',')} mmol/L (ESPGHAN 2018)</td><td>${labTG}</td><td>${labTG<=tgR?ok:labTG<=tgM?wn:sv}</td></tr>
+      <tr><td>Bilirubin trực tiếp</td><td>Hàng tuần</td><td>&lt;${dbC} µmol/L</td><td>${labBili} µmol</td><td>${labBili<=dbC?ok:labBili<=dbH?wn:sv}</td></tr>
+      <tr><td>ALT, AST</td><td>Hàng tuần</td><td>&lt;${alt} U/L</td><td>ALT:${labALT}</td><td>${labALT<=alt?ok:wn}</td></tr>
+      <tr class="highlight-row"><td>Cân nặng</td><td>Hàng ngày</td><td>${ER.weight_gain}</td><td>${wt} kg</td><td>${r2((wt-bwt)/bwt*100)}% so sinh</td></tr>`})()}
     </tbody></table>
   </div>`;
 
-  resDiv.innerHTML=html;
+  resDiv.innerHTML=html+dataTag('tpn-products');
   const aiSec=document.getElementById('tpn-ai-section');
   if(aiSec)aiSec.style.display='none';
 }
@@ -4984,7 +7147,7 @@ Cân nặng: ${d.wt} kg (sinh ${d.bwt} kg) | GA: ${d.ga}T | DoL: ${d.dol} | Lo�
 DINH DƯỠNG IV: Dịch ${d.tf} mL/kg/ng | GIR ${d.gir} mg/kg/ph (${d.glucKgD} g/kg/ng) | Glucose trong túi ${d.glucPct}%
 Protein ${d.pro} g/kg → ${d.proIV} g/ng | Lipid ${d.lip} g/kg → ${d.lipIV} g/ng
 Calo IV: ${d.calKgIV} kcal/kg/ng (${d.calIV} kcal) | NPC:N = ${d.npcRatio}:1 | N Balance = ${d.nBal} gN/ng
-Na ${d.na} (${d.naVol}mL NaCl23.4%) | K ${d.k} (${d.kVol}mL KCl15%) | Ca ${d.ca} (${d.caVol}mL CaGluc10%)
+Na ${d.na} (${d.naVol} mL ${d.stockNames.na}) | K ${d.k} (${d.kVol} mL ${d.stockNames.k}) | Ca ${d.ca} (${d.caVol} mL ${d.stockNames.ca})
 Phos ${d.phos} (${d.phosVol}mL KH2PO4) | Mg ${d.mg} (${d.mgVol}mL MgSO4 50%) | Ca×P=${d.caProd} | Ca:P=${d.caPMol}:1
 
 AN TOÀN: Osmolality ${d.osmTotal} mOsm/L (GH ${d.osmLimit}) ${d.osmOK?'✅':'❌'} | PNAC Risk: ${d.pnacRisk} (${d.pnacSc}/5)
@@ -5022,6 +7185,7 @@ Trả lời theo 7 mục:
 function printTPNReport(){
   if(!_tpnData||!_tpnData.wt){alert('Vui lòng nhấn "Tính Toán / Cập Nhật" trước khi in.');return;}
   const d=_tpnData;
+  const PLR=TPP('lab_ranges').ranges,prg=x=>x.map(v=>String(v).replace('.',',')).join('–');
   const aiEl=document.getElementById('tpn-ai-content');
   const aiHTML=aiEl?aiEl.innerHTML:'<em>Chưa có phân tích AI – Nhấn "Phân Tích AI Claude" để tạo</em>';
   const alertsHTML=(d.alerts||[]).map(a=>`<div style="background:${a.t==='danger'?'#fff0f0':'#fffbec'};border-left:4px solid ${a.t==='danger'?'#e63946':'#f4a261'};padding:5px 8px;margin:3px 0;font-size:11.5px">${a.m}</div>`).join('');
@@ -5080,17 +7244,17 @@ function printTPNReport(){
   <h2>📋 THÀNH PHẦN TÚI TPN – pha ${Math.round(d.prepVol)} mL · truyền ${d.aqVol} mL · ${d.bagRate} mL/giờ × 24h</h2>
   <table><thead><tr><th width="4%">#</th><th width="22%">Thành phần</th><th width="28%">Dung dịch gốc</th><th width="12%">Thể tích (mL)</th><th>Lượng hoạt chất &amp; Ghi chú</th></tr></thead><tbody>
     <tr style="background:#f0fdf4"><td>1</td><td>Nước cất (WFI)</td><td>Water for Injection</td><td style="font-size:14px;font-weight:700;text-align:center">${d.wfiVol}</td><td>Thêm vào túi TRƯỚC TIÊN</td></tr>
-    <tr><td>2</td><td>Dextrose (Glucose)</td><td>Dextrose 50% (D50%)</td><td style="font-size:14px;font-weight:700;text-align:center">${d.d50Vol}</td><td>${d.glucIV} g glucose → ${d.glucPct}% trong túi · GIR ${d.gir} mg/kg/ph</td></tr>
+    <tr><td>2</td><td>Dextrose (Glucose)</td><td>${d.stockNames.d50}</td><td style="font-size:14px;font-weight:700;text-align:center">${d.d50Vol}</td><td>${d.glucIV} g glucose → ${d.glucPct}% trong túi · GIR ${d.gir} mg/kg/ph</td></tr>
     <tr style="background:#f8f8f8"><td>3</td><td>Amino Acid</td><td>${d.aa?d.aa.name:'–'}</td><td style="font-size:14px;font-weight:700;text-align:center">${d.aaVol}</td><td>${d.proIV} g protein = ${d.pro} g/kg/ng</td></tr>
-    <tr><td>4</td><td>Natri (Na⁺)</td><td>NaCl 23.4% (4 mEq/mL)</td><td style="font-size:14px;font-weight:700;text-align:center">${d.naVol}</td><td>${d.naIV} mEq = ${d.na} mEq/kg/ng</td></tr>
-    <tr style="background:#f8f8f8"><td>5</td><td>Kali (K⁺)</td><td>KCl 15% (2 mEq/mL)</td><td style="font-size:14px;font-weight:700;text-align:center">${d.kVol}</td><td>${d.kIV} mEq = ${d.k} mEq/kg/ng</td></tr>
-    <tr style="background:#fff7ed"><td>6</td><td>⚠️ Phosphat – THÊM TRƯỚC Ca</td><td>KH₂PO₄ 1 mmol/mL</td><td style="font-size:14px;font-weight:700;text-align:center">${d.phosVol}</td><td>${d.phosIV} mmol = ${d.phos} mmol/kg/ng · Khuấy kỹ trước bước 7</td></tr>
-    <tr style="background:#fff7ed"><td>7</td><td>⚠️ Canxi – THÊM SAU Phos</td><td>Ca Gluconate 10% (0.46 mEq/mL)</td><td style="font-size:14px;font-weight:700;text-align:center">${d.caVol}</td><td>${d.caIV} mEq = ${d.ca} mEq/kg/ng · Ca×P = ${d.caProd}</td></tr>
-    <tr><td>8</td><td>Magie (Mg²⁺)</td><td>MgSO₄ 50% (4 mEq/mL)</td><td style="font-size:14px;font-weight:700;text-align:center">${d.mgVol}</td><td>${d.mgIV} mEq = ${d.mg} mEq/kg/ng</td></tr>
-    <tr style="background:#f8f8f8"><td>9</td><td>Vi chất (Trace)</td><td>Peditrace 1 mL/kg (max 15 mL)</td><td style="font-size:14px;font-weight:700;text-align:center">${d.traceVol}</td><td>Zn ${d.znIV} mcg, Cu, Mn, Se, F, I, Cr</td></tr>
-    ${d.vit==='yes'?`<tr style="background:#fef3c7"><td>10</td><td>Vitamin (tan trong nước)</td><td>Soluvit N</td><td style="font-size:14px;font-weight:700;text-align:center">${d.vitVolP}</td><td>Soluvit N 1 mL/kg (≤10 mL)</td></tr>`:''}
+    <tr><td>4</td><td>Natri (Na⁺)</td><td>${d.stockNames.na}</td><td style="font-size:14px;font-weight:700;text-align:center">${d.naVol}</td><td>${d.naIV} mEq = ${d.na} mEq/kg/ng</td></tr>
+    <tr style="background:#f8f8f8"><td>5</td><td>Kali (K⁺)</td><td>${d.stockNames.k}</td><td style="font-size:14px;font-weight:700;text-align:center">${d.kVol}</td><td>${d.kIV} mEq = ${d.k} mEq/kg/ng</td></tr>
+    <tr style="background:#fff7ed"><td>6</td><td>⚠️ Phosphat – THÊM TRƯỚC Ca</td><td>${d.stockNames.p}</td><td style="font-size:14px;font-weight:700;text-align:center">${d.phosVol}</td><td>${d.phosIV} mmol = ${d.phos} mmol/kg/ng · Khuấy kỹ trước bước 7</td></tr>
+    <tr style="background:#fff7ed"><td>7</td><td>⚠️ Canxi – THÊM SAU Phos</td><td>${d.stockNames.ca}</td><td style="font-size:14px;font-weight:700;text-align:center">${d.caVol}</td><td>${d.caIV} mEq = ${d.ca} mEq/kg/ng · Ca×P = ${d.caProd}</td></tr>
+    <tr><td>8</td><td>Magie (Mg²⁺)</td><td>${d.stockNames.mg}</td><td style="font-size:14px;font-weight:700;text-align:center">${d.mgVol}</td><td>${d.mgIV} mEq = ${d.mg} mEq/kg/ng</td></tr>
+    <tr style="background:#f8f8f8"><td>9</td><td>Vi chất (Trace)</td><td>${d.ped}</td><td style="font-size:14px;font-weight:700;text-align:center">${d.traceVol}</td><td>Zn ${d.znIV} mcg, Cu, Mn, Se, F, I, Cr</td></tr>
+    ${d.vit==='yes'?`<tr style="background:#fef3c7"><td>10</td><td>Vitamin (tan trong nước)</td><td>${d.solu}</td><td style="font-size:14px;font-weight:700;text-align:center">${d.vitVolP}</td><td>${d.solu} ${d.vitVol} mL/ngày</td></tr>`:''}
     <tr style="background:#006d77;color:#fff"><td colspan="3"><b>🚀 TỐC ĐỘ TRUYỀN TPN (liên tục 24h)</b></td><td style="font-size:15px;font-weight:800;text-align:center">${d.bagRate} mL/h</td><td>Bơm tiêm điện · điều chỉnh 0.1 mL/h</td></tr>
-    <tr style="background:#92400e;color:#fff"><td colspan="3"><b>🛢️ LIPID (${d.lipE?d.lipE.name:''}) – CHE ÁNH SÁNG HOÀN TOÀN</b></td><td style="font-size:15px;font-weight:800;text-align:center">${d.lipRate} mL/h</td><td>${d.lipVol} mL lipid${d.vit==='yes'?' + Vitalipid N Infant '+d.vitLipVol+' mL':''} = ${d.lipTot} mL/24h</td></tr>
+    <tr style="background:#92400e;color:#fff"><td colspan="3"><b>🛢️ LIPID (${d.lipE?d.lipE.name:''}) – CHE ÁNH SÁNG HOÀN TOÀN</b></td><td style="font-size:15px;font-weight:800;text-align:center">${d.lipRate} mL/h</td><td>${d.lipVol} mL lipid${d.vit==='yes'?' + '+d.vitl+' '+d.vitLipVol+' mL':''} = ${d.lipTot} mL/24h</td></tr>
   </tbody></table>
 
   <h2>📊 TÓM TẮT DINH DƯỠNG</h2>
@@ -5102,7 +7266,7 @@ function printTPNReport(){
     <td><b>NPC:N Ratio</b></td><td>${d.npcRatio}:1 (KH 100–250:1)</td>
   </tr><tr style="background:#e0f5f5">
     <td><b>ALTT ước tính</b></td><td>${d.osmTotal} mOsm/L (GH ${d.osmLimit}) ${d.osmOK?'✅':'🚨'}</td>
-    <td><b>Ca×P (nồng độ)</b></td><td>${d.caProd} (≤200) ${d.caPOK?'✅':'⚠️'} · Ca:P mol = ${d.caPMol}:1</td>
+    <td><b>Ca×P (nồng độ)</b></td><td>${d.caProd} (≤${d.capLim}) ${d.caPOK?'✅':'⚠️'} · Ca:P mol = ${d.caPMol}:1</td>
   </tr><tr>
     <td><b>N Balance</b></td><td>${d.nBal} gN/ng</td>
     <td><b>PNAC Risk</b></td><td>${d.pnacRisk} (${d.pnacSc}/5)</td>
@@ -5115,11 +7279,11 @@ function printTPNReport(){
 
   <h2>🩺 THEO DÕI 24H TỚI</h2>
   <table><tr style="background:#e0f5f5"><th>Xét nghiệm</th><th>Giá trị hiện tại</th><th>Mục tiêu</th><th>Tần suất</th></tr>
-    <tr><td>Glucose máu</td><td>${d.labGluc} mmol/L</td><td>2.6–10 mmol/L</td><td>Mỗi 3–6h</td></tr>
-    <tr style="background:#f8f8f8"><td>Na, K, Cl</td><td>Na:${d.labNa} K:${d.labK}</td><td>Na 135–145 · K 3.5–5.5</td><td>Hàng ngày</td></tr>
-    <tr><td>Ca, P, Mg</td><td>Ca:${d.labCa} P:${d.labPhos}</td><td>Ca 1.1–1.35 · P 1.5–2.5</td><td>3×/tuần</td></tr>
-    <tr style="background:#f8f8f8"><td>Triglyceride</td><td>${d.labTG} mmol/L</td><td>≤3,0 mmol/L</td><td>24h sau Lipid, 2×/tuần</td></tr>
-    <tr><td>Cân nặng</td><td>${d.wt} kg (sinh ${d.bwt} kg)</td><td>+15–20 g/kg/ng (VLBW)</td><td>Hàng ngày</td></tr>
+    <tr><td>Glucose máu</td><td>${d.labGluc} mmol/L</td><td>${prg(PLR.gluc)} mmol/L</td><td>Mỗi 3–6h</td></tr>
+    <tr style="background:#f8f8f8"><td>Na, K, Cl</td><td>Na:${d.labNa} K:${d.labK}</td><td>Na ${prg(PLR.na)} · K ${prg(PLR.k)}</td><td>Hàng ngày</td></tr>
+    <tr><td>Ca, P, Mg</td><td>Ca:${d.labCa} P:${d.labPhos}</td><td>Ca ${prg(PLR.ca)} · P ${prg(PLR.phos)}</td><td>3×/tuần</td></tr>
+    <tr style="background:#f8f8f8"><td>Triglyceride</td><td>${d.labTG} mmol/L</td><td>≤${prg([TP('tg_reduce')])} mmol/L</td><td>24h sau Lipid, 2×/tuần</td></tr>
+    <tr><td>Cân nặng</td><td>${d.wt} kg (sinh ${d.bwt} kg)</td><td>${TPP('elec_ref').values.weight_gain}</td><td>Hàng ngày</td></tr>
   </table>
 
   <div class="sig">

@@ -194,8 +194,8 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
   ok('Prompt AI không chứa họ tên/MRN', !(await page.evaluate(() => runAIAnalysis.toString())).includes('d.mrn'));
 
   console.log('15. Dữ liệu JSON – một nguồn sự thật');
-  const dj = await page.evaluate(() => ({ err: DATA_ERR, keys: Object.keys(DATA), vers: Object.values(DATA).map(t => t.version + '|' + t.updated), n: DATA['drug-doses'].records.length }));
-  ok('4 khối dữ liệu tải được, không lỗi', dj.err.length === 0 && ['eos-models', 'neo-abx', 'neo-fluids', 'drug-doses'].every(k => dj.keys.includes(k)), JSON.stringify(dj));
+  const dj = await page.evaluate(() => ({ err: DATA_ERR, keys: Object.keys(DATA), vers: Object.values(DATA).map(t => t.version + '|' + t.updated), n: DATA['drug-doses'].records.filter(r => r.type !== 'ref_row').length }));
+  ok('5 khối dữ liệu tải được, không lỗi', dj.err.length === 0 && ['eos-models', 'neo-abx', 'neo-fluids', 'drug-doses', 'tpn-products'].every(k => dj.keys.includes(k)), JSON.stringify(dj));
   ok('Mọi khối có version x.y.z và updated yyyy-mm-dd', dj.vers.every(v => /^\d+\.\d+\.\d+\|\d{4}-\d{2}-\d{2}$/.test(v)));
   const caps = await page.evaluate(() => [dz('p_atropine', 2), dz('p_atropine', 40), dz('p_mgso4', 80), dml('p_mgso4', 25), dz('p_midazolam_im', 10), dz('p_midazolam_im', 20), dz('p_midazolam_im', 50), dzr('p_morphine', 150), dlab('p_adenosine1')]);
   ok('Atropine: tối thiểu 0,1 mg (2 kg), tối đa 0,5 mg (40 kg)', caps[0] === 0.1 && caps[1] === 0.5, caps.slice(0, 2));
@@ -217,7 +217,7 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
   await page.evaluate(() => { DATA['drug-doses'].records = window.__bk; showModule('seizure'); });
   await page.evaluate(() => showModule('refs'));
   const reg = await text('data-registry');
-  ok('Sổ dữ liệu liệt kê 4 bảng và bản ghi liều', ['data-eos-models', 'data-neo-abx', 'data-neo-fluids', 'data-drug-doses'].every(k => reg.includes(k)) && reg.includes('Xem ' + dj.n + ' bản ghi'));
+  ok('Sổ dữ liệu liệt kê 5 bảng và bản ghi liều', ['data-eos-models', 'data-neo-abx', 'data-neo-fluids', 'data-drug-doses', 'data-tpn-products'].every(k => reg.includes(k)) && reg.includes('Xem ' + dj.n + ' bản ghi'));
   await set('n-wt', 1.5);
   for (const m of ['resus', 'neo', 'paed', 'burns', 'sepsis', 'dka', 'seizure', 'asthma', 'svt', 'hyperk', 'hypo']) {
     await page.evaluate(m => showModule(m), m);
@@ -225,6 +225,42 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     if (!tx.includes('Dữ liệu drug-doses')) ok(m + ' có nhãn phiên bản dữ liệu', false);
   }
   ok('11 module dùng liều đều hiện nhãn phiên bản dữ liệu', true);
+
+  console.log('17. TPN đọc từ data-tpn-products');
+  const fs = require('fs');
+  const raw = fs.readFileSync(path, 'utf8');
+  const tsrc = await page.evaluate(() => calcTPN.toString() + applyDefaults.toString() + printTPNReport.toString() + runAIAnalysis.toString());
+  const hard = ['23.4', '0.46', 'Peditrace', 'Soluvit', 'Vitalipid', 'TPN_DEFAULTS', 'Primene', 'SMOFlipid', '/4*f', '/2*f'].filter(x => tsrc.includes(x));
+  ok('Mã TPN (tính, in, AI) không còn tên chế phẩm/nồng độ ghi cứng', hard.length === 0, hard.join(', '));
+  const sel = await page.evaluate(() => ({ t: [...document.querySelectorAll('#tpn-type option')].map(o => o.value), a: document.querySelectorAll('#tpn-aa option').length, l: document.querySelectorAll('#tpn-lipid-src option').length, tv: document.getElementById('tpn-type').value }));
+  ok('Danh sách chọn TPN sinh từ dữ liệu (5 phác đồ, 4 acid amin, 4 lipid)', sel.t.length === 5 && sel.a === 4 && sel.l === 4, JSON.stringify(sel));
+  await page.evaluate(() => { showModule('tpn'); document.getElementById('tpn-type').value = 'vlbw'; applyDefaults(); });
+  const base = await page.evaluate(() => ({ na: _tpnData.naVol, vl: _tpnData.vitLipVol, aq: _tpnData.aqVol, gp: _tpnData.glucPct }));
+  ok('Kết quả TPN mặc định VLBW không đổi so với v1.3 (túi nước 127,2 mL; glucose 10,87%)', near(base.aq, 127.2) && near(base.gp, 10.87, 0.01), JSON.stringify(base));
+  await page.evaluate(() => { TPP('nacl234').conc = 3.42; TPP('vitalipid').ml_per_kg = 2; calcTPN(); });
+  const chg = await page.evaluate(() => ({ na: _tpnData.naVol, vl: _tpnData.vitLipVol, txt: document.getElementById('tpn-result').innerText }));
+  ok('Đổi nồng độ NaCl gốc trong dữ liệu → thể tích NaCl đổi theo', chg.na > base.na, base.na + '→' + chg.na);
+  ok('Đổi liều Vitalipid trong dữ liệu → thể tích vitamin tan trong dầu đổi (4,8 → 2,4 mL)', near(chg.vl, 2.4), chg.vl);
+  ok('Tên dung dịch gốc hiển thị theo dữ liệu (3,42 mmol/mL)', chg.txt.includes('3,42 mmol/mL'));
+  await page.evaluate(() => { TPP('nacl234').conc = 4; TPP('vitalipid').ml_per_kg = 4; TPP('gir_max').value = 10; document.getElementById('tpn-gir').value = 11; calcTPN(); });
+  ok('Đổi ngưỡng GIR tối đa trong dữ liệu → cảnh báo xuất hiện ở GIR 11', (await text('tpn-result')).includes('GIR 11 mg/kg/phút >10'));
+  await page.evaluate(() => { TPP('gir_max').value = 12; applyDefaults(); });
+  ok('Module TPN có nhãn phiên bản tpn-products', (await text('tpn-result')).includes('tpn-products'));
+
+  console.log('18. Bảng liều tham khảo sinh từ data-drug-doses');
+  ok('HTML nguồn không còn bảng liều tĩnh cũ', !raw.includes('Liều 3: 0.3 mg/kg (max 12 mg)') && !raw.includes('<!-- RESUS DRUGS -->') && raw.includes('id="dose-reference"'));
+  const ref = await page.evaluate(() => { const el = document.getElementById('dose-reference'); return { secs: el.querySelectorAll('.ref-sec').length, rows: el.querySelectorAll('tbody tr').length, n: DATA['drug-doses'].records.filter(r => r.type === 'ref_row').length, txt: el.innerText }; });
+  ok(`Đủ ${ref.n} dòng trong 7 nhóm`, ref.secs === 7 && ref.rows === ref.n, JSON.stringify({ secs: ref.secs, rows: ref.rows }));
+  ok('Không lỗi dữ liệu bảng liều', !ref.txt.includes('Lỗi dữ liệu'));
+  ok('Adenosine hiển thị đúng nhãn sinh từ dữ liệu', ref.txt.includes('Liều 1: 0,1 mg/kg, tối đa 6 mg') && ref.txt.includes('Liều 3: 0,3 mg/kg, tối đa 12 mg'));
+  ok('Gentamicin sơ sinh sinh từ luật data-neo-abx', ref.txt.includes('PMA <30 tuần, PNA <8 ngày: 5 mg/kg mỗi 48 giờ') && ref.txt.includes('PMA ≥35 tuần: 4 mg/kg mỗi 24 giờ'), ref.txt.match(/PMA <30 tuần[^\n]*/)?.[0]);
+  ok('Midazolam IM theo dải cân nặng hiển thị từ dữ liệu', ref.txt.includes('IM: <13 kg: 0,2 mg/kg; 13–40 kg: 5 mg; >40 kg: 10 mg'));
+  ok('Liều truyền hiển thị đơn vị theo giờ/phút (per_unit)', ref.txt.includes('2–20 mcg/kg/phút') && ref.txt.includes('6 mg/kg pha đủ 50 mL → 1 mL/h = 2 mcg/kg/phút'));
+  await page.evaluate(() => { rec('drug-doses', 'p_mgso4').max = 1800; renderDoseReference(); });
+  ok('Đổi max MgSO₄ trong dữ liệu → bảng tham khảo đổi theo', (await page.evaluate(() => document.getElementById('dose-reference').innerText)).includes('40 mg/kg, tối đa 1800 mg'));
+  await page.evaluate(() => { rec('drug-doses', 'p_mgso4').max = 2000; renderDoseReference(); });
+  const consist = await page.evaluate(() => { showModule('asthma'); document.getElementById('a-wt').value = 80; document.getElementById('a-sev').value = 'severe'; calcAsthma(); return [document.getElementById('asthma-result').innerText.includes('40 mg/kg, tối đa 2000 mg'), document.getElementById('dose-reference').innerText.includes('40 mg/kg, tối đa 2000 mg')]; });
+  ok('Module Hen và bảng tham khảo hiển thị cùng một nhãn liều MgSO₄', consist[0] && consist[1], JSON.stringify(consist));
 
   console.log('16. Điện thoại – không tràn ngang (390 px và 320 px)');
   for (const W of [390, 320]) {

@@ -95,7 +95,7 @@ npx playwright install chromium
 node tests/cdss.test.js            # mặc định kiểm thử ./index.html
 ```
 
-Kết quả phiên bản 1.8: **137/137 ca đạt**.
+Kết quả phiên bản 1.8: **142/142 ca đạt**.
 
 ---
 
@@ -122,7 +122,7 @@ Kết quả phiên bản 1.8: **137/137 ca đạt**.
 
 | Phiên bản | Nội dung chính |
 |---|---|
-| 1.8 | Đổi tên thành NeoPed CDSS; logo mới; bỏ khối thông tin bệnh viện khỏi header |
+| 1.8 | Đổi tên thành NeoPed CDSS; logo mới; bỏ khối thông tin bệnh viện khỏi header; màu hành động theo thương hiệu (trang chủ) và theo nhóm lâm sàng (module), bỏ màu hồng cũ |
 | 1.7 | Icon 3D cho tiêu đề thẻ trong mọi module; đánh số bước liên tục ở module hen |
 | 1.6 | Sắp xếp module theo 5 nhóm lâm sàng (ABCDE), đặt tên theo thuật ngữ y khoa, mã màu theo nhóm, icon 3D |
 | 1.5 | Giao diện Ease làm mặc định |

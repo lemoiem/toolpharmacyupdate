@@ -296,7 +296,8 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
 /* ══════════════════════════════════════════════════════════════════════
    THEME "EASE" (MẶC ĐỊNH TỪ v1.5) – định hướng Ease Health + điểm nhấn Hatch cho trang chủ
    • Nền kem, phân lớp bằng các mảng màu nhạt; KHÔNG đổ bóng
-   • Chữ và số liệu: xanh rêu đậm (--ink); màu Phương Nam CHỈ cho hành động (nút, mục đang chọn, focus)
+   • Chữ và số liệu: xanh rêu đậm (--ink); màu thương hiệu NeoPed CHỈ cho hành động (nút, mục đang chọn, focus);
+     trong module, nút In và mục đang chọn theo màu NHÓM lâm sàng (--gc/--gt)
    • Đỏ/cam/xanh lá giữ nguyên, chỉ dành cho mức độ nguy cơ/cảnh báo
    • Chỉ áp dụng trên màn hình; bản in giữ nguyên nhận diện cũ
    ══════════════════════════════════════════════════════════════════════ */
@@ -304,9 +305,10 @@ body.theme-ease{
   --bg:#faf8f2;--card:#fff;--border:#e3e0d2;
   --text:#1d2a21;--muted:#5f6b62;--ink:#16301d;
   --layer1:#f4f2e9;--layer2:#eef3e8;--layer3:#e7f0ea;--layer4:#dde9df;
-  --primary:#b5006e;--primary-dark:#8a0054;--primary-light:#f8e8f1;
+  /* Màu thương hiệu NeoPed (xanh ngọc đậm, lấy từ logo) – chỉ cho hành động: nút, mục đang chọn, focus */
+  --primary:#115e59;--primary-dark:#134e4a;--primary-light:#e6f4f1;--secondary:#134e4a;
   --shadow:none;--rad:16px;--rad-sm:10px;
-  --nav-act-bg:#f8e8f1;--nav-act-border:#b5006e;--nav-act-text:#8a0054;
+  --nav-act-bg:#e6f4f1;--nav-act-border:#115e59;--nav-act-text:#134e4a;
 }
 @media screen{
   body.theme-ease .header{background:#fffdf8;color:var(--ink);border-bottom:1px solid var(--border);box-shadow:none}
@@ -336,6 +338,10 @@ body.theme-ease{
   body.theme-ease .ai-box-title,body.theme-ease .ai-box-body{color:var(--ink)}
   body.theme-ease .print-bar-btn{background:var(--primary);box-shadow:none}
   body.theme-ease .print-bar-btn:hover{background:var(--primary-dark);transform:none}
+  body.theme-ease .module[style*="--gc"] .print-bar-btn{background:var(--gc)}
+  body.theme-ease .module[style*="--gc"] .print-bar-btn:hover{background:var(--gc);filter:brightness(.88)}
+  body.theme-ease .nav-item.active[style*="--gt"]{background:var(--gt);color:var(--gc)}
+  body.theme-ease .ai-box-title{color:var(--ink)}
   body.theme-ease input[type=number],body.theme-ease input[type=text],body.theme-ease select{border:1px solid #d6d3c4;background:#fff}
   body.theme-ease .comp-bar{box-shadow:none}
   body.theme-ease .home-badge{background:var(--layer2)!important;border-color:var(--border)!important;color:var(--ink)!important}
@@ -1177,7 +1183,7 @@ body.theme-ease .brand-tag{color:var(--muted)}
   <div class="module-topbar">
     <div class="module-title" style="margin-bottom:0">🍶 Dinh Dưỡng Tĩnh Mạch Toàn Phần (TPN)</div>
     <div style="display:flex;gap:.5rem" class="no-print">
-      <button class="btn btn-sm" style="background:#880e4f;color:#fff" onclick="runAIAnalysis()">🤖 Phân Tích AI</button>
+      <button class="btn btn-sm btn-primary" onclick="runAIAnalysis()">🤖 Phân Tích AI</button>
       <button class="btn btn-sm btn-primary" onclick="printTPNReport()">🖨️ In Báo Cáo</button>
     </div>
   </div>
@@ -1717,7 +1723,7 @@ body.theme-ease .brand-tag{color:var(--muted)}
   <div class="card">
     <div class="card-title">📝 Lịch Sử Cập Nhật</div>
     <table class="result-table"><thead><tr><th>Phiên bản</th><th>Ngày</th><th>Nội dung</th></tr></thead><tbody>
-      <tr class="highlight-row"><td>v1.8</td><td>10/2026</td><td>Đổi tên ứng dụng thành NeoPed CDSS (Neonatal &amp; Paediatric Clinical Decision Support System); logo mới “bàn chân em bé + nhịp tim”; favicon; bỏ khối logo/tên bệnh viện, khẩu hiệu và huy hiệu JCI/RTAC khỏi header và trang chủ</td></tr>
+      <tr class="highlight-row"><td>v1.8</td><td>10/2026</td><td>Đổi tên ứng dụng thành NeoPed CDSS (Neonatal &amp; Paediatric Clinical Decision Support System); logo mới “bàn chân em bé + nhịp tim”; favicon; bỏ khối logo/tên bệnh viện, khẩu hiệu và huy hiệu JCI/RTAC khỏi header và trang chủ; theme Ease: thay màu hồng Phương Nam bằng màu thương hiệu NeoPed (xanh ngọc đậm) cho nút và mục đang chọn ở trang chủ, trong module nút In và mục đang chọn theo màu nhóm lâm sàng</td></tr>
       <tr><td>v1.7</td><td>10/2026</td><td>Icon 3D cho tiêu đề thẻ trong tất cả module và bảng liều tham khảo (ánh xạ emoji → icon trong data-modules, áp dụng cả nội dung sinh lại khi tính toán); đánh số bước liên tục ở module Cơn hen cấp nặng</td></tr>
       <tr><td>v1.6</td><td>10/2026</td><td>Sắp xếp lại module theo 5 nhóm lâm sàng (Hồi sức · Sơ sinh · Cấp cứu nhi khoa theo ABCDE · Dịch truyền &amp; dinh dưỡng · Thông tin); đặt lại tên theo thuật ngữ y khoa; mã màu theo nhóm; icon 3D Fluent Emoji nhúng offline; điều hướng, trang chủ, tiêu đề module và bảng tổng quan sinh từ khối data-modules; bỏ thẻ EOS trùng lặp</td></tr>
       <tr><td>v1.5</td><td>10/2026</td><td>Giao diện Ease làm mặc định (nền kem phân lớp, không bóng đổ, màu Phương Nam chỉ cho hành động, điểm nhấn Hatch ở trang chủ); nút “Giao diện cũ” để quay lại; bản in giữ nhận diện cũ</td></tr>
@@ -2629,7 +2635,7 @@ body.theme-ease .brand-tag{color:var(--muted)}
 </script>
 <script type="application/json" id="data-drug-doses">
 {
- "version": "1.1.0",
+ "version": "1.1.1",
  "updated": "2026-10-13",
  "status": "unverified",
  "title": "Liều thuốc theo cân nặng, tham số phác đồ và bố cục bảng liều tham khảo",
@@ -5205,7 +5211,7 @@ body.theme-ease .brand-tag{color:var(--muted)}
   {
    "id": "neo",
    "title": "🍼 THUỐC ĐẶC THÙ SƠ SINH – NICU & KHÁC",
-   "color": "#880e4f,#c2185b",
+   "color": "#5b21b6,#6d28d9",
    "col3": "Đường / tần suất"
   }
  ]
@@ -6056,7 +6062,7 @@ function buildModuleUI(){
     nav.innerHTML=`<div class="nav-item active" onclick="showModule('home')"><span class="nav-icon">${ico('home')}</span><span>Trang chủ</span></div>`+
       G.map(g=>{const ms=mods.filter(m=>m.group===g.id);if(!ms.length)return'';
         return`<div class="nav-section" style="--gc:${g.color}"><span class="gdot"></span>${esc(g.title)}</div>`+
-          ms.map(m=>`<div class="nav-item" style="--gc:${g.color}" onclick="showModule('${m.id}')" title="${esc(m.title)}"><span class="nav-icon">${ico(m.icon)}</span><span>${esc(m.short)}</span>${m.abcde?`<b class="abcde">${m.abcde}</b>`:''}</div>`).join('')}).join('');
+          ms.map(m=>`<div class="nav-item" style="--gc:${g.color};--gt:${g.tint}" onclick="showModule('${m.id}')" title="${esc(m.title)}"><span class="nav-icon">${ico(m.icon)}</span><span>${esc(m.short)}</span>${m.abcde?`<b class="abcde">${m.abcde}</b>`:''}</div>`).join('')}).join('');
   }
   // 2. Trang chủ – nhóm theo chuyên môn, mã màu theo nhóm
   const home=document.getElementById('home-groups');

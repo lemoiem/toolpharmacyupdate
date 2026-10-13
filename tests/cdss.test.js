@@ -278,6 +278,22 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     await mp.close();
   }
 
+  console.log('19. Giao diện mặc định Ease + nút chuyển');
+  {
+    const tp = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+    await tp.goto('file://' + path);
+    const t0 = await tp.evaluate(() => ({ ease: document.body.classList.contains('theme-ease'), btn: document.getElementById('theme-fab').textContent, bg: getComputedStyle(document.body).backgroundColor }));
+    ok('Mặc định bật giao diện Ease (nền kem #faf8f2)', t0.ease && t0.bg === 'rgb(250, 248, 242)', JSON.stringify(t0));
+    await tp.evaluate(() => toggleTheme());
+    const t1 = await tp.evaluate(() => ({ ease: document.body.classList.contains('theme-ease'), btn: document.getElementById('theme-fab').textContent }));
+    ok('Bấm nút → về giao diện cũ, nhãn nút đổi', !t1.ease && t1.btn.includes('Giao diện mới'), JSON.stringify(t1));
+    await tp.reload();
+    ok('Lựa chọn giao diện cũ được nhớ sau khi tải lại', !(await tp.evaluate(() => document.body.classList.contains('theme-ease'))));
+    await tp.goto('file://' + path + '?theme=ease');
+    ok('?theme=ease ghi đè lựa chọn đã lưu', await tp.evaluate(() => document.body.classList.contains('theme-ease')));
+    await tp.close();
+  }
+
   console.log('14. Lỗi runtime trên trang');
   ok('Không có pageerror', errors.length === 0, errors.join(' | '));
 

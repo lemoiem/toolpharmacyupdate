@@ -270,7 +270,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
 </style>
 
 </head>
-<body>
+<body class="theme-ease">
 
 <!-- HEADER -->
 <style>
@@ -293,7 +293,7 @@ hr.sep{border:none;border-top:1px solid var(--border);margin:1rem 0}
 .ver-badge{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:20px;padding:3px 12px;font-size:10.5px;margin-top:4px;display:inline-block;color:#fff;font-weight:600;letter-spacing:.3px}
 
 /* ══════════════════════════════════════════════════════════════════════
-   THEME "EASE" (XEM THỬ) – định hướng Ease Health + điểm nhấn Hatch cho trang chủ
+   THEME "EASE" (MẶC ĐỊNH TỪ v1.5) – định hướng Ease Health + điểm nhấn Hatch cho trang chủ
    • Nền kem, phân lớp bằng các mảng màu nhạt; KHÔNG đổ bóng
    • Chữ và số liệu: xanh rêu đậm (--ink); màu Phương Nam CHỈ cho hành động (nút, mục đang chọn, focus)
    • Đỏ/cam/xanh lá giữ nguyên, chỉ dành cho mức độ nguy cơ/cảnh báo
@@ -434,11 +434,11 @@ body.theme-ease{
 
   <div class="hdr-right">
     <div class="hdr-author">DSCKI. Lê Mới Em</div>
-    <div class="ver-badge">Phiên bản 1.4 · 2026</div>
+    <div class="ver-badge">Phiên bản 1.5 · 2026</div>
   </div>
 </div>
 
-<button class="theme-fab no-print" id="theme-fab" onclick="toggleTheme()" title="Chuyển giữa giao diện hiện tại và giao diện Ease (xem thử)">🎨 Xem thử giao diện mới</button>
+<button class="theme-fab no-print" id="theme-fab" onclick="toggleTheme()" title="Chuyển giữa giao diện Ease (mặc định) và giao diện cũ">↩︎ Giao diện cũ</button>
 <div class="layout">
 <!-- SIDEBAR NAV -->
 <nav class="sidebar">
@@ -1778,7 +1778,8 @@ body.theme-ease{
   <div class="card">
     <div class="card-title">📝 Lịch Sử Cập Nhật</div>
     <table class="result-table"><thead><tr><th>Phiên bản</th><th>Ngày</th><th>Nội dung</th></tr></thead><tbody>
-      <tr class="highlight-row"><td>v1.4</td><td>10/2026</td><td>Thêm khối data-tpn-products (chế phẩm acid amin/lipid, dung dịch gốc, vi chất–vitamin, phác đồ mặc định, lịch tăng dần, ngưỡng an toàn và khoảng tham chiếu) – module TPN, phiếu in và prompt AI đọc từ dữ liệu; bảng liều tham khảo sinh tự động từ data-drug-doses (ref_row) và data-neo-abx – bỏ bảng HTML tĩnh; gộp bản ghi trùng (hy_d10, hy_glucagon)</td></tr>
+      <tr class="highlight-row"><td>v1.5</td><td>10/2026</td><td>Giao diện Ease làm mặc định (nền kem phân lớp, không bóng đổ, màu Phương Nam chỉ cho hành động, điểm nhấn Hatch ở trang chủ); nút “Giao diện cũ” để quay lại; bản in giữ nhận diện cũ</td></tr>
+      <tr><td>v1.4</td><td>10/2026</td><td>Thêm khối data-tpn-products (chế phẩm acid amin/lipid, dung dịch gốc, vi chất–vitamin, phác đồ mặc định, lịch tăng dần, ngưỡng an toàn và khoảng tham chiếu) – module TPN, phiếu in và prompt AI đọc từ dữ liệu; bảng liều tham khảo sinh tự động từ data-drug-doses (ref_row) và data-neo-abx – bỏ bảng HTML tĩnh; gộp bản ghi trùng (hy_d10, hy_glucagon)</td></tr>
       <tr><td>v1.3</td><td>10/2026</td><td>Mô hình EOS Kaiser cập nhật 2024 (Puopolo, Pediatrics 2024) làm mặc định, giữ mô hình 2017 để so sánh; tách toàn bộ liều theo cân nặng, luật kháng sinh sơ sinh, bảng dịch ESPGHAN và hệ số EOS thành 4 khối JSON có version/updated/source/status; nhãn phiên bản dữ liệu ở cuối mỗi module; Sổ dữ liệu ở trang TLTK; sửa tràn ngang trên điện thoại (điều hướng ngang, header gọn, bảng cuộn trong thẻ)</td></tr>
       <tr><td>v1.2</td><td>10/2026</td><td>Rà soát logic & thuật toán toàn bộ module: sửa công thức UVC/UAC, Na⁺ hiệu chỉnh DKA (ISPAD 2022), MgSO₄ (mL), fentanyl truyền, tỷ lệ I:T; liều kháng sinh sơ sinh thống nhất theo PMA/PNA (Red Book/NeoFax); dịch sơ sinh theo ESPGHAN 2018; EOS theo phương trình logistic Kaiser gốc; bilirubin theo ngưỡng AAP 2022 tra biểu đồ; chấn thương đầu theo PECARN; TPN: thể tích túi theo dịch toàn phần, K⁺ từ KH₂PO₄, Ca×P theo nồng độ; thuật ngữ quốc tế (INN)</td></tr>
       <tr><td>v1.1</td><td>2026</td><td>Bổ sung module 🦠 Nguy Cơ NKH Sơ Sinh Sớm (EOS Risk Calculator – Kaiser Permanente 2024) · Cập nhật TLTK EOS · Từ viết tắt &amp; bảng liều thuốc hoàn chỉnh</td></tr>
@@ -1791,7 +1792,7 @@ body.theme-ease{
 
 <!-- ── PRINT FOOTER (ẩn trên màn hình, hiện khi in) ── -->
 <div id="print-footer-bar">
-  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.4 · 2026 · DSCKI. Lê Mới Em
+  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.5 · 2026 · DSCKI. Lê Mới Em
 </div>
 
 </div>
@@ -5785,15 +5786,15 @@ function renderDoseReference(){
 try{renderDoseReference()}catch(e){console.error(e);const el=document.getElementById('dose-reference');if(el)el.innerHTML=`<div class="alert alert-danger">🚨 Lỗi dữ liệu bảng liều: ${e.message}</div>`}
 
 
-// ===== Giao diện: "classic" (mặc định hiện tại) hoặc "ease" (xem thử). Chọn qua nút, hoặc ?theme=ease / ?theme=classic =====
+// ===== Giao diện: "ease" (mặc định từ v1.5) hoặc "classic" (giao diện cũ). Chọn qua nút, hoặc ?theme=ease / ?theme=classic =====
 function applyTheme(t){
   document.body.classList.toggle('theme-ease',t==='ease');
-  const b=document.getElementById('theme-fab');if(b)b.textContent=t==='ease'?'↩︎ Về giao diện hiện tại':'🎨 Xem thử giao diện mới';
-  try{localStorage.setItem('cdss-theme',t)}catch(e){}
+  const b=document.getElementById('theme-fab');if(b)b.textContent=t==='ease'?'↩︎ Giao diện cũ':'🎨 Giao diện mới';
+  try{localStorage.setItem('cdss-theme-v15',t)}catch(e){}   // khóa mới: lựa chọn "giao diện cũ" lúc xem thử không ghi đè mặc định mới
 }
 function toggleTheme(){applyTheme(document.body.classList.contains('theme-ease')?'classic':'ease')}
-(function(){let t='classic';
-  try{t=localStorage.getItem('cdss-theme')||t}catch(e){}
+(function(){let t='ease';
+  try{t=localStorage.getItem('cdss-theme-v15')||t}catch(e){}
   const q=new URLSearchParams(location.search).get('theme');if(q==='ease'||q==='classic')t=q;
   applyTheme(t)})();
 
@@ -6629,7 +6630,7 @@ function printCurrentModule(){
   // 2. Update footer
   const footer = document.getElementById('print-footer-bar');
   if(footer) footer.textContent =
-    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.4 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
+    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v1.5 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
 
   // 3. Print — CSS @media print sẽ tự ẩn sidebar/header, chỉ hiện module active
   window.print();

@@ -137,34 +137,48 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
   ok('D15% từ D10%+D50%: 87,5→88 mL + 12,5→13 mL', t.includes('88 mL D10%') && t.includes('13 mL D50%'));
   ok('D15% → bắt buộc TM trung tâm', t.includes('TM trung tâm'));
 
-  console.log('12. EOS – đối chiếu phương trình Kaiser');
+  console.log('12. EOS – đối chiếu phương trình Kaiser 2024 và 2017 (hệ số công bố gõ độc lập trong test)');
   await page.evaluate(() => showModule('eos'));
-  const expected = (() => {
-    const tF = 37.0 * 9 / 5 + 32, ga = 39, rom = 6;
-    const x = 40.5656 + 0.8680 * tF - 6.9325 * ga + 0.0877 * ga * ga + 1.2256 * Math.pow(rom + 0.05, 0.2);
-    const p = 1 / (1 + Math.exp(-x)); const odds = p / (1 - p) * 0.41;
-    return { birth: p * 1000, post: odds / (1 + odds) * 1000 };
-  })();
-  await page.evaluate(() => {
-    const s = (id, v) => document.getElementById(id).value = v;
-    s('eos-ga', 39); s('eos-temp', 37.0); s('eos-rom', 6); s('eos-gbs', 'negative'); s('eos-abx', 'none'); s('eos-clin', 'well'); s('eos-inc', '0.5');
-    calcEOS();
-  });
-  const m = await page.evaluate(() => eosModel({ ga: 39, gbs: 'negative', rom: 6, tempC: 37, abx: 'none', clin: 'well', inc: '0.5' }));
-  ok('Nguy cơ lúc sinh khớp phương trình (' + expected.birth.toFixed(3) + '/1000)', near(m.birth, expected.birth, 1e-9));
-  ok('Nguy cơ sau khám (LR 0,41) khớp (' + expected.post.toFixed(3) + '/1000)', near(m.post, expected.post, 1e-9));
-  ok('Ca chuẩn (GBS−, sốt không, ROM 6h) <1/1000 → thường quy', (await text('eos-result')).includes('CHĂM SÓC THƯỜNG QUY'));
-  const hi = await page.evaluate(() => eosModel({ ga: 39, gbs: 'positive', rom: 24, tempC: 38.9, abx: 'none', clin: 'well', inc: '0.5' }));
-  const hiEq = await page.evaluate(() => eosModel({ ga: 39, gbs: 'positive', rom: 24, tempC: 38.9, abx: 'none', clin: 'equivocal', inc: '0.5' }));
-  ok('Sốt 38,9 °C + GBS+ + ROM 24h: nguy cơ lúc sinh tăng (' + hi.birth.toFixed(2) + ')', hi.birth > m.birth * 10);
-  const odds = r => (r / 1000) / (1 - r / 1000);
-  ok('Equivocal: odds sau = odds lúc sinh × 5,0 (Escobar 2014)', near(odds(hiEq.post) / odds(hi.birth), 5, 1e-9), (odds(hiEq.post) / odds(hi.birth)).toFixed(4));
-  const abxB = await page.evaluate(() => eosModel({ ga: 39, gbs: 'positive', rom: 24, tempC: 38.9, abx: 'broad4', clin: 'well', inc: '0.5' }));
-  ok('KS phổ rộng ≥4h làm giảm nguy cơ', abxB.birth < hi.birth);
-  const inc3 = await page.evaluate(() => eosModel({ ga: 39, gbs: 'negative', rom: 6, tempC: 37, abx: 'none', clin: 'well', inc: '0.3' }));
-  ok('Tỷ lệ nền 0,3 vs 0,5 → nguy cơ giảm ≈ 0,6 lần', near(inc3.birth / m.birth, 0.6, 0.01), (inc3.birth / m.birth).toFixed(3));
+  const kaiser = (M, p) => {
+    const tF = p.tempC * 9 / 5 + 32, romT = Math.pow(p.rom + 0.05, 0.2);
+    const a1 = (p.abx === 'gbs2' || p.abx === 'broad2') ? 1 : 0, a2 = p.abx === 'broad4' ? 1 : 0;
+    const x = M.b0 + M.t * tF + M.ga * p.ga + M.ga2 * p.ga * p.ga + M.rom * romT + M.a1 * a1 + M.a2 * a2 + M.gp * (p.gbs === 'positive') + M.gu * (p.gbs === 'unknown');
+    const pr = 1 / (1 + Math.exp(-x)); const o = pr / (1 - pr) * M.lr[p.clin];
+    return { birth: pr * 1000, post: o / (1 + o) * 1000 };
+  };
+  // Puopolo 2024 (Bảng 2) / Kaiser 2024 Model Update FAQ
+  const K24 = { b0: 57.29929499, t: 0.85194656, ga: -7.72247124, ga2: 0.09842383, rom: 0.86770862, a1: -2.13142945, a2: -2.33985917, gp: 1.02265353, gu: 1.13710111, lr: { well: 0.36, equivocal: 3.65, ill: 14.5 } };
+  // Kaiser EMR FAQ (mô hình gốc, tỷ lệ nền 0,5/1000)
+  const K17 = { b0: 40.5656, t: 0.8680, ga: -6.9325, ga2: 0.0877, rom: 1.2256, a1: -1.0488, a2: -1.1861, gp: 0.5771, gu: 0.0427, lr: { well: 0.41, equivocal: 5.0, ill: 21.2 } };
+  const cases = [
+    { ga: 39, gbs: 'negative', rom: 6, tempC: 37, abx: 'none', clin: 'well', inc: '0.5' },
+    { ga: 39, gbs: 'positive', rom: 24, tempC: 38.9, abx: 'none', clin: 'equivocal', inc: '0.5' },
+    { ga: 36, gbs: 'unknown', rom: 18, tempC: 38.2, abx: 'gbs2', clin: 'well', inc: '0.5' },
+    { ga: 41, gbs: 'positive', rom: 30, tempC: 39.4, abx: 'broad4', clin: 'ill', inc: '0.5' },
+  ];
+  for (const [i, c] of cases.entries()) {
+    const e24 = kaiser(K24, c), e17 = kaiser(K17, c);
+    const g24 = await page.evaluate(c => eosModel({ ...c, model: 'kp2024' }), c);
+    const g17 = await page.evaluate(c => eosModel({ ...c, model: 'kp2017' }), c);
+    ok(`Ca ${i + 1} – 2024: lúc sinh ${e24.birth.toFixed(3)}, sau khám ${e24.post.toFixed(3)}/1000`, near(g24.birth, e24.birth, 1e-9) && near(g24.post, e24.post, 1e-9), JSON.stringify([g24.birth, g24.post]));
+    ok(`Ca ${i + 1} – 2017: lúc sinh ${e17.birth.toFixed(3)}, sau khám ${e17.post.toFixed(3)}/1000`, near(g17.birth, e17.birth, 1e-9) && near(g17.post, e17.post, 1e-9));
+  }
+  const ui = await page.evaluate(() => ({ model: document.getElementById('eos-model').value, incDis: document.getElementById('eos-inc').disabled }));
+  ok('Giao diện: mặc định mô hình 2024, ô tỷ lệ nền bị khóa', ui.model === 'kp2024' && ui.incDis);
+  await page.evaluate(() => { const s = (id, v) => document.getElementById(id).value = v; s('eos-ga', 39); s('eos-temp', 37); s('eos-rom', 6); s('eos-gbs', 'negative'); s('eos-abx', 'none'); s('eos-clin', 'well'); calcEOS(); });
+  let et = await text('eos-result');
+  ok('Ca chuẩn 2024 <1/1000 → chăm sóc thường quy; hiển thị so sánh 2017', et.includes('CHĂM SÓC THƯỜNG QUY') && et.includes('mô hình 2017'));
+  ok('Hiển thị LR 2024 (0.36 / 3.65 / 14.5) và β0 57.29929499', et.includes('3.65') && et.includes('14.5') && et.includes('57.29929499'));
+  ok('Nhãn dữ liệu eos-models "CHƯA KIỂM CHỨNG"', et.includes('eos-models') && et.includes('CHƯA KIỂM CHỨNG'));
+  await page.evaluate(() => { document.getElementById('eos-model').value = 'kp2017'; eosModelChanged(); });
+  ok('Chuyển 2017 → mở khóa tỷ lệ nền', !(await page.evaluate(() => document.getElementById('eos-inc').disabled)));
+  const i3 = await page.evaluate(() => [eosModel({ model: 'kp2017', ga: 39, gbs: 'negative', rom: 6, tempC: 37, abx: 'none', clin: 'well', inc: '0.3' }).birth, eosModel({ model: 'kp2017', ga: 39, gbs: 'negative', rom: 6, tempC: 37, abx: 'none', clin: 'well', inc: '0.5' }).birth]);
+  ok('2017: tỷ lệ nền 0,3 vs 0,5 → nguy cơ ≈ 0,6 lần', near(i3[0] / i3[1], 0.6, 0.01));
+  await page.evaluate(() => { document.getElementById('eos-model').value = 'kp2024'; document.getElementById('eos-ga').value = 34.5; eosModelChanged(); });
+  ok('2024, GA 34,5: cảnh báo ngoài quần thể phát triển (≥35 tuần)', (await text('eos-result')).includes('≥35 tuần'));
   await page.evaluate(() => { document.getElementById('eos-ga').value = 33; calcEOS(); });
   ok('GA 33 → ngoài phạm vi', (await text('eos-result')).includes('34–43'));
+  await page.evaluate(() => { document.getElementById('eos-ga').value = 39; calcEOS(); });
 
   console.log('13. TPN – thể tích túi & Ca×P');
   await page.evaluate(() => { showModule('tpn'); document.getElementById('tpn-type').value = 'vlbw'; applyDefaults(); });
@@ -178,6 +192,55 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
   ok('Áp lực thẩm thấu ước tính > 0 và hữu hạn', d.osmTotal > 300 && d.osmTotal < 3000, d.osmTotal);
   const tt = await text('tpn-result'); ok('TPN không NaN/undefined', !bad(tt));
   ok('Prompt AI không chứa họ tên/MRN', !(await page.evaluate(() => runAIAnalysis.toString())).includes('d.mrn'));
+
+  console.log('15. Dữ liệu JSON – một nguồn sự thật');
+  const dj = await page.evaluate(() => ({ err: DATA_ERR, keys: Object.keys(DATA), vers: Object.values(DATA).map(t => t.version + '|' + t.updated), n: DATA['drug-doses'].records.length }));
+  ok('4 khối dữ liệu tải được, không lỗi', dj.err.length === 0 && ['eos-models', 'neo-abx', 'neo-fluids', 'drug-doses'].every(k => dj.keys.includes(k)), JSON.stringify(dj));
+  ok('Mọi khối có version x.y.z và updated yyyy-mm-dd', dj.vers.every(v => /^\d+\.\d+\.\d+\|\d{4}-\d{2}-\d{2}$/.test(v)));
+  const caps = await page.evaluate(() => [dz('p_atropine', 2), dz('p_atropine', 40), dz('p_mgso4', 80), dml('p_mgso4', 25), dz('p_midazolam_im', 10), dz('p_midazolam_im', 20), dz('p_midazolam_im', 50), dzr('p_morphine', 150), dlab('p_adenosine1')]);
+  ok('Atropine: tối thiểu 0,1 mg (2 kg), tối đa 0,5 mg (40 kg)', caps[0] === 0.1 && caps[1] === 0.5, caps.slice(0, 2));
+  ok('MgSO₄: tối đa 2000 mg; 25 kg = 2 mL dung dịch 50%', caps[2] === 2000 && caps[3] === 2);
+  ok('Midazolam IM theo dải cân nặng: 10 kg 2 mg; 20 kg 5 mg; 50 kg 10 mg', caps[4] === 2 && caps[5] === 5 && caps[6] === 10, caps.slice(4, 7));
+  ok('Morphine 150 kg: trần 5–10 mg', caps[7] === '5–10', caps[7]);
+  ok('Nhãn tự sinh từ dữ liệu: "0,1 mg/kg, tối đa 6 mg"', caps[8] === '0,1 mg/kg, tối đa 6 mg', caps[8]);
+  // Sửa JSON → kết quả đổi theo (không còn hằng số trong code)
+  await page.evaluate(() => { showModule('asthma'); document.getElementById('a-wt').value = 80; document.getElementById('a-sev').value = 'severe'; rec('drug-doses', 'p_mgso4').max = 1500; calcAsthma(); });
+  ok('Đổi max MgSO₄ trong dữ liệu → module Hen hiển thị 1500 mg', (await text('asthma-result')).includes('1500 mg'));
+  await page.evaluate(() => { rec('drug-doses', 'p_mgso4').max = 2000; });
+  await page.evaluate(() => { const r = DATA['neo-abx'].records.find(x => x.id === 'gen-6'); r.interval_h = 36; });
+  const g6 = await page.evaluate(() => neoAbx(39, 0).gen.i);
+  ok('Đổi luật gentamicin trong data-neo-abx → neoAbx đổi theo', g6 === 36);
+  await page.evaluate(() => { DATA['neo-abx'].records.find(x => x.id === 'gen-6').interval_h = 24; });
+  // Thiếu bản ghi → báo lỗi an toàn trong module, không làm hỏng trang
+  await page.evaluate(() => { const t = DATA['drug-doses']; window.__bk = t.records; t.records = t.records.filter(r => r.id !== 'p_lorazepam'); showModule('seizure'); });
+  ok('Thiếu bản ghi liều → hiện cảnh báo "Lỗi dữ liệu" trong module', (await text('seizure')).includes('Lỗi dữ liệu'));
+  await page.evaluate(() => { DATA['drug-doses'].records = window.__bk; showModule('seizure'); });
+  await page.evaluate(() => showModule('refs'));
+  const reg = await text('data-registry');
+  ok('Sổ dữ liệu liệt kê 4 bảng và bản ghi liều', ['data-eos-models', 'data-neo-abx', 'data-neo-fluids', 'data-drug-doses'].every(k => reg.includes(k)) && reg.includes('Xem ' + dj.n + ' bản ghi'));
+  await set('n-wt', 1.5);
+  for (const m of ['resus', 'neo', 'paed', 'burns', 'sepsis', 'dka', 'seizure', 'asthma', 'svt', 'hyperk', 'hypo']) {
+    await page.evaluate(m => showModule(m), m);
+    const tx = await page.evaluate(m => document.getElementById(m).innerText, m);
+    if (!tx.includes('Dữ liệu drug-doses')) ok(m + ' có nhãn phiên bản dữ liệu', false);
+  }
+  ok('11 module dùng liều đều hiện nhãn phiên bản dữ liệu', true);
+
+  console.log('16. Điện thoại – không tràn ngang (390 px và 320 px)');
+  for (const W of [390, 320]) {
+    const mp = await browser.newPage({ viewport: { width: W, height: 800 } });
+    await mp.goto('file://' + path);
+    const over = [];
+    for (const m of ['home', 'resus', 'neo', 'paed', 'burns', 'sepsis', 'dka', 'seizure', 'asthma', 'svt', 'hyperk', 'bili', 'hypo', 'cool', 'head', 'adhoc', 'eos', 'tpn', 'guide', 'refs']) {
+      await mp.evaluate(m => showModule(m), m);
+      const sw = await mp.evaluate(() => document.documentElement.scrollWidth);
+      if (sw > W) over.push(m + ':' + sw);
+    }
+    const nav = await mp.evaluate(() => { const s = document.querySelector('.sidebar'); const ic = s.querySelector('.nav-icon'); return { w: s.getBoundingClientRect().width, icon: getComputedStyle(ic).display !== 'none' }; });
+    ok(`${W} px: 20 trang không tràn ngang`, over.length === 0, over.join(' '));
+    ok(`${W} px: thanh điều hướng ngang toàn chiều rộng, icon hiển thị`, Math.round(nav.w) === W && nav.icon, JSON.stringify(nav));
+    await mp.close();
+  }
 
   console.log('14. Lỗi runtime trên trang');
   ok('Không có pageerror', errors.length === 0, errors.join(' | '));

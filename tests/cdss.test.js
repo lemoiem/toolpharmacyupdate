@@ -342,6 +342,23 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     ok('Thẻ sinh lại khi tính toán vẫn được gắn icon 3D', await page.evaluate(() => !!document.querySelector('#asthma-result .card-title > .i3d-lungs')));
   }
 
+  console.log('22. Màu hành động theme Ease: thương hiệu NeoPed ở trang chủ, màu nhóm trong module – không còn hồng Phương Nam');
+  {
+    await page.goto('file://' + path + '?theme=ease'); await page.waitForTimeout(300);
+    const pinkish = c => (c.match(/\d+/g) || []).length >= 3 && (([r, g, b]) => r > g + 50 && b > g + 15 && r > b)(c.match(/\d+/g).map(Number));
+    const home = await page.evaluate(() => ({ btn: getComputedStyle(document.querySelector('#home .print-bar-btn')).backgroundColor, nav: getComputedStyle(document.querySelector('.nav-item.active')).color }));
+    ok('Nút "In trang chủ" màu thương hiệu (#115e59)', home.btn === 'rgb(17, 94, 89)', home.btn);
+    ok('Mục "Trang chủ" đang chọn không còn hồng', !pinkish(home.nav), home.nav);
+    await page.evaluate(() => showModule('eos')); await page.waitForTimeout(400);
+    const eos = await page.evaluate(() => ({ btn: getComputedStyle(document.querySelector('#eos .print-bar-btn')).backgroundColor, nav: getComputedStyle(document.querySelector('.nav-item.active')).color }));
+    ok('Nút In trong module Sơ sinh theo màu nhóm (#6d28d9)', eos.btn === 'rgb(109, 40, 217)', eos.btn);
+    ok('Mục đang chọn trong nav theo màu nhóm', eos.nav === 'rgb(109, 40, 217)', eos.nav);
+    const left = await page.evaluate(() => { const out = []; for (const id of [...document.querySelectorAll('.module')].map(m => m.id)) { showModule(id); const root = document.getElementById(id);
+      for (const el of root.querySelectorAll('*')) { if (!el.getClientRects().length) continue; const s = getComputedStyle(el); for (const k of ['color', 'backgroundColor', 'backgroundImage']) { const m = (s[k].match(/rgb\(\d+, \d+, \d+/g) || []); if (m.some(x => { const [r, g, b] = x.match(/\d+/g).map(Number); return r > g + 50 && b > g + 15 && r > b; })) out.push(id + ':' + (el.className || el.tagName)); } } } return out; });
+    ok('Không còn màu hồng trên màn hình theme Ease (mọi module)', left.length === 0, left.slice(0, 8).join(' | '));
+    await page.evaluate(() => showModule('home'));
+  }
+
   console.log('14. Lỗi runtime trên trang');
   ok('Không có pageerror', errors.length === 0, errors.join(' | '));
 

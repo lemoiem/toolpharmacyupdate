@@ -7,7 +7,7 @@
 - 🌐 **Web app:** <https://lemoiem.github.io/toolpharmacyupdate/>
 - 🏥 **Đơn vị:** Bệnh viện Phương Nam – Tập đoàn Y tế Phương Châu
 - 👤 **Tác giả:** DSCKI. Lê Mới Em – Dược sĩ lâm sàng
-- 🔖 **Phiên bản:** 1.9 (10/2026)
+- 🔖 **Phiên bản:** 2.0 (10/2026)
 
 > [!WARNING]
 > **Đây là công cụ HỖ TRỢ quyết định, không thay thế phán đoán lâm sàng.** Mọi liều và chỉ định phải được bác sĩ/dược sĩ lâm sàng kiểm tra và phê duyệt trước khi dùng cho người bệnh. Các khối dữ liệu gắn nhãn **"chưa kiểm chứng"** cần một dược sĩ hoặc bác sĩ thứ hai đối chiếu với nguồn gốc trước khi áp dụng lâm sàng.
@@ -16,7 +16,7 @@
 
 ## Danh mục module
 
-Có 17 module lâm sàng, chia thành 4 nhóm. Nhóm Cấp cứu nhi khoa được xếp theo tiếp cận **ABCDE** (APLS/PALS).
+Có 20 module lâm sàng, chia thành 4 nhóm. Nhóm Cấp cứu nhi khoa được xếp theo tiếp cận **ABCDE** (APLS/PALS).
 
 ### 🟢 Hồi sức
 | Module | Hướng dẫn | Phạm vi |
@@ -28,9 +28,12 @@ Có 17 module lâm sàng, chia thành 4 nhóm. Nhóm Cấp cứu nhi khoa đư�
 | Module | Hướng dẫn | Phạm vi |
 |---|---|---|
 | Thuốc và thủ thuật sơ sinh (NICU) | ETT · UVC/UAC · kháng sinh theo PMA/PNA · truyền liên tục | 0,3–6 kg |
+| 🆕 Suy hô hấp sinh non (RDS) – surfactant, CPAP | European Consensus 2022 · OI/OSI · điểm Silverman–Andersen | 0,3–6 kg |
 | Nguy cơ nhiễm khuẩn huyết sơ sinh sớm (EOS) | Kaiser Permanente 2024 (có mô hình 2017 để so sánh) | 34–43 tuần |
 | Tăng bilirubin máu sơ sinh | AAP 2022 – ngưỡng chiếu đèn/thay máu tra từ biểu đồ | ≥35 tuần |
 | Hạ glucose máu sơ sinh | AAP 2011 / BAPM 2017 · GIR | 0,3–6 kg |
+| 🆕 Nuôi ăn đường tiêu hóa sơ sinh | ESPGHAN 2022 · SIFT 2019 – lịch tăng sữa, kcal/protein, chuyển sang PN | 0,3–6 kg |
+| 🆕 Truyền chế phẩm máu sơ sinh | TOP / ETTNO 2020 · PlaNeT-2 2019 · BSH 2016 | 0,3–6 kg |
 | Hạ thân nhiệt điều trị – Bệnh não thiếu oxy thiếu máu cục bộ (HIE) | Phân độ Sarnat · TOBY / NICHD | ≥36 tuần, ≥1800 g |
 
 ### 🔵 Cấp cứu nhi khoa (ABCDE)
@@ -63,12 +66,15 @@ Ngoài ra còn hai trang thông tin: **Hướng dẫn sử dụng** và **Tài l
 
 | Khối dữ liệu | Nội dung | Phiên bản | Trạng thái |
 |---|---|---|---|
-| `data-modules` | Nhóm, thứ tự, tên module, icon 3D, ánh xạ emoji → icon | 1.1.0 | Đã đối chiếu |
+| `data-modules` | Nhóm, thứ tự, tên module, icon 3D, ánh xạ emoji → icon, màu nhóm bản tối | 1.3.0 | Đã đối chiếu |
 | `data-eos-models` | Hệ số mô hình Kaiser EOS 2024 và 2017, LR lâm sàng | 2.0.0 | ⚠️ Chưa kiểm chứng |
 | `data-neo-abx` | 25 luật liều kháng sinh sơ sinh theo GA/PMA/PNA | 1.0.0 | ⚠️ Chưa kiểm chứng |
 | `data-neo-fluids` | Dịch sơ sinh theo ngày tuổi (ESPGHAN 2018) | 1.0.0 | Đã đối chiếu |
 | `data-drug-doses` | 190 bản ghi: liều theo cân nặng (tối thiểu, tối đa, dải cân nặng, nồng độ), tham số phác đồ, bố cục bảng liều tham khảo | 1.1.0 | ⚠️ Chưa kiểm chứng |
 | `data-tpn-products` | Chế phẩm acid amin/lipid, dung dịch gốc, vi chất, phác đồ PN mặc định, ngưỡng an toàn | 1.0.0 | ⚠️ Chưa kiểm chứng |
+| `data-neo-rds` | Điểm Silverman–Andersen, phân tầng OI, tiêu chí surfactant – CPAP, 3 chế phẩm surfactant | 1.0.0 | ⚠️ Chưa kiểm chứng |
+| `data-neo-transfusion` | Ngưỡng Hb TOP (thấp/cao), liều – tốc độ hồng cầu, ngưỡng tiểu cầu, huyết tương, tủa lạnh, yêu cầu chế phẩm | 1.0.0 | ⚠️ Chưa kiểm chứng |
+| `data-neo-enteral` | Đích dinh dưỡng ESPGHAN 2022, bước tăng sữa, thành phần sữa, chất tăng cường sữa mẹ (**giá trị tham khảo – thay theo nhãn sản phẩm bệnh viện**) | 1.0.0 | ⚠️ Chưa kiểm chứng |
 
 Khối nào có trạng thái "chưa kiểm chứng" thì giao diện tự hiển thị nhãn cảnh báo ở cuối mỗi module có dùng khối đó.
 
@@ -87,7 +93,7 @@ Khối nào có trạng thái "chưa kiểm chứng" thì giao diện tự hiể
 
 ## Kiểm thử
 
-Bộ kiểm thử `tests/cdss.test.js` chạy trang trong trình duyệt Chromium (Playwright). Nó gồm ca chuẩn và ca biên cho các công thức: catheter rốn, Na⁺ hiệu chỉnh trong DKA, MgSO₄, phương trình Kaiser EOS 2024/2017, TPN, bảng liều tham khảo, giao diện điện thoại, v.v.
+Bộ kiểm thử `tests/cdss.test.js` chạy trang trong trình duyệt Chromium (Playwright). Nó gồm ca chuẩn và ca biên cho các công thức: catheter rốn, Na⁺ hiệu chỉnh trong DKA, MgSO₄, phương trình Kaiser EOS 2024/2017, TPN, surfactant – OI, ngưỡng truyền máu TOP/PlaNeT-2, lịch tăng sữa, bảng liều tham khảo, giao diện điện thoại, v.v.
 
 ```bash
 npm install --no-save playwright
@@ -95,7 +101,7 @@ npx playwright install chromium
 node tests/cdss.test.js            # mặc định kiểm thử ./index.html
 ```
 
-Kết quả phiên bản 1.9: **161/161 ca đạt**.
+Kết quả phiên bản 2.0: **200/200 ca đạt**.
 
 ---
 
@@ -127,6 +133,7 @@ Kết quả phiên bản 1.9: **161/161 ca đạt**.
 
 | Phiên bản | Nội dung chính |
 |---|---|
+| 2.0 | Thêm 3 module Sơ sinh: Suy hô hấp sinh non (RDS), Nuôi ăn đường tiêu hóa, Truyền chế phẩm máu |
 | 1.9 | Chế độ hiển thị Sáng · Ấm · Tối (nhóm 3 nút trên header, mặc định theo hệ điều hành), bản in luôn nền trắng |
 | 1.8 | Đổi tên thành NeoPed CDSS; logo mới; bỏ khối thông tin bệnh viện khỏi header; màu hành động theo thương hiệu (trang chủ) và theo nhóm lâm sàng (module), bỏ màu hồng cũ |
 | 1.7 | Icon 3D cho tiêu đề thẻ trong mọi module; đánh số bước liên tục ở module hen |

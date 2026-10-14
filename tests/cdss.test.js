@@ -314,7 +314,7 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     ok('Tiêu đề từng module lấy từ dữ liệu', st.titles.every(t => t[1]), st.titles.filter(t => !t[1]).map(t => t[0]).join(','));
     ok('Nhóm Cấp cứu nhi khoa xếp theo ABCDE (B→C→D→E)', st.paed === [...st.paed].sort().join('') && st.paed.startsWith('B'), st.paed);
     ok('Icon 3D nhúng (data:image/webp) hiển thị', st.icon.startsWith('url("data:image/webp'), st.icon.slice(0, 40));
-    ok('Bảng tổng quan trang Hướng dẫn liệt kê 17 module lâm sàng', st.ov === 17, st.ov);
+    ok('Bảng tổng quan trang Hướng dẫn liệt kê 20 module lâm sàng', st.ov === 20, st.ov);
   }
 
   console.log('21. Icon 3D tiêu đề thẻ + đánh số bước');
@@ -433,6 +433,102 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     ok('Điện thoại 320 px: nhóm 3 nút hiển thị trên header, không tràn ngang', mv.vis && mv.sw <= 320, JSON.stringify(mv));
     ok('Không có lỗi runtime ở chế độ tối', derr.length === 0, derr.join(' | '));
     await ctx.close();
+  }
+
+  console.log('24. Nhóm Sơ sinh v2.0 – RDS, truyền chế phẩm máu, nuôi ăn đường tiêu hóa (giá trị kỳ vọng tính tay độc lập)');
+  {
+    await page.goto('file://' + path); await page.waitForTimeout(300);
+    const t = await page.evaluate(() => ({
+      nav: [...document.querySelectorAll('.nav-item')].map(n => (n.getAttribute('onclick') || '').match(/'(\w+)'/)?.[1]).filter(Boolean),
+      neoNav: DATA.modules.records.filter(r => r.group === 'neo').sort((a, b) => a.order - b.order).map(r => r.id).join(','),
+      err: DATA_ERR.slice(),
+      // RDS
+      oi: oxyIndex(10, 60, 50), oiKpa: Math.round(oxyIndex(12, 80, pao2ToMmHg(8, 'kpa')) * 10) / 10,
+      osi: oxySatIndex(10, 50, 90),
+      por: surfactantDose('poractant', 1.2), ber: surfactantDose('beractant', 1.2), cal: surfactantDose('calfactant', 1.2),
+      por07: surfactantDose('poractant', 0.7),
+      // Truyền máu
+      th: [rbcThreshold(3, true).thr, rbcThreshold(3, false).thr, rbcThreshold(10, true).thr, rbcThreshold(10, false).thr, rbcThreshold(20, true).thr, rbcThreshold(20, false).thr],
+      thEdge: [rbcThreshold(6, false).week, rbcThreshold(7, false).week, rbcThreshold(13, false).week, rbcThreshold(14, false).week],
+      hb: [hbToGdl(95, 'gl'), hbToGdl(9.5, 'gdl')],
+      hct: Math.round(rbcVolumeByHct(1, 28, 0.25, 0.35, 0.6).ml * 10) / 10, hctTerm: Math.round(rbcVolumeByHct(3, 39, 0.30, 0.40, 0.6).ml * 10) / 10,
+      plt: ['none', 'minor', 'major'].map(k => pltThreshold(k).thr),
+      // Nuôi ăn
+      step: [enteralStep(0.75), enteralStep(0.999), enteralStep(1.0), enteralStep(2)],
+      plan: enteralPlan(1.2, 40, 30, 160, 8, 'ebm', 'auto'),
+      planNoF: enteralPlan(1.2, 100, 30, 160, 8, 'ebm', 'no'),
+      planPTF: enteralPlan(1.0, 150, 20, 160, 12, 'ptf', 'auto'),
+    }));
+    ok('Không lỗi dữ liệu khi nạp 3 khối mới', t.err.length === 0, t.err.join(' | '));
+    ok('Thứ tự nhóm Sơ sinh: NICU → RDS → EOS → bilirubin → glucose → nuôi ăn → truyền máu → HIE', t.neoNav === 'neo,rds,eos,bili,hypo,enteral,transfuse,cool', t.neoNav);
+    ok('3 module mới có trên thanh điều hướng', ['rds', 'transfuse', 'enteral'].every(x => t.nav.includes(x)), t.nav.join(','));
+    // RDS – OI = MAP × FiO2 / PaO2: 10×60/50 = 12; 8 kPa = 60,005 mmHg → 12×80/60,005 = 16,0
+    ok('OI = 10 × 60 / 50 = 12', t.oi === 12, t.oi);
+    ok('OI với PaO₂ 8 kPa (= 60,0 mmHg): 12 × 80 / 60,0 = 16,0', t.oiKpa === 16, t.oiKpa);
+    ok('OSI = 10 × 50 / 90 = 5,56', Math.abs(t.osi - 5.556) < 0.01, t.osi);
+    // Poractant 200 mg/kg × 1,2 kg = 240 mg = 3 mL (80 mg/mL) → 1 lọ 3 mL; nhắc 100 mg/kg = 120 mg = 1,5 mL
+    ok('Poractant 1,2 kg: liều đầu 240 mg = 3 mL, 1 lọ 3 mL', t.por.first_mg === 240 && t.por.first_ml === 3 && /^1 lọ 3 mL/.test(t.por.vials), JSON.stringify(t.por));
+    ok('Poractant 1,2 kg: liều nhắc 120 mg = 1,5 mL; tổng tối đa 480 mg', t.por.rep_mg === 120 && t.por.rep_ml === 1.5 && t.por.max_total_mg === 480);
+    ok('Beractant 1,2 kg: 100 mg/kg = 120 mg = 4,8 mL (25 mg/mL)', t.ber.first_mg === 120 && t.ber.first_ml === 4.8);
+    ok('Calfactant 1,2 kg: 105 mg/kg = 126 mg = 3,6 mL (35 mg/mL)', t.cal.first_mg === 126 && t.cal.first_ml === 3.6);
+    ok('Poractant 0,7 kg: 140 mg = 1,75 mL → 1 lọ 3 mL (ít hao phí hơn 2 lọ 1,5 mL? cùng 3 mL → chọn ít lọ)', t.por07.first_ml === 1.75 && /^1 lọ 3 mL/.test(t.por07.vials), t.por07.vials);
+    // TOP ngưỡng thấp (g/dL): tuần 1 11/10, tuần 2 10/8,5, tuần ≥3 8,5/7
+    ok('Ngưỡng Hb TOP (thấp): 11/10 · 10/8,5 · 8,5/7 g/dL', JSON.stringify(t.th) === JSON.stringify([11, 10, 10, 8.5, 8.5, 7]), JSON.stringify(t.th));
+    ok('Ranh giới tuần: ngày 6 → tuần 1; ngày 7 → tuần 2; ngày 13 → tuần 2; ngày 14 → tuần 3', JSON.stringify(t.thEdge) === '[1,2,2,3]', JSON.stringify(t.thEdge));
+    ok('Quy đổi Hb: 95 g/L = 9,5 g/dL; g/dL giữ nguyên', t.hb[0] === 9.5 && t.hb[1] === 9.5);
+    // V = CN × EBV × ΔHct / Hct túi: 1 × 90 × 0,10 / 0,6 = 15 mL; đủ tháng 3 × 85 × 0,10 / 0,6 = 42,5 mL
+    ok('Thể tích theo Hct (non tháng, EBV 90): 15,0 mL', t.hct === 15, t.hct);
+    ok('Thể tích theo Hct (đủ tháng, EBV 85): 42,5 mL', t.hctTerm === 42.5, t.hctTerm);
+    ok('Ngưỡng tiểu cầu: 25 / 50 / 100 ×10⁹/L', JSON.stringify(t.plt) === '[25,50,100]', JSON.stringify(t.plt));
+    // Nuôi ăn: 1,2 kg, 40 → +30/ngày → 160; mL/cữ = mL/kg × CN / 8
+    ok('Bước tăng: <1000 g → 20; ≥1000 g → 30 mL/kg/ngày (ranh giới 1,0 kg)', JSON.stringify(t.step) === '[20,20,30,30]', JSON.stringify(t.step));
+    ok('Lịch 1,2 kg: 40 → 70 → 100 → 130 → 160 mL/kg/ngày', t.plan.map(r => r.mlkg).join(',') === '40,70,100,130,160', t.plan.map(r => r.mlkg).join(','));
+    ok('mL mỗi cữ (8 cữ): 6 · 10,5 · 15 · 19,5 · 24 mL', t.plan.map(r => r.mlfeed).join(',') === '6,10.5,15,19.5,24', t.plan.map(r => r.mlfeed).join(','));
+    ok('Tăng cường sữa mẹ bắt đầu ở 100 mL/kg/ngày', t.plan.map(r => r.fortified ? 1 : 0).join('') === '00111', t.plan.map(r => r.fortified ? 1 : 0).join(''));
+    ok('160 mL/kg sữa mẹ + HMF: 160 × 82/100 = 131,2 kcal/kg; 160 × 2,4/100 = 3,84 g/kg', t.plan[4].kcal === 131.2 && t.plan[4].prot === 3.84, t.plan[4].kcal + ' / ' + t.plan[4].prot);
+    ok('Không tăng cường: 160 × 67/100 = 107,2 kcal/kg; 2,08 g/kg (dưới đích)', t.planNoF.at(-1).kcal === 107.2 && t.planNoF.at(-1).prot === 2.08, t.planNoF.at(-1).kcal + ' / ' + t.planNoF.at(-1).prot);
+    ok('Sữa công thức sinh non không bị cộng HMF; 12 cữ: 160 × 1,0 / 12 = 13,3 mL', t.planPTF.at(-1).fortified === false && t.planPTF.at(-1).mlfeed === 13.3 && t.planPTF.at(-1).kcal === 128, JSON.stringify(t.planPTF.at(-1)));
+    // Giao diện + ca biên
+    const ui = await page.evaluate(() => {
+      const o = {};
+      showModule('rds'); ['s1', 's2', 's3', 's4', 's5'].forEach((k, i) => document.getElementById('rds-' + k).value = [2, 2, 1, 1, 2][i]);
+      document.getElementById('rds-cpap').value = 5; document.getElementById('rds-fio2').value = 40; calcRDS();
+      o.rds1 = document.getElementById('rds-result').innerText;
+      document.getElementById('rds-cpap').value = 7; document.getElementById('rds-fio2').value = 30; calcRDS();
+      o.rds2 = document.getElementById('rds-result').innerText;
+      document.getElementById('rds-fio2').value = 15; calcRDS(); o.rds3 = document.getElementById('rds-result').innerText;
+      document.getElementById('rds-fio2').value = 35; document.getElementById('rds-map').value = 10; document.getElementById('rds-pao2').value = 6; document.getElementById('rds-pao2u').value = 'kpa'; calcRDS();
+      o.rds4 = document.getElementById('rds-result').innerText;
+      showModule('transfuse'); document.getElementById('tf-hbu').value = 'gl'; document.getElementById('tf-hb').value = 95; calcTransfuse(); o.tf1 = document.getElementById('transfuse-result').innerText;
+      document.getElementById('tf-hbu').value = 'gdl'; document.getElementById('tf-hb').value = 95; calcTransfuse(); o.tf2 = document.getElementById('transfuse-result').innerText;
+      document.getElementById('tf-hb').value = 9.5; document.getElementById('tf-wt').value = 2.5; document.getElementById('tf-ga').value = 35; calcTransfuse(); o.tf3 = document.getElementById('transfuse-result').innerText;
+      document.getElementById('tf-hct').value = 20; document.getElementById('tf-hctt').value = 45; calcTransfuse(); o.tf4 = document.getElementById('transfuse-result').innerText;
+      document.getElementById('tf-wt').value = 0.9; document.getElementById('tf-ga').value = 26; document.getElementById('tf-hct').value = ''; document.getElementById('tf-hctt').value = '';
+      document.getElementById('tf-plt').value = 30; document.getElementById('tf-bleed').value = 'none'; calcTransfuse(); o.tf5 = document.getElementById('transfuse-result').innerText;
+      document.getElementById('tf-bleed').value = 'minor'; calcTransfuse(); o.tf6 = document.getElementById('transfuse-result').innerText;
+      showModule('enteral'); document.getElementById('en-step').value = 40; calcEnteral(); o.en1 = document.getElementById('enteral-result').innerText;
+      document.getElementById('en-step').value = ''; document.getElementById('en-milk').value = 'ptf'; calcEnteral(); o.en2 = document.getElementById('enteral-result').innerText;
+      document.getElementById('en-milk').value = 'ebm'; document.getElementById('en-wt').value = 1.3; document.getElementById('en-cur').value = 90; calcEnteral(); applyEnteralToTPN();
+      o.tpn = { active: document.getElementById('tpn').classList.contains('active'), wt: document.getElementById('tpn-wt').value, en: document.getElementById('tpn-enteral').value, note: !!document.getElementById('en-sync-note') };
+      applyEnteralToTPN(); o.notes = document.querySelectorAll('#en-sync-note').length;
+      return o;
+    });
+    ok('RDS: Silverman 2+2+1+1+2 = 8 → suy hô hấp nặng', /8\/10/.test(ui.rds1) && /nặng/.test(ui.rds1));
+    ok('RDS: FiO₂ 40% khi CPAP 5 → khuyên tăng CPAP trước, chưa kết luận đủ tiêu chí', /tăng CPAP/.test(ui.rds1) && !/ĐỦ TIÊU CHÍ/.test(ui.rds1));
+    ok('RDS: FiO₂ đúng 30% (không >30%) → chưa đến ngưỡng surfactant', /Chưa đến ngưỡng/.test(ui.rds2));
+    ok('RDS: FiO₂ 15% (ngoài 21–100) → cảnh báo nhập liệu', /FiO₂ 21–100%/.test(ui.rds3));
+    ok('RDS: OI với PaO₂ 6 kPa (45 mmHg): 10 × 35 / 45 = 7,8', /OI = 10 × 35 \/ 45 mmHg = 7.8/.test(ui.rds4), ui.rds4.match(/OI =[^\n]*/)?.[0]);
+    ok('Truyền máu: Hb 95 g/L đọc đúng = 9,5 g/dL < 10 → có chỉ định', /Hb 9.5 g\/dL/.test(ui.tf1) && /CÓ chỉ định truyền hồng cầu/.test(ui.tf1));
+    ok('Truyền máu: nhập 95 nhưng chọn g/dL → chặn (ngoài khoảng sinh lý)', /ngoài khoảng sinh lý/.test(ui.tf2));
+    ok('Truyền máu: trẻ 35 tuần, 2,5 kg → cảnh báo ngoài quần thể TOP', /Ngoài quần thể nghiên cứu TOP/.test(ui.tf3));
+    ok('Truyền máu: Hct 20→45% ở 2,5 kg, 35 tuần (non tháng, 90 mL/kg) = 93,8 mL = 37,5 mL/kg → cảnh báo vượt 20 mL/kg, giới hạn 50 mL', /93.8 mL/.test(ui.tf4) && /giới hạn 50 mL/.test(ui.tf4) && /vượt 20 mL\/kg/.test(ui.tf4), ui.tf4.match(/Theo Hct[^\n]*/)?.[0]);
+    ok('Tiểu cầu 30, không chảy máu (ngưỡng 25) → chưa truyền', /Tiểu cầu 30 ≥ 25/.test(ui.tf5));
+    ok('Tiểu cầu 30, chảy máu nhẹ (ngưỡng 50) → truyền 15 mL/kg = 13,5 mL', /Tiểu cầu 30 < 50/.test(ui.tf6) && /13.5 mL/.test(ui.tf6));
+    ok('Nuôi ăn: bước 40 mL/kg/ngày → 2 cảnh báo (trên mặc định, vượt SIFT)', /cao hơn mặc định/.test(ui.en1) && /vượt mức đã thử nghiệm trong SIFT/.test(ui.en1));
+    ok('Nuôi ăn: sữa công thức sinh non + "tự tăng cường" → nhắc không pha HMF', /không pha chất tăng cường/.test(ui.en2));
+    ok('Nút chuyển sang PN: mở module PN, điền 1,3 kg và 90 mL/kg/ngày, có ghi chú', ui.tpn.active && ui.tpn.wt === '1.3' && ui.tpn.en === '90' && ui.tpn.note, JSON.stringify(ui.tpn));
+    ok('Bấm chuyển lần 2 không nhân đôi ghi chú', ui.notes === 1, ui.notes);
+    await page.evaluate(() => showModule('home'));
   }
 
   console.log('14. Lỗi runtime trên trang');

@@ -1,0 +1,27 @@
+# Tự chạy bộ kiểm thử lâm sàng (tests/cdss.test.js) ở mỗi pull request và mỗi lần đẩy lên main.
+# Bật "Require status checks to pass" cho kiểm tra "tests" trong Settings → Branches để chặn gộp khi test lỗi.
+name: tests
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Cài Playwright + Chromium
+        run: |
+          npm install --no-save playwright@1.47.2
+          npx playwright install --with-deps chromium
+      - name: Kiểm tra cú pháp JavaScript nhúng
+        run: |
+          node -e "const s=require('fs').readFileSync('index.html','utf8');const re=/<script>([\s\S]*?)<\/script>/g;let m,i=0;while((m=re.exec(s))){i++;try{new Function(m[1])}catch(e){console.error('Khối script #'+i+': '+e.message);process.exit(1)}}console.log(i+' khối script hợp lệ')"
+      - name: Chạy bộ kiểm thử
+        run: node tests/cdss.test.js

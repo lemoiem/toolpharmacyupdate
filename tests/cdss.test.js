@@ -108,8 +108,8 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
   await set('bl-val', 18); await run('calcBili'); t = await text('bili-result'); ok('TSB 18 → chiếu đèn', t.includes('CHỈ ĐỊNH CHIẾU ĐÈN'));
   await set('bl-val', 22.5); await run('calcBili'); t = await text('bili-result'); ok('TSB 22,5 → leo thang điều trị', t.includes('LEO THANG'));
   await set('bl-val', 24); await run('calcBili'); t = await text('bili-result'); ok('TSB 24 → thay máu', t.includes('THAY MÁU'));
-  await set('bl-photo', ''); await set('bl-exch', ''); await run('calcBili'); t = await text('bili-result'); ok('Chưa nhập ngưỡng → nhắc tra biểu đồ', t.includes('Nhập ngưỡng'));
-  await set('bl-ga', 34); await run('calcBili'); t = await text('bili-result'); ok('GA 34 → ngoài phạm vi AAP 2022', t.includes('≥35 tuần'));
+  await set('bl-photo', ''); await set('bl-exch', ''); await run('calcBili'); t = await text('bili-result'); ok('Chưa nhập ngưỡng, chưa nạp bảng AAP → nhắc tra biểu đồ', t.includes('Chưa có ngưỡng') && t.includes('Chưa nạp bảng ngưỡng theo giờ AAP 2022'));
+  await set('bl-ga', 34); await run('calcBili'); t = await text('bili-result'); ok('GA 34 → dùng bảng Maisels 2012 theo PMA (không còn bị chặn)', t.includes('Maisels 2012') && t.includes('34 0/7 – 34 6/7'), t.match(/Nguồn ngưỡng[^\n]*/)?.[0]);
 
   console.log('9. Hạ glucose máu – GIR');
   await page.evaluate(() => showModule('hypo'));
@@ -312,9 +312,9 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     ok('Trang chủ: 5 nhóm, mỗi module đúng 1 thẻ (không trùng EOS)', st.groups === 5 && st.cards.length === st.ids.length && new Set(st.cards).size === st.cards.length, st.cards.join(','));
     ok('Mọi module trong dữ liệu đều có màn hình tương ứng', st.ids.every(i => st.modsDom.includes(i)), st.ids.filter(i => !st.modsDom.includes(i)).join(','));
     ok('Tiêu đề từng module lấy từ dữ liệu', st.titles.every(t => t[1]), st.titles.filter(t => !t[1]).map(t => t[0]).join(','));
-    ok('Nhóm Cấp cứu nhi khoa xếp theo ABCDE (B→C→D→E)', st.paed === [...st.paed].sort().join('') && st.paed.startsWith('B'), st.paed);
+    ok('Nhóm Cấp cứu nhi khoa xếp theo ABCDE (A→B→C→D→E)', st.paed === [...st.paed].sort().join('') && st.paed.startsWith('AB'), st.paed);
     ok('Icon 3D nhúng (data:image/webp) hiển thị', st.icon.startsWith('url("data:image/webp'), st.icon.slice(0, 40));
-    ok('Bảng tổng quan trang Hướng dẫn liệt kê 20 module lâm sàng', st.ov === 20, st.ov);
+    ok('Bảng tổng quan trang Hướng dẫn liệt kê 21 module lâm sàng', st.ov === 21, st.ov);
   }
 
   console.log('21. Icon 3D tiêu đề thẻ + đánh số bước');
@@ -587,6 +587,120 @@ const near = (a, b, tol = 0.051) => Math.abs(a - b) <= tol;
     ok('Không có vi phạm CSP khi chạy toàn bộ module', csp.length === 0, csp.slice(0, 3).join(' | '));
     ok('Không có yêu cầu mạng nào ngoài font', net.length === 0, net.join(' | '));
     ok('Không lỗi runtime trong mục 25', perr.length === 0, perr.join(' | '));
+    await ctx.close();
+  }
+
+  console.log('26. P1 v2.2 – bilirubin, phản vệ, Phoenix, PRAM, HELIX, thanh bệnh nhân, trợ năng');
+  {
+    const ctx = await browser.newContext(); const pg = await ctx.newPage(); const perr = [];
+    pg.on('pageerror', e => perr.push(e.message));
+    await pg.goto('file://' + path); await pg.waitForTimeout(300);
+    // ── Bilirubin ──
+    const b = await pg.evaluate(() => {
+      const thr = (ga, h, risk) => { const pma = ga + h / 24 / 7, r = maiselsRow(pma); return [risk ? r.photo[0] : r.photo[1], risk ? r.exch[0] : r.exch[1]]; };
+      return { u: biliToMgdl(171, 'umol'), m26: thr(26, 48, false), m26r: thr(26, 48, true), m29d7: thr(29, 168, false), m33: thr(33, 0, false),
+               loaded: aapLoaded('aap_photo_norisk'), none: aapThreshold('aap_photo_norisk', 38, 24) };
+    });
+    ok('Quy đổi bilirubin: 171 µmol/L = 10 mg/dL', Math.abs(b.u - 10) < 1e-9, b.u);
+    ok('Maisels: 26 tuần, 48 giờ, không nguy cơ → chiếu đèn 6, thay máu 14 mg/dL', JSON.stringify(b.m26) === '[6,14]', JSON.stringify(b.m26));
+    ok('Maisels: có nguy cơ → cận dưới 5 / 11 mg/dL', JSON.stringify(b.m26r) === '[5,11]', JSON.stringify(b.m26r));
+    ok('Maisels dùng PMA: 29 tuần + 7 ngày (PMA 30) → hàng 30–31 6/7: 10 / 16', JSON.stringify(b.m29d7) === '[10,16]', JSON.stringify(b.m29d7));
+    ok('Maisels: 33 tuần → 12 / 18 mg/dL', JSON.stringify(b.m33) === '[12,18]', JSON.stringify(b.m33));
+    ok('Bảng AAP 2022 chưa nạp → không tự đặt số (trả null)', b.loaded === false && b.none === null);
+    const bi = await pg.evaluate(() => {
+      // bảng GIẢ LẬP chỉ để kiểm tra thuật toán nội suy – không phải số AAP
+      const T = DATA.bili.records, set = (id, cols, rows) => { const r = T.find(x => x.id === id); r._bak = r.rows; r.ga_cols = cols; r.rows = rows; };
+      set('aap_photo_norisk', [35, 36, 37, 38, 39, 40], [[0, 5, 6, 7, 8, 9, 10], [24, 10, 11, 12, 13, 14, 15], [48, 14, 15, 16, 17, 18, 19]]);
+      ['aap_photo_risk', 'aap_exch_norisk', 'aap_exch_risk'].forEach(id => set(id, [35, 36, 37, 38], [[0, 15, 16, 17, 18], [48, 20, 21, 22, 23]]));
+      const o = { i12: aapThreshold('aap_photo_norisk', 38, 12), i36: aapThreshold('aap_photo_norisk', 40.5, 36), clamp: aapThreshold('aap_photo_norisk', 41, 100), early: aapThreshold('aap_photo_norisk', 35, 0) };
+      showModule('bili'); const S = (id, v) => document.getElementById(id).value = v;
+      S('bl-ga', 38); S('bl-age', 12); S('bl-unit', 'mgdl'); S('bl-val', 11); S('bl-risk', 'no'); S('bl-photo', ''); S('bl-exch', ''); calcBili();
+      o.ui = document.getElementById('bili-result').innerText;
+      T.filter(x => x._bak).forEach(x => { x.rows = x._bak; delete x._bak; });
+      return o;
+    });
+    ok('Nội suy theo giờ: 38 tuần, 12 giờ giữa 8 và 13 → 10,5', bi.i12 === 10.5, bi.i12);
+    ok('Cột tuần hoàn thành: 40,5 tuần → cột 40; 36 giờ → 17', bi.i36 === 17, bi.i36);
+    ok('Quá giờ cuối → giữ giá trị cuối; 41 tuần kẹp vào cột 40', bi.clamp === 19 && bi.early === 5, bi.clamp + ' / ' + bi.early);
+    ok('Khi đã nạp bảng: giao diện tự dùng ngưỡng bảng, TSB 11 ≥ 10,5 → chiếu đèn', /CHỈ ĐỊNH CHIẾU ĐÈN/.test(bi.ui) && /Bảng AAP 2022/.test(bi.ui), bi.ui.slice(0, 120));
+    const bu = await pg.evaluate(async () => { const S = (id, v) => document.getElementById(id).value = v;
+      S('bl-ga', 30); S('bl-age', 72); S('bl-unit', 'umol'); S('bl-val', 150); S('bl-risk', 'no'); calcBili(); await new Promise(r => setTimeout(r, 30));
+      const t1 = document.getElementById('bili-result').innerText; S('bl-val', 150); S('bl-unit', 'mgdl'); calcBili(); await new Promise(r => setTimeout(r, 30));
+      return { t1, t2: document.getElementById('bili-result').innerText }; });
+    ok('Nhập µmol/L: 150 µmol/L hiển thị 8,8 mg/dL; ngưỡng 30 tuần (PMA 30,4) = 10 mg/dL = 171 µmol/L', /8,8 mg\/dL = 150 µmol\/L/.test(bu.t1) && /10 mg\/dL = 171 µmol\/L/.test(bu.t1), bu.t1.match(/Bilirubin toàn phần[^\n]*/)?.[0]);
+    ok('Nhầm đơn vị (150 nhưng chọn mg/dL) → chặn, nhắc kiểm tra đơn vị', /kiểm tra đơn vị/.test(bu.t2));
+    ok('Ghi chú yếu tố nguy cơ: tuổi thai không tự chuyển sang bảng "có nguy cơ"', /<b>không<\/b> tự chuyển sang bảng/.test(await pg.evaluate(() => { const S = (id, v) => document.getElementById(id).value = v; S('bl-ga', 37); S('bl-unit', 'mgdl'); S('bl-val', 12); calcBili(); return document.getElementById('bili-result').innerHTML; })));
+    // ── Phản vệ ──
+    const a = await pg.evaluate(() => ({ i15: adrIM(15), i60: adrIM(60), i32: adrIM(3.2), tt: [8, 15, 25, 40].map(w => adrTT51(w).ml),
+      mp30: anDose('methylpred', 30), mp40: anDose('methylpred', 40), gl10: anDose('glucagon', 10), dp70: anDose('diphenhydramine', 70) }));
+    ok('Adrenaline tiêm bắp 15 kg = 0,15 mg = 0,15 mL (0,01 mg/kg)', a.i15.mg === 0.15 && a.i15.ml === 0.15 && !a.i15.capped, JSON.stringify(a.i15));
+    ok('Adrenaline tiêm bắp 60 kg → tối đa 0,5 mg', a.i60.mg === 0.5 && a.i60.capped, JSON.stringify(a.i60));
+    ok('Adrenaline tiêm bắp 3,2 kg = 0,032 mg ≈ 0,03 mL', a.i32.mg === 0.032 && a.i32.ml === 0.03, JSON.stringify(a.i32));
+    ok('Bảng TT 51: <10 kg 0,2 · ~10 kg 0,25 · ~20 kg 0,3 · >30 kg 0,5 mL', JSON.stringify(a.tt) === '[0.2,0.25,0.3,0.5]', JSON.stringify(a.tt));
+    ok('Methylprednisolone 1–2 mg/kg, tối đa 50 mg: 30 kg → 30–50; 40 kg → 40–50', a.mp30 === '30–50' && a.mp40 === '40–50', a.mp30 + ' / ' + a.mp40);
+    ok('Glucagon 10 kg = 0,2–0,3 mg; diphenhydramine 70 kg chạm tối đa 50 mg', a.gl10 === '0.2–0.3' && a.dp70 === 50, a.gl10 + ' / ' + a.dp70);
+    const au = await pg.evaluate(async () => { const S = (id, v) => document.getElementById(id).value = v; showModule('anaph');
+      S('an-wt', 3); S('an-grade', 'II'); S('an-bb', 'no'); calcAnaph(); await new Promise(r => setTimeout(r, 30)); const t3 = document.getElementById('anaph-result').innerText;
+      S('an-wt', 10); S('an-grade', 'IV'); S('an-bb', 'yes'); calcAnaph(); await new Promise(r => setTimeout(r, 30)); const t10 = document.getElementById('anaph-result').innerText;
+      return { t3, t10, inNav: !!document.querySelector('.nav-item[onclick*="\'anaph\'"]'), abc: DATA.modules.records.find(r => r.id === 'anaph').abcde }; });
+    ok('Trẻ 3 kg: bảng TT 51 (0,2 mL = 0,07 mg/kg) được cảnh báo cao hơn 0,01 mg/kg', /Cao hơn 0,01 mg\/kg/.test(au.t3) && /0,07 mg\/kg/.test(au.t3), au.t3.match(/bảng liều TT 51[^\n]*/)?.[0]);
+    ok('Truyền adrenaline 10 kg: pha 3 mg/50 mL → 1 mL/giờ = 0,1 mcg/kg/phút', /Pha 3 mg\/50 mL → 1 mL\/giờ = 0,1 mcg\/kg\/phút/.test(au.t10), au.t10.match(/Pha [^\n]*/)?.[0]);
+    ok('Độ IV → ngừng tuần hoàn: adrenaline tĩnh mạch 0,1 mg (0,01 mg/kg) = 1 mL dung dịch 0,1 mg/mL', /NGỪNG TUẦN HOÀN/.test(au.t10) && /0,1 mg/.test(au.t10) && /= 1 mL/.test(au.t10));
+    ok('Đang dùng chẹn beta → hiện glucagon', /Glucagon/.test(au.t10));
+    ok('Module Phản vệ có trên điều hướng, nhãn ABCDE "A"', au.inNav && au.abc === 'A');
+    // ── Phoenix ──
+    const ph = await pg.evaluate(() => { const base = { infect: true, age: '2to5y', support: 'none', vaso: 0 }, P = o => phoenixScore({ ...base, ...o });
+      return { zero: P({}), r1: P({ support: 'niv', pf: 250 }).resp, r2: P({ support: 'imv', pf: 150 }).resp, r2n: P({ support: 'niv', pf: 150 }).resp, r0: P({ pf: 150 }).resp, r3: P({ support: 'imv', sf: 140 }).resp,
+        m: [P({ age: 'lt1m', map: 30 }).cardio, P({ age: 'lt1m', map: 16 }).cardio, P({ age: 'lt1m', map: 31 }).cardio, P({ age: '12to18y', map: 38 }).cardio, P({ age: '12to18y', map: 37 }).cardio],
+        lac: [P({ lact: 4.9 }).cardio, P({ lact: 5 }).cardio, P({ lact: 11 }).cardio], vaso: [P({ vaso: 1 }).cardio, P({ vaso: 2 }).cardio],
+        coag: P({ plt: 80, inr: 1.5, dd: 3 }).coag, coag1: P({ fib: 90 }).coag,
+        n: [P({ gcs: 10 }).neuro, P({ gcs: 11 }).neuro, P({ gcs: 15, pupils: 'fixed' }).neuro],
+        shock: P({ vaso: 1, gcs: 10 }), noinf: phoenixScore({ ...base, infect: false, vaso: 2, gcs: 8 }) }; });
+    ok('Phoenix: không bất thường → 0 điểm, không nhiễm khuẩn huyết', ph.zero.total === 0 && !ph.zero.sepsis);
+    ok('Hô hấp: PF 250 + oxy → 1; PF 150 + thở máy → 2; PF 150 không xâm nhập → 1; không hỗ trợ → 0; SF 140 + thở máy → 3', ph.r1 === 1 && ph.r2 === 2 && ph.r2n === 1 && ph.r0 === 0 && ph.r3 === 3, [ph.r1, ph.r2, ph.r2n, ph.r0, ph.r3].join(','));
+    ok('MAP <1 tháng: 30 → 1, 16 → 2, 31 → 0; 12–17 tuổi: 38 → 1, 37 → 2', JSON.stringify(ph.m) === '[1,2,0,1,2]', JSON.stringify(ph.m));
+    ok('Lactat 4,9 → 0; 5 → 1; 11 → 2 · vận mạch 1 → 1, ≥2 → 2', JSON.stringify(ph.lac) === '[0,1,2]' && JSON.stringify(ph.vaso) === '[1,2]');
+    ok('Đông máu: 3 tiêu chí → tối đa 2; fibrinogen 90 → 1', ph.coag === 2 && ph.coag1 === 1);
+    ok('Thần kinh: GCS 10 → 1; GCS 11 → 0; đồng tử cố định → 2', JSON.stringify(ph.n) === '[1,0,2]', JSON.stringify(ph.n));
+    ok('1 vận mạch + GCS 10 = 2 điểm → nhiễm khuẩn huyết + SỐC (≥1 điểm tim mạch)', ph.shock.total === 2 && ph.shock.sepsis && ph.shock.shock);
+    ok('Không nghi nhiễm khuẩn → không chẩn đoán dù điểm cao', !ph.noinf.sepsis && ph.noinf.total === 3);
+    const pu = await pg.evaluate(() => { showModule('sepsis'); document.getElementById('s-type').value = [...document.getElementById('s-type').options].find(o => !/^neo/.test(o.value)).value;
+      const S = (id, v) => document.getElementById(id).value = v; S('ph-resp', 'niv'); S('ph-sf', 250); S('ph-spo2', 98); calcPhoenix(); return document.getElementById('phoenix-result').innerText; });
+    ok('SpO₂ 98% → không dùng SpO₂/FiO₂, cảnh báo', /SpO₂ >97%/.test(pu) && /Hô hấp\n0/.test(pu.replace(/HÔ HẤP/, 'Hô hấp')), pu.slice(0, 120));
+    // ── PRAM ──
+    const pr = await pg.evaluate(() => { showModule('asthma'); const S = (k, v) => document.getElementById('pram-' + k).value = v;
+      const all = pramScore({ supra: 2, scal: 2, air: 3, wheeze: 3, sat: 2 }), mid = pramScore({ supra: 2, scal: 0, air: 1, wheeze: 2, sat: 1 });
+      document.getElementById('a-sev').value = 'moderate'; S('supra', 2); S('scal', 2); S('air', 2); S('wheeze', 2); S('sat', 0); calcPRAM(true);
+      return { all, mid, sev: document.getElementById('a-sev').value }; });
+    ok('PRAM tối đa 12 → nặng; 6 → vừa', pr.all.total === 12 && pr.all.band.sev === 'severe' && pr.mid.total === 6 && pr.mid.band.sev === 'moderate');
+    ok('PRAM 8 → tự chọn mức "Nặng" cho phác đồ hen', pr.sev === 'severe', pr.sev);
+    // ── HELIX ──
+    ok('Module hạ thân nhiệt có cảnh báo HELIX và điều kiện bắt buộc', await pg.evaluate(() => { showModule('cool'); const t = document.getElementById('cool').innerText; return /HELIX/.test(t) && /6 giờ đầu/.test(t); }));
+    // ── Thanh bệnh nhân hiện tại ──
+    const pt = await pg.evaluate(() => { const S = (id, v) => document.getElementById(id).value = v; showModule('paed');
+      S('n-wt', 1.5); S('pt-wt', 12); S('pt-age', 2); S('pt-ga', ''); S('pt-dol', ''); applyPatient();
+      const o = { p: document.getElementById('p-wt').value, a: document.getElementById('a-wt').value, n: document.getElementById('n-wt').value, h: document.getElementById('h-age').value, st: document.getElementById('pt-status').innerText };
+      S('pt-wt', 40); applyPatient(); o.w1 = document.getElementById('pt-status').innerText;
+      S('pt-wt', 1200); S('pt-age', ''); S('pt-ga', 30); applyPatient(); o.w2 = document.getElementById('pt-status').innerText;
+      o.ls = Object.keys(localStorage).filter(k => /pt|patient|wt/i.test(k)); clearPatient(); o.cl = document.getElementById('pt-wt').value; return o; });
+    ok('Thanh bệnh nhân: 12 kg, 2 tuổi → điền PALS và Hen; bỏ qua module sơ sinh (giới hạn 6 kg); chấn thương đầu = 24 tháng', pt.p === '12' && pt.a === '12' && pt.n === '1.5' && pt.h === '24', JSON.stringify(pt));
+    ok('Báo số ô đã điền / bỏ qua', /Đã điền \d+ ô/.test(pt.st) && /bỏ qua \d+ ô/.test(pt.st), pt.st);
+    ok('Cân nặng 40 kg ở trẻ 2 tuổi → cảnh báo lệch xa ước tính APLS (~12 kg)', /lệch xa ước tính/.test(pt.w1), pt.w1);
+    ok('Nhập 1200 (nhầm gam) với tuổi thai 30 tuần → cảnh báo kiểm tra đơn vị', /kiểm tra đơn vị/.test(pt.w2), pt.w2);
+    ok('Không lưu dữ liệu bệnh nhân vào localStorage; nút Xóa hoạt động', pt.ls.length === 0 && pt.cl === '');
+    // ── Trợ năng ──
+    const ax = await pg.evaluate(async () => { const ids = [...document.querySelectorAll('.module')].map(m => m.id); for (const id of ids) showModule(id);
+      await new Promise(r => setTimeout(r, 60));
+      const unl = [...document.querySelectorAll('.form-group > label:not([for])')].filter(l => l.parentElement.querySelector('input,select,textarea')).length;
+      const nav = [...document.querySelectorAll('.nav-item')], live = [...document.querySelectorAll('[id$="-result"]')].filter(e => e.getAttribute('aria-live') !== 'polite').map(e => e.id);
+      return { unl, navOk: nav.every(n => n.getAttribute('tabindex') === '0' && n.getAttribute('role') === 'button'), live }; });
+    ok('Mọi nhãn có ô nhập đều gắn với ô (label for)', ax.unl === 0, ax.unl);
+    ok('Mọi mục điều hướng: role="button", tabindex="0"', ax.navOk);
+    ok('Mọi khung kết quả có aria-live="polite"', ax.live.length === 0, ax.live.join(','));
+    await pg.focus('.nav-item[onclick*="\'rds\'"]'); await pg.keyboard.press('Enter'); await pg.waitForTimeout(80);
+    const kb = await pg.evaluate(() => ({ act: document.querySelector('.module.active').id, cur: document.querySelector('.nav-item[aria-current="page"]')?.getAttribute('onclick') }));
+    ok('Bàn phím: Enter trên mục điều hướng mở module, đánh dấu aria-current', kb.act === 'rds' && /'rds'/.test(kb.cur || ''), JSON.stringify(kb));
+    ok('Không lỗi runtime trong mục 26', perr.length === 0, perr.join(' | '));
     await ctx.close();
   }
 

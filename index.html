@@ -508,6 +508,16 @@ body:not(.theme-ease) .mode-label{color:#fff}
   body.theme-ease.mode-dark ::-webkit-scrollbar-thumb{background:#2c3d39;border-radius:6px}
   body.theme-ease.mode-dark ::-webkit-scrollbar-track{background:var(--layer1)}
 }
+/* ── THANH BỆNH NHÂN HIỆN TẠI + TRỢ NĂNG (v2.2) ── */
+.pt-bar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:.5rem .75rem;background:var(--layer2,#f4f2e9);border:1px solid var(--border);border-radius:var(--rad-sm);padding:.55rem .8rem;margin-bottom:1rem}
+.pt-bar .pt-title{font-size:12.5px;font-weight:800;color:var(--ink,var(--text));align-self:center}
+.pt-bar label{display:flex;flex-direction:column;gap:2px;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.pt-bar input{width:96px;padding:.3rem .5rem;font-size:13px}
+.pt-bar .pt-status{flex:1 1 220px;font-size:11.5px;color:var(--muted);align-self:center}
+.pt-bar .pt-warn{color:#b45309;font-weight:700}
+body.theme-ease.mode-dark .pt-bar .pt-warn{color:#fbbf24}
+.nav-item:focus-visible,.home-card:focus-visible{outline:3px solid var(--primary);outline-offset:-3px}
+@media screen and (max-width:700px){.pt-bar{gap:.4rem .5rem}.pt-bar input{width:72px}.pt-bar .pt-title{flex:1 1 100%}}
 /* ── RESPONSIVE ĐIỆN THOẠI (đặt cuối để không bị ghi đè) ── */
 @media screen and (max-width:700px){
   /* Điện thoại: thanh điều hướng ngang cuộn được phía trên nội dung – không chiếm chiều rộng nội dung */
@@ -559,7 +569,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
 
   <div class="hdr-right">
     <div class="hdr-author">DSCKI. Lê Mới Em</div>
-    <div class="ver-badge">Phiên bản 2.1 · 2026</div>
+    <div class="ver-badge">Phiên bản 2.2 · 2026</div>
   </div>
   <div class="mode-switch no-print" id="mode-switch" data-mode="light" role="radiogroup" aria-label="Chế độ hiển thị" onkeydown="modeKey(event)">
     <span class="mode-seg"><button type="button" class="mode-opt" data-mode="light" role="radio" aria-checked="true" tabindex="0" aria-label="Sáng" title="Sáng – nền kem tiêu chuẩn" onclick="applyMode('light',true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></button><button type="button" class="mode-opt" data-mode="warm" role="radio" aria-checked="false" tabindex="-1" aria-label="Ấm" title="Ấm – nền giấy ngà, giảm ánh sáng xanh khi đọc lâu" onclick="applyMode('warm',true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6.5 16.5a5.5 5.5 0 0 1 11 0z" fill="currentColor"/><path d="M2.5 20h19M12 4.5v3M5 9.5l1.6 1.6M19 9.5l-1.6 1.6M2.5 16.5h1.5M20 16.5h1.5"/></svg></button><button type="button" class="mode-opt" data-mode="dark" role="radio" aria-checked="false" tabindex="-1" aria-label="Tối" title="Tối – trực đêm, phòng tối" onclick="applyMode('dark',true)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6a.6.6 0 0 0-.8-.7 9.6 9.6 0 1 0 12.5 12.5.6.6 0 0 0-.7-.8z"/></svg></button></span>
@@ -576,13 +586,22 @@ body:not(.theme-ease) .mode-label{color:#fff}
 
 <!-- MAIN CONTENT -->
 <main class="main">
+<div class="pt-bar no-print" id="pt-bar" role="group" aria-label="Bệnh nhân hiện tại">
+  <span class="pt-title">👶 Bệnh nhân hiện tại</span>
+  <label>Cân nặng (kg)<input type="number" id="pt-wt" min="0.3" max="150" step="0.05" inputmode="decimal" oninput="applyPatient()"></label>
+  <label>Tuổi thai (tuần)<input type="number" id="pt-ga" min="22" max="44" step="1" inputmode="numeric" oninput="applyPatient()"></label>
+  <label>Ngày tuổi<input type="number" id="pt-dol" min="0" max="180" step="1" inputmode="numeric" oninput="applyPatient()"></label>
+  <label>Tuổi (năm)<input type="number" id="pt-age" min="0" max="18" step="1" inputmode="numeric" oninput="applyPatient()"></label>
+  <button type="button" class="btn btn-sm" style="background:var(--layer3,#eef3e8);color:var(--ink,var(--text));border:1px solid var(--border)" onclick="clearPatient()">Xóa</button>
+  <span class="pt-status" id="pt-status" aria-live="polite">Nhập một lần – tự điền vào mọi module (không lưu)</span>
+</div>
 
 <!-- ============================= HOME ============================= -->
 <div id="home" class="module active">
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-home"></b></div></div>
   </div>
@@ -592,7 +611,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
       <div class="module-subtitle" style="margin-bottom:0">Neonatal &amp; Paediatric Clinical Decision Support System · DSCKI. Lê Mới Em</div>
     </div>
     <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap" class="no-print">
-      <div class="home-badge" style="background:var(--layer2,#f4f2e9);border:1px solid var(--border);border-radius:10px;padding:.5rem 1rem;font-size:12px;font-weight:600;color:var(--text)">Phiên bản 2.1 · 2026</div>
+      <div class="home-badge" style="background:var(--layer2,#f4f2e9);border:1px solid var(--border);border-radius:10px;padding:.5rem 1rem;font-size:12px;font-weight:600;color:var(--text)">Phiên bản 2.2 · 2026</div>
       <button class="print-bar-btn" onclick="printCurrentModule()">🖨️ In trang chủ</button>
     </div>
   </div>
@@ -611,7 +630,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🆘 Hồi Sức Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -639,7 +658,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍼 Máy Tính Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -667,7 +686,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">👦 Máy Tính Nhi Khoa</div>
     </div>
     <div class="prt-meta">
@@ -695,7 +714,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🔥 Bỏng – Công Thức Parkland</div>
     </div>
     <div class="prt-meta">
@@ -738,7 +757,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">💊 Kháng Sinh – Sepsis Sơ Sinh &amp; Nhi</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-sepsis"></b></div></div>
@@ -749,6 +768,29 @@ body:not(.theme-ease) .mode-label{color:#fff}
     <div class="form-group"><label>Cân nặng (kg)</label><input type="number" id="s-wt" min="0.4" max="150" step="0.1" value="1.5" oninput="calcSepsis()"></div>
     <div class="form-group"><label>Tuổi thai (tuần) – SS</label><input type="number" id="s-ga" min="23" max="42" value="30" oninput="calcSepsis()"></div>
     <div class="form-group"><label>Ngày tuổi</label><input type="number" id="s-dol" min="0" max="90" value="0" oninput="calcSepsis()"></div>
+  </div>
+  <div class="card" id="phoenix-card">
+    <div class="card-title">🧮 Tiêu chí Phoenix 2024 – nhiễm khuẩn huyết / sốc nhiễm khuẩn ở trẻ em</div>
+    <div class="form-row">
+      <div class="form-group"><label>Nghi / xác định nhiễm khuẩn</label><select id="ph-infect" onchange="calcPhoenix()"><option value="yes">Có</option><option value="no">Không</option></select></div>
+      <div class="form-group"><label>Nhóm tuổi (ngưỡng MAP)</label><select id="ph-age" onchange="calcPhoenix()"><option value="lt1m">&lt;1 tháng</option><option value="1to11m">1–11 tháng</option><option value="1to2y">1 – &lt;2 tuổi</option><option value="2to5y" selected>2 – &lt;5 tuổi</option><option value="5to12y">5 – &lt;12 tuổi</option><option value="12to18y">12–17 tuổi</option></select></div>
+      <div class="form-group"><label>Hỗ trợ hô hấp</label><select id="ph-resp" onchange="calcPhoenix()"><option value="none">Không</option><option value="niv">Oxy / không xâm nhập</option><option value="imv">Thở máy xâm nhập</option></select></div>
+      <div class="form-group"><label>PaO₂/FiO₂</label><input type="number" id="ph-pf" min="0" max="700" step="1" placeholder="vd. 250" oninput="calcPhoenix()"></div>
+      <div class="form-group"><label>SpO₂/FiO₂ (khi không có khí máu)</label><input type="number" id="ph-sf" min="0" max="500" step="1" placeholder="vd. 200" oninput="calcPhoenix()"></div>
+      <div class="form-group"><label>SpO₂ (%)</label><input type="number" id="ph-spo2" min="50" max="100" step="1" placeholder="vd. 94" oninput="calcPhoenix()"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Số thuốc vận mạch</label><select id="ph-vaso" onchange="calcPhoenix()"><option value="0">0</option><option value="1">1</option><option value="2">≥2</option></select></div>
+      <div class="form-group"><label>Lactat (mmol/L)</label><input type="number" id="ph-lact" min="0" max="30" step="0.1" placeholder="vd. 2" oninput="calcPhoenix()"></div>
+      <div class="form-group"><label>Huyết áp trung bình MAP (mmHg)</label><input type="number" id="ph-map" min="0" max="200" step="1" placeholder="vd. 60" oninput="calcPhoenix()"></div>
+      <div class="form-group"><label>Tiểu cầu (×10⁹/L)</label><input type="number" id="ph-plt" min="0" max="1500" step="1" placeholder="vd. 150" oninput="calcPhoenix()"></div>
+      <div class="form-group"><label>INR</label><input type="number" id="ph-inr" min="0" max="15" step="0.1" placeholder="vd. 1.1" oninput="calcPhoenix()"></div>
+      <div class="form-group"><label>D-dimer (mg/L FEU)</label><input type="number" id="ph-dd" min="0" max="50" step="0.1" placeholder="vd. 1" oninput="calcPhoenix()"></div>
+      <div class="form-group"><label>Fibrinogen (mg/dL)</label><input type="number" id="ph-fib" min="0" max="1500" step="1" placeholder="vd. 250" oninput="calcPhoenix()"></div>
+      <div class="form-group"><label>GCS</label><input type="number" id="ph-gcs" min="3" max="15" step="1" placeholder="vd. 15" oninput="calcPhoenix()"></div>
+      <div class="form-group"><label>Đồng tử</label><select id="ph-pupil" onchange="calcPhoenix()"><option value="normal">Bình thường / phản xạ</option><option value="fixed">Cố định hai bên</option></select></div>
+    </div>
+    <div id="phoenix-result"></div>
   </div>
   <div id="sepsis-result"></div>
 </div>
@@ -764,7 +806,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🩸 Nhiễm Toan Cetone Đái Tháo Đường (DKA)</div>
     </div>
     <div class="prt-meta">
@@ -793,7 +835,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">⚡ Động Kinh Liên Tục (Status Epilepticus)</div>
     </div>
     <div class="prt-meta">
@@ -808,6 +850,33 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div id="seizure-result"></div>
 </div>
 
+<!-- ============================= PHẢN VỆ (v2.2) ============================= -->
+<div id="anaph" class="module">
+  <div class="module-topbar">
+    <div>
+      <div class="module-title" style="margin-bottom:0">⚠️ Phản vệ ở trẻ em và sơ sinh</div>
+    </div>
+    <button class="print-bar-btn no-print" onclick="printCurrentModule()">🖨️ In module này</button>
+  </div>
+  <div class="module-print-hdr">
+    <div>
+      <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
+      <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">⚠️ Phản vệ ở trẻ em và sơ sinh</div>
+    </div>
+    <div class="prt-meta">
+      <div>In lúc: <b id="prt-time-anaph"></b></div>
+    </div>
+  </div>
+  <div class="module-subtitle">Adrenaline 1 mg/mL TIÊM BẮP là thuốc đầu tay – không trì hoãn vì kháng histamin hay corticoid (TT 51/2017 · WAO 2020 · EAACI 2021)</div>
+  <div class="form-row">
+    <div class="form-group"><label>Cân nặng (kg)</label><input type="number" id="an-wt" min="0.4" max="150" step="0.1" value="15" oninput="calcAnaph()"></div>
+    <div class="form-group"><label>Phân độ (TT 51/2017)</label><select id="an-grade" onchange="calcAnaph()"><option value="I">Độ I – Nhẹ (chỉ da, niêm mạc)</option><option value="II" selected>Độ II – Nặng (≥2 cơ quan)</option><option value="III">Độ III – Nguy kịch (hô hấp/sốc/ý thức)</option><option value="IV">Độ IV – Ngừng tuần hoàn</option></select></div>
+    <div class="form-group"><label>Đang dùng thuốc chẹn beta</label><select id="an-bb" onchange="calcAnaph()"><option value="no">Không</option><option value="yes">Có</option></select></div>
+  </div>
+  <div id="anaph-result"></div>
+</div>
+
 <!-- ============================= ASTHMA ============================= -->
 <div id="asthma" class="module">
   <div class="module-topbar">
@@ -819,7 +888,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">💨 Hen Phế Quản Nặng – Cấp Cứu</div>
     </div>
     <div class="prt-meta">
@@ -830,6 +899,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="form-row">
     <div class="form-group"><label>Cân nặng (kg)</label><input type="number" id="a-wt" min="3" max="150" step="0.5" value="25" oninput="calcAsthma()"></div>
     <div class="form-group"><label>Mức độ nặng</label><select id="a-sev" onchange="calcAsthma()"><option value="moderate">Vừa</option><option value="severe">Nặng</option><option value="critical">Nguy kịch</option></select></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 Điểm PRAM – đánh giá mức độ nặng (chọn để tự đặt mức độ)</div>
+    <div class="form-row" id="pram-form"><!-- sinh từ data-pram --></div>
+    <div id="pram-result"></div>
   </div>
   <div id="asthma-result"></div>
 </div>
@@ -845,7 +919,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">❤️ Nhịp Nhanh Trên Thất (SVT)</div>
     </div>
     <div class="prt-meta">
@@ -871,7 +945,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">⚗️ Tăng Kali Máu – Điều Trị Khẩn Cấp</div>
     </div>
     <div class="prt-meta">
@@ -898,7 +972,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🟡 Ngưỡng Điều Trị Bilirubin Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -906,14 +980,17 @@ body:not(.theme-ease) .mode-label{color:#fff}
     </div>
   </div>
 
-  <div class="module-subtitle">≥35 tuần thai – AAP 2022 (Kemper) · Nhập ngưỡng tra từ biểu đồ AAP 2022 / BiliTool</div>
+  <div class="module-subtitle">≥35 tuần: AAP 2022 (Kemper) – tự tính khi đã nạp bảng ngưỡng theo giờ, nếu chưa thì nhập ngưỡng tra từ biểu đồ gốc · &lt;35 tuần: Maisels 2012 theo tuổi sau kinh chót</div>
   <div class="form-row">
-    <div class="form-group"><label>Tuổi thai (tuần)</label><input type="number" id="bl-ga" min="35" max="42" value="38" oninput="calcBili()"></div>
-    <div class="form-group"><label>Tuổi (giờ)</label><input type="number" id="bl-age" min="0" max="336" value="24" oninput="calcBili()"></div>
-    <div class="form-group"><label>Yếu tố nguy cơ</label><select id="bl-risk" onchange="calcBili()"><option value="no">Không có yếu tố nguy cơ độc thần kinh</option><option value="yes">Có ≥1 yếu tố nguy cơ độc thần kinh</option></select></div>
-    <div class="form-group"><label>Bilirubin đo được (mg/dL)</label><input type="number" id="bl-val" min="0" max="40" step="0.1" value="12" oninput="calcBili()"></div>
-    <div class="form-group"><label>Ngưỡng chiếu đèn AAP 2022 (mg/dL)</label><input type="number" id="bl-photo" min="0" max="30" step="0.1" placeholder="Tra biểu đồ" oninput="calcBili()"></div>
-    <div class="form-group"><label>Ngưỡng thay máu AAP 2022 (mg/dL)</label><input type="number" id="bl-exch" min="0" max="35" step="0.1" placeholder="Tra biểu đồ" oninput="calcBili()"></div>
+    <div class="form-group"><label>Tuổi thai khi sinh (tuần)</label><input type="number" id="bl-ga" min="22" max="42" step="1" value="38" oninput="calcBili()"></div>
+    <div class="form-group"><label>Tuổi (giờ)</label><input type="number" id="bl-age" min="0" max="1440" step="1" value="24" oninput="calcBili()"></div>
+    <div class="form-group"><label>Yếu tố nguy cơ độc thần kinh (ngoài tuổi thai)</label><select id="bl-risk" onchange="calcBili()"><option value="no">Không có</option><option value="yes">Có ≥1 yếu tố</option></select></div>
+    <div class="form-group"><label>Bilirubin toàn phần (TSB)</label><input type="number" id="bl-val" min="0" max="700" step="0.1" value="12" oninput="calcBili()"></div>
+    <div class="form-group"><label>Đơn vị bilirubin</label><select id="bl-unit" onchange="calcBili()"><option value="mgdl">mg/dL</option><option value="umol">µmol/L</option></select></div>
+  </div>
+  <div class="form-row">
+    <div class="form-group"><label>Ngưỡng chiếu đèn – nhập tay khi chưa nạp bảng AAP (cùng đơn vị)</label><input type="number" id="bl-photo" min="0" max="600" step="0.1" placeholder="Tra biểu đồ AAP 2022" oninput="calcBili()"></div>
+    <div class="form-group"><label>Ngưỡng thay máu – nhập tay khi chưa nạp bảng AAP (cùng đơn vị)</label><input type="number" id="bl-exch" min="0" max="700" step="0.1" placeholder="Tra biểu đồ AAP 2022" oninput="calcBili()"></div>
   </div>
   <div id="bili-result"></div>
 </div>
@@ -929,7 +1006,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍬 Hạ Đường Huyết Sơ Sinh</div>
     </div>
     <div class="prt-meta">
@@ -956,7 +1033,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🌬️ Suy hô hấp sinh non (RDS)</div>
     </div>
     <div class="prt-meta">
@@ -1004,7 +1081,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🩸 Truyền chế phẩm máu sơ sinh</div>
     </div>
     <div class="prt-meta">
@@ -1059,7 +1136,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🥛 Nuôi ăn đường tiêu hóa sơ sinh</div>
     </div>
     <div class="prt-meta">
@@ -1099,7 +1176,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🌡️ Hạ Thân Nhiệt Trị Liệu – Tiêu Chí HIE</div>
     </div>
     <div class="prt-meta">
@@ -1130,7 +1207,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🧠 Chấn Thương Đầu – Công Cụ PREDICT</div>
     </div>
     <div class="prt-meta">
@@ -1161,7 +1238,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🧪 Pha Dịch Truyền (Ad Hoc Fluids)</div>
     </div>
     <div class="prt-meta">
@@ -1188,7 +1265,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🦠 Ước Tính Nguy Cơ Nhiễm Khuẩn Huyết Sơ Sinh Sớm (EOS)</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-eos"></b></div></div>
@@ -1420,7 +1497,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍶 Dinh Dưỡng Tĩnh Mạch Toàn Phần (TPN)</div>
     </div>
     <div class="prt-meta"><div>In lúc: <b id="prt-time-tpn"></b></div></div>
@@ -1568,7 +1645,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">📖 Hướng Dẫn Sử Dụng</div>
     </div>
     <div class="prt-meta">
@@ -1576,7 +1653,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
     </div>
   </div>
 
-  <div class="module-subtitle">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · Bệnh Viện Phương Nam · v2.1 · 2026</div>
+  <div class="module-subtitle">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · Bệnh Viện Phương Nam · v2.2 · 2026</div>
 
   <div class="card">
     <div class="card-title">🎯 Mục Đích &amp; Phạm Vi Ứng Dụng</div>
@@ -1814,7 +1891,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.2 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">📚 Tài Liệu Tham Khảo</div>
     </div>
     <div class="prt-meta">
@@ -1987,9 +2064,25 @@ body:not(.theme-ease) .mode-label{color:#fff}
   </div>
 
   <div class="card">
+    <div class="card-title">⚠️ Phản Vệ · Phoenix · PRAM · Bilirubin Non Tháng · HELIX (v2.2)</div>
+    <ol style="font-size:13px;line-height:2.3;padding-left:1.2rem;color:var(--text)">
+      <li><strong>Bộ Y tế.</strong> Thông tư 51/2017/TT-BYT ngày 29/12/2017 hướng dẫn phòng, chẩn đoán và xử trí phản vệ. <small style="color:var(--muted)">[Phân độ, bảng liều adrenaline]</small></li>
+      <li><strong>Cardona V, Ansotegui IJ, Ebisawa M, et al.</strong> World Allergy Organization anaphylaxis guidance 2020. <em>World Allergy Organ J</em> 2020;13(10):100472.</li>
+      <li><strong>Shaker MS, Wallace DV, Golden DBK, et al.</strong> Anaphylaxis – a 2020 practice parameter update, systematic review, and GRADE analysis. <em>J Allergy Clin Immunol</em> 2020;145(4):1082–123.</li>
+      <li><strong>Muraro A, Worm M, Alviani C, et al.</strong> EAACI guidelines: Anaphylaxis (2021 update). <em>Allergy</em> 2022;77(2):357–77.</li>
+      <li><strong>Schlapbach LJ, Watson RS, Sorce LR, et al.</strong> International Consensus Criteria for Pediatric Sepsis and Septic Shock. <em>JAMA</em> 2024;331(8):665–74. <small style="color:var(--muted)">[Tiêu chí Phoenix]</small></li>
+      <li><strong>Sanchez-Pinto LN, Bennett TD, DeWitt PE, et al.</strong> Development and Validation of the Phoenix Criteria for Pediatric Sepsis and Septic Shock. <em>JAMA</em> 2024;331(8):675–86.</li>
+      <li><strong>Ducharme FM, Chalut D, Plotnick L, et al.</strong> The Pediatric Respiratory Assessment Measure: a valid clinical score for assessing acute asthma severity from toddlers to teenagers. <em>J Pediatr</em> 2008;152(4):476–80. <small style="color:var(--muted)">[Điểm PRAM]</small></li>
+      <li><strong>Maisels MJ, Watchko JF, Bhutani VK, Stevenson DK.</strong> An approach to the management of hyperbilirubinemia in the preterm infant less than 35 weeks of gestation. <em>J Perinatol</em> 2012;32(9):660–4.</li>
+      <li><strong>Thayyil S, Pant S, Montaldo P, et al.</strong> Hypothermia for moderate or severe neonatal encephalopathy in low-income and middle-income countries (HELIX). <em>Lancet Glob Health</em> 2021;9(9):e1273–85.</li>
+    </ol>
+  </div>
+
+  <div class="card">
     <div class="card-title">📝 Lịch Sử Cập Nhật</div>
     <table class="result-table"><thead><tr><th>Phiên bản</th><th>Ngày</th><th>Nội dung</th></tr></thead><tbody>
-      <tr class="highlight-row"><td>v2.1</td><td>10/2026</td><td>Sửa lỗi an toàn sau thẩm định (P0): diazepam IV 0,15–0,2 mg/kg, tối đa 10 mg (AES 2016); module Thuốc NICU tách thuốc hồi sức (adrenaline, bù thể tích) khỏi bicarbonat/calci (chỉ định đặc hiệu, ILCOR/NRP 2020); dấu phẩy thập phân thống nhất toàn app (ISMP); tắt phân tích AI (không gửi dữ liệu ra ngoài); thoát ký tự HTML ô chữ TPN; Content-Security-Policy chặn kết nối mạng; bỏ dòng “JCI Accredited · RTAC” trên bản in; ghi rõ “chưa thẩm định độc lập”; GitHub Actions tự chạy bộ kiểm thử</td></tr>
+      <tr class="highlight-row"><td>v2.2</td><td>10/2026</td><td>Thẩm định đợt P1: <b>module Phản vệ</b> (TT 51/2017, WAO 2020 – adrenaline tiêm bắp theo cân nặng và đối chiếu bảng TT 51, truyền tĩnh mạch, bù dịch, thuốc hỗ trợ, phân độ); <b>bilirubin</b> – trẻ &lt;35 tuần theo Maisels 2012 (PMA), nhập mg/dL hoặc µmol/L, khung tự tính ngưỡng AAP 2022 khi nạp bảng gốc, sửa lỗi tự chuyển bảng “có nguy cơ” khi tuổi thai &lt;38 tuần; <b>tiêu chí Phoenix 2024</b> trong module Nhiễm khuẩn huyết; <b>điểm PRAM</b> trong module Hen; cảnh báo <b>HELIX</b> và điều kiện bắt buộc cho hạ thân nhiệt; <b>thanh “Bệnh nhân hiện tại”</b> điền nhanh mọi module (không lưu); điều hướng dùng được bằng bàn phím, nhãn gắn ô nhập, aria-live</td></tr>
+      <tr><td>v2.1</td><td>10/2026</td><td>Sửa lỗi an toàn sau thẩm định (P0): diazepam IV 0,15–0,2 mg/kg, tối đa 10 mg (AES 2016); module Thuốc NICU tách thuốc hồi sức (adrenaline, bù thể tích) khỏi bicarbonat/calci (chỉ định đặc hiệu, ILCOR/NRP 2020); dấu phẩy thập phân thống nhất toàn app (ISMP); tắt phân tích AI (không gửi dữ liệu ra ngoài); thoát ký tự HTML ô chữ TPN; Content-Security-Policy chặn kết nối mạng; bỏ dòng “JCI Accredited · RTAC” trên bản in; ghi rõ “chưa thẩm định độc lập”; GitHub Actions tự chạy bộ kiểm thử</td></tr>
       <tr><td>v2.0</td><td>10/2026</td><td>Thêm 3 module nhóm Sơ sinh: <b>Suy hô hấp sinh non (RDS)</b> – tiêu chí và liều surfactant theo chế phẩm, CPAP, đích SpO₂, OI/OSI, điểm Silverman–Andersen (European Consensus 2022); <b>Nuôi ăn đường tiêu hóa</b> – lịch tăng sữa, mL mỗi cữ, năng lượng – protein so với đích ESPGHAN 2022, chất tăng cường sữa mẹ, chuyển sang module PN (SIFT); <b>Truyền chế phẩm máu</b> – ngưỡng Hb theo TOP/ETTNO, tiểu cầu theo PlaNeT-2, liều – tốc độ, huyết tương, tủa lạnh, yêu cầu chế phẩm (BSH 2016). Ba khối dữ liệu mới data-neo-rds, data-neo-transfusion, data-neo-enteral (chưa kiểm chứng); icon Hạ glucose máu đổi sang 🍬</td></tr>
       <tr><td>v1.9</td><td>10/2026</td><td>Chế độ hiển thị Sáng · Ấm · Tối: nhóm 3 nút ☀️/🌅/🌙 trên header (dùng được bằng phím mũi tên), nhớ lựa chọn, mặc định theo cài đặt hệ điều hành; chế độ Ấm nền giấy ngà giảm ánh sáng xanh khi đọc lâu; chữ cam hàng cảnh báo đậm hơn đạt tương phản AA; bảng màu tối xanh than ngả ngọc, màu nhóm lâm sàng có bản sáng hơn đạt tương phản WCAG AA; màu inline của bảng/kết quả được đảo độ sáng nhưng giữ sắc độ (đỏ/cam/xanh lá vẫn mang nghĩa mức nguy cơ); bản in luôn nền trắng</td></tr>
       <tr><td>v1.8</td><td>10/2026</td><td>Đổi tên ứng dụng thành NeoPed CDSS (Neonatal &amp; Paediatric Clinical Decision Support System); logo mới “bàn chân em bé + nhịp tim”; favicon; bỏ khối logo/tên bệnh viện, khẩu hiệu và huy hiệu JCI/RTAC khỏi header và trang chủ; theme Ease: thay màu hồng Phương Nam bằng màu thương hiệu NeoPed (xanh ngọc đậm) cho nút và mục đang chọn ở trang chủ, trong module nút In và mục đang chọn theo màu nhóm lâm sàng</td></tr>
@@ -2009,7 +2102,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
 
 <!-- ── PRINT FOOTER (ẩn trên màn hình, hiện khi in) ── -->
 <div id="print-footer-bar">
-  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v2.1 · 2026 · DSCKI. Lê Mới Em
+  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v2.2 · 2026 · DSCKI. Lê Mới Em
 </div>
 
 </div>
@@ -2068,8 +2161,8 @@ body:not(.theme-ease) .mode-label{color:#fff}
 </style>
 <script type="application/json" id="data-modules">
 {
- "version": "1.3.0",
- "updated": "2026-10-14",
+ "version": "1.4.0",
+ "updated": "2026-10-15",
  "status": "verified",
  "title": "Cấu trúc module – nhóm lâm sàng, thứ tự, tên theo thuật ngữ y khoa, icon",
  "source": "Cấu hình giao diện nội bộ CDSS Bệnh viện Phương Nam. Thứ tự nhóm Cấp cứu nhi theo tiếp cận ABCDE (APLS/PALS). Icon: Microsoft Fluent Emoji (MIT).",
@@ -2237,10 +2330,10 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "icon": "bulb",
    "short": "Tăng bilirubin máu",
    "title": "Tăng bilirubin máu sơ sinh",
-   "sub": "Chiếu đèn / thay máu · AAP 2022",
+   "sub": "AAP 2022 (≥35 tuần) · Maisels 2012 (<35 tuần)",
    "target": "Sơ sinh / NICU",
-   "function": "Phân loại xử trí theo ngưỡng chiếu đèn, leo thang điều trị, thay máu",
-   "range": "≥35 tuần"
+   "function": "Ngưỡng chiếu đèn / leo thang / thay máu theo giờ tuổi và yếu tố nguy cơ; trẻ <35 tuần theo PMA; mg/dL hoặc µmol/L",
+   "range": "≥22 tuần"
   },
   {
    "order": 7,
@@ -2292,6 +2385,19 @@ body:not(.theme-ease) .mode-label{color:#fff}
   },
   {
    "order": 11,
+   "id": "anaph",
+   "group": "paedem",
+   "abcde": "A",
+   "icon": "warning",
+   "short": "Phản vệ",
+   "title": "Phản vệ ở trẻ em và sơ sinh",
+   "sub": "TT 51/2017 · WAO 2020 · EAACI 2021",
+   "target": "Mọi khoa / Cấp cứu",
+   "function": "Phân độ, adrenaline tiêm bắp theo cân nặng và theo TT 51, truyền tĩnh mạch, bù dịch, thuốc hỗ trợ, theo dõi",
+   "range": "0,4–150 kg"
+  },
+  {
+   "order": 12,
    "id": "asthma",
    "group": "paedem",
    "abcde": "B",
@@ -2304,7 +2410,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "range": "3–150 kg"
   },
   {
-   "order": 12,
+   "order": 13,
    "id": "sepsis",
    "group": "paedem",
    "abcde": "C",
@@ -2317,7 +2423,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "range": "0,3–150 kg"
   },
   {
-   "order": 13,
+   "order": 14,
    "id": "svt",
    "group": "paedem",
    "abcde": "C",
@@ -2330,7 +2436,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "range": "0,4–150 kg"
   },
   {
-   "order": 14,
+   "order": 15,
    "id": "hyperk",
    "group": "paedem",
    "abcde": "C",
@@ -2343,7 +2449,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "range": "0,3–150 kg"
   },
   {
-   "order": 15,
+   "order": 16,
    "id": "seizure",
    "group": "paedem",
    "abcde": "D",
@@ -2356,7 +2462,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "range": "2–150 kg"
   },
   {
-   "order": 16,
+   "order": 17,
    "id": "head",
    "group": "paedem",
    "abcde": "D",
@@ -2369,7 +2475,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "range": "0–18 tuổi"
   },
   {
-   "order": 17,
+   "order": 18,
    "id": "dka",
    "group": "paedem",
    "abcde": "E",
@@ -2382,7 +2488,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "range": "3–150 kg"
   },
   {
-   "order": 18,
+   "order": 19,
    "id": "burns",
    "group": "paedem",
    "abcde": "E",
@@ -2395,7 +2501,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "range": "0,4–150 kg"
   },
   {
-   "order": 19,
+   "order": 20,
    "id": "tpn",
    "group": "fluid",
    "icon": "droplet",
@@ -2407,7 +2513,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "range": "0,3–10 kg"
   },
   {
-   "order": 20,
+   "order": 21,
    "id": "adhoc",
    "group": "fluid",
    "icon": "alembic",
@@ -2419,7 +2525,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "range": "–"
   },
   {
-   "order": 21,
+   "order": 22,
    "id": "guide",
    "group": "info",
    "icon": "book",
@@ -2428,7 +2534,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "sub": "Phạm vi · cách dùng · viết tắt"
   },
   {
-   "order": 22,
+   "order": 23,
    "id": "refs",
    "group": "info",
    "icon": "books",
@@ -3359,6 +3465,487 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "add_kcal": 15,
    "add_prot": 1.1,
    "note": "GIÁ TRỊ GIẢ ĐỊNH: thay bằng mức bổ sung/100 mL theo nhãn sản phẩm và cách pha của bệnh viện"
+  }
+ ]
+}
+</script>
+<script type="application/json" id="data-bili">
+{
+ "version": "1.0.0",
+ "updated": "2026-10-15",
+ "status": "unverified",
+ "title": "Ngưỡng bilirubin: trẻ <35 tuần (Maisels 2012) và khung bảng ngưỡng theo giờ AAP 2022 (chờ nạp từ Supplemental Tables)",
+ "source": "1. Maisels MJ, Watchko JF, Bhutani VK, Stevenson DK. An approach to the management of hyperbilirubinemia in the preterm infant less than 35 weeks of gestation. J Perinatol. 2012;32(9):660-4. 2. Kemper AR, Newman TB, Slaughter JL, et al. Clinical Practice Guideline Revision: Management of Hyperbilirubinemia in the Newborn Infant 35 or More Weeks of Gestation. Pediatrics. 2022;150(3):e2022058859 – Supplemental Tables 1–4 (CHƯA nạp: phải chép nguyên văn từ phụ lục gốc).",
+ "records": [
+  {
+   "id": "maisels2012",
+   "type": "ga_table",
+   "unit": "mg/dL",
+   "note": "Dùng tuổi sau kinh chót (PMA) khi trẻ lớn dần. Dùng cận DƯỚI của khoảng cho trẻ có nguy cơ độc thần kinh cao hơn.",
+   "rows": [
+    {
+     "pma_lo": 0,
+     "pma_hi": 28,
+     "label": "<28 0/7 tuần",
+     "photo": [
+      5,
+      6
+     ],
+     "exch": [
+      11,
+      14
+     ]
+    },
+    {
+     "pma_lo": 28,
+     "pma_hi": 30,
+     "label": "28 0/7 – 29 6/7 tuần",
+     "photo": [
+      6,
+      8
+     ],
+     "exch": [
+      12,
+      14
+     ]
+    },
+    {
+     "pma_lo": 30,
+     "pma_hi": 32,
+     "label": "30 0/7 – 31 6/7 tuần",
+     "photo": [
+      8,
+      10
+     ],
+     "exch": [
+      13,
+      16
+     ]
+    },
+    {
+     "pma_lo": 32,
+     "pma_hi": 34,
+     "label": "32 0/7 – 33 6/7 tuần",
+     "photo": [
+      10,
+      12
+     ],
+     "exch": [
+      15,
+      18
+     ]
+    },
+    {
+     "pma_lo": 34,
+     "pma_hi": 35,
+     "label": "34 0/7 – 34 6/7 tuần",
+     "photo": [
+      12,
+      14
+     ],
+     "exch": [
+      17,
+      19
+     ]
+    }
+   ]
+  },
+  {
+   "id": "aap_photo_norisk",
+   "type": "hour_table",
+   "unit": "mg/dL",
+   "title": "AAP 2022 – chiếu đèn, KHÔNG có yếu tố nguy cơ (Supplemental Table 1)",
+   "ga_cols": [
+    35,
+    36,
+    37,
+    38,
+    39,
+    40
+   ],
+   "rows": []
+  },
+  {
+   "id": "aap_photo_risk",
+   "type": "hour_table",
+   "unit": "mg/dL",
+   "title": "AAP 2022 – chiếu đèn, CÓ ≥1 yếu tố nguy cơ (Supplemental Table 2)",
+   "ga_cols": [
+    35,
+    36,
+    37,
+    38
+   ],
+   "rows": []
+  },
+  {
+   "id": "aap_exch_norisk",
+   "type": "hour_table",
+   "unit": "mg/dL",
+   "title": "AAP 2022 – thay máu, KHÔNG có yếu tố nguy cơ (Supplemental Table 3)",
+   "ga_cols": [
+    35,
+    36,
+    37,
+    38
+   ],
+   "rows": []
+  },
+  {
+   "id": "aap_exch_risk",
+   "type": "hour_table",
+   "unit": "mg/dL",
+   "title": "AAP 2022 – thay máu, CÓ ≥1 yếu tố nguy cơ (Supplemental Table 4)",
+   "ga_cols": [
+    35,
+    36,
+    37,
+    38
+   ],
+   "rows": []
+  },
+  {
+   "id": "escalation",
+   "type": "param",
+   "below_exch": 2,
+   "text": "Ngưỡng leo thang chăm sóc = ngưỡng thay máu − 2 mg/dL (AAP 2022)."
+  }
+ ]
+}
+</script>
+<script type="application/json" id="data-anaphylaxis">
+{
+ "version": "1.0.0",
+ "updated": "2026-10-15",
+ "status": "unverified",
+ "title": "Phản vệ nhi – sơ sinh: phân độ, adrenaline tiêm bắp, truyền tĩnh mạch, bù dịch, thuốc hỗ trợ, theo dõi",
+ "source": "1. Bộ Y tế. Thông tư 51/2017/TT-BYT ngày 29/12/2017 hướng dẫn phòng, chẩn đoán và xử trí phản vệ. 2. Cardona V, Ansotegui IJ, Ebisawa M, et al. World Allergy Organization anaphylaxis guidance 2020. World Allergy Organ J. 2020;13(10):100472. 3. Shaker MS, Wallace DV, Golden DBK, et al. Anaphylaxis – a 2020 practice parameter update, systematic review, and GRADE analysis. J Allergy Clin Immunol. 2020;145(4):1082-123. 4. Muraro A, Worm M, Alviani C, et al. EAACI guidelines: Anaphylaxis (2021 update). Allergy. 2022;77(2):357-77.",
+ "records": [
+  {
+   "id": "grades",
+   "type": "list",
+   "items": [
+    {
+     "g": "I",
+     "label": "Nhẹ",
+     "text": "Chỉ triệu chứng da, tổ chức dưới da, niêm mạc: mày đay, ngứa, phù mạch"
+    },
+    {
+     "g": "II",
+     "label": "Nặng",
+     "text": "Biểu hiện ≥2 cơ quan: da – niêm mạc kèm khó thở, khàn tiếng, đau bụng, nôn, tiêu chảy, mạch nhanh; huyết áp chưa tụt"
+    },
+    {
+     "g": "III",
+     "label": "Nguy kịch",
+     "text": "Rít thanh quản, phù thanh quản, khò khè, tím tái, rối loạn nhịp thở, rối loạn ý thức, tụt huyết áp/sốc"
+    },
+    {
+     "g": "IV",
+     "label": "Ngừng tuần hoàn",
+     "text": "Ngừng thở, ngừng tuần hoàn"
+    }
+   ]
+  },
+  {
+   "id": "adr_im",
+   "type": "param",
+   "conc_mg_ml": 1,
+   "per_kg": 0.01,
+   "max_mg": 0.5,
+   "text": "Adrenaline 1 mg/mL TIÊM BẮP mặt trước ngoài đùi 0,01 mg/kg (= 0,01 mL/kg), tối đa 0,5 mg; nhắc lại mỗi 3–5 phút nếu chưa đáp ứng (WAO 2020; EAACI 2021)."
+  },
+  {
+   "id": "adr_tt51",
+   "type": "bands",
+   "unit": "mL dung dịch 1 mg/mL",
+   "note": "Bảng liều cố định theo cân nặng của TT 51/2017 – đối chiếu nguyên văn phụ lục trước khi dùng",
+   "bands": [
+    {
+     "wt_max": 10,
+     "ml": 0.2,
+     "label": "Sơ sinh hoặc <10 kg"
+    },
+    {
+     "wt_max": 20,
+     "ml": 0.25,
+     "label": "Khoảng 10 kg"
+    },
+    {
+     "wt_max": 30,
+     "ml": 0.3,
+     "label": "Khoảng 20 kg"
+    },
+    {
+     "wt_max": 999,
+     "ml": 0.5,
+     "label": "&gt;30 kg"
+    }
+   ]
+  },
+  {
+   "id": "adr_iv",
+   "type": "param",
+   "start_mcg_kg_min": 0.1,
+   "lo": 0.1,
+   "hi": 1,
+   "text": "Sau ≥2–3 liều tiêm bắp mà vẫn tụt huyết áp/suy hô hấp: truyền tĩnh mạch liên tục khởi đầu 0,1 mcg/kg/phút, chỉnh 3–5 phút/lần theo huyết áp và nhịp tim (0,1–1 mcg/kg/phút). KHÔNG tiêm tĩnh mạch nhanh adrenaline khi còn mạch."
+  },
+  {
+   "id": "fluid",
+   "type": "param",
+   "per_kg_lo": 10,
+   "per_kg_hi": 20,
+   "text": "NaCl 0,9% 10–20 mL/kg trong 10–20 phút đầu khi tụt huyết áp, đánh giá lại và nhắc lại theo đáp ứng."
+  },
+  {
+   "id": "diphenhydramine",
+   "type": "dose",
+   "drug": "Diphenhydramine (kháng H1)",
+   "per_kg": 1,
+   "max": 50,
+   "unit": "mg",
+   "route": "IV chậm/IM",
+   "note": "Chỉ giảm triệu chứng da – KHÔNG thay adrenaline, không điều trị tắc nghẽn hô hấp hay sốc"
+  },
+  {
+   "id": "methylpred",
+   "type": "dose",
+   "drug": "Methylprednisolone",
+   "per_kg_lo": 1,
+   "per_kg_hi": 2,
+   "max": 50,
+   "unit": "mg",
+   "route": "IV",
+   "note": "Không phải thuốc cấp cứu đầu tay; không chứng minh ngừa phản vệ 2 pha (EAACI 2021)"
+  },
+  {
+   "id": "glucagon",
+   "type": "dose",
+   "drug": "Glucagon",
+   "per_kg_lo": 0.02,
+   "per_kg_hi": 0.03,
+   "max": 1,
+   "unit": "mg",
+   "route": "IV 5 phút",
+   "note": "Trẻ đang dùng thuốc chẹn beta, kháng trị adrenaline"
+  },
+  {
+   "id": "observe",
+   "type": "param",
+   "text": "Theo dõi tối thiểu 6–12 giờ sau khi hết triệu chứng; lâu hơn nếu phản vệ nặng, cần ≥2 liều adrenaline hoặc có tiền sử phản vệ 2 pha (WAO 2020). Tuân thủ thời gian theo dõi của TT 51/2017 và phác đồ bệnh viện; báo cáo phản ứng có hại (ADR)."
+  }
+ ]
+}
+</script>
+<script type="application/json" id="data-phoenix">
+{
+ "version": "1.0.0",
+ "updated": "2026-10-15",
+ "status": "unverified",
+ "title": "Tiêu chí Phoenix 2024 – nhiễm khuẩn huyết và sốc nhiễm khuẩn ở trẻ em (điểm 4 hệ cơ quan)",
+ "source": "1. Schlapbach LJ, Watson RS, Sorce LR, et al. International Consensus Criteria for Pediatric Sepsis and Septic Shock. JAMA. 2024;331(8):665-74. 2. Sanchez-Pinto LN, Bennett TD, DeWitt PE, et al. Development and Validation of the Phoenix Criteria for Pediatric Sepsis and Septic Shock. JAMA. 2024;331(8):675-86.",
+ "records": [
+  {
+   "id": "resp",
+   "type": "param",
+   "pf_1": 400,
+   "sf_1": 292,
+   "pf_2": 200,
+   "sf_2": 220,
+   "pf_3": 100,
+   "sf_3": 148,
+   "text": "1 điểm: PaO₂/FiO₂ <400 hoặc SpO₂/FiO₂ <292 khi có bất kỳ hỗ trợ hô hấp. 2 điểm: PaO₂/FiO₂ 100–200 hoặc SpO₂/FiO₂ 148–220 VÀ thở máy xâm nhập. 3 điểm: PaO₂/FiO₂ <100 hoặc SpO₂/FiO₂ <148 VÀ thở máy xâm nhập. SpO₂/FiO₂ chỉ dùng khi SpO₂ ≤97%."
+  },
+  {
+   "id": "cardio",
+   "type": "param",
+   "lact_1": 5,
+   "lact_2": 11,
+   "map": [
+    {
+     "age": "lt1m",
+     "label": "<1 tháng",
+     "p1": 30,
+     "p2": 17
+    },
+    {
+     "age": "1to11m",
+     "label": "1–11 tháng",
+     "p1": 38,
+     "p2": 25
+    },
+    {
+     "age": "1to2y",
+     "label": "1 – <2 tuổi",
+     "p1": 43,
+     "p2": 31
+    },
+    {
+     "age": "2to5y",
+     "label": "2 – <5 tuổi",
+     "p1": 44,
+     "p2": 32
+    },
+    {
+     "age": "5to12y",
+     "label": "5 – <12 tuổi",
+     "p1": 48,
+     "p2": 36
+    },
+    {
+     "age": "12to18y",
+     "label": "12–17 tuổi",
+     "p1": 51,
+     "p2": 38
+    }
+   ],
+   "text": "Thuốc vận mạch: 1 thuốc = 1 điểm, ≥2 thuốc = 2 điểm. Lactat 5–10,9 mmol/L = 1 điểm, ≥11 = 2 điểm. Huyết áp trung bình (MAP) theo tuổi: ≤ngưỡng p1 = 1 điểm, < ngưỡng p2 = 2 điểm. Tối đa 6 điểm."
+  },
+  {
+   "id": "coag",
+   "type": "param",
+   "plt": 100,
+   "inr": 1.3,
+   "ddimer": 2,
+   "fib": 100,
+   "text": "Mỗi tiêu chí 1 điểm, tối đa 2: tiểu cầu <100 ×10⁹/L; INR >1,3; D-dimer >2 mg/L FEU; fibrinogen <100 mg/dL."
+  },
+  {
+   "id": "neuro",
+   "type": "param",
+   "gcs": 10,
+   "text": "GCS ≤10 = 1 điểm; đồng tử cố định hai bên = 2 điểm."
+  },
+  {
+   "id": "define",
+   "type": "param",
+   "sepsis_min": 2,
+   "text": "Nhiễm khuẩn huyết: nghi/xác định nhiễm khuẩn VÀ tổng điểm Phoenix ≥2. Sốc nhiễm khuẩn: nhiễm khuẩn huyết VÀ ≥1 điểm tim mạch. Không áp dụng cho trẻ sơ sinh trong đợt nằm viện sau sinh hoặc tuổi sau kinh chót <37 tuần."
+  }
+ ]
+}
+</script>
+<script type="application/json" id="data-pram">
+{
+ "version": "1.0.0",
+ "updated": "2026-10-15",
+ "status": "unverified",
+ "title": "Điểm PRAM (Pediatric Respiratory Assessment Measure) – mức độ nặng cơn hen cấp ở trẻ em",
+ "source": "1. Ducharme FM, Chalut D, Plotnick L, et al. The Pediatric Respiratory Assessment Measure: a valid clinical score for assessing acute asthma severity from toddlers to teenagers. J Pediatr. 2008;152(4):476-80. 2. Chalut DS, Ducharme FM, Davis GM. The Preschool Respiratory Assessment Measure (PRAM): a responsive index of acute asthma severity. J Pediatr. 2000;137(6):762-8.",
+ "records": [
+  {
+   "id": "items",
+   "type": "score",
+   "items": [
+    {
+     "key": "supra",
+     "label": "Co kéo hõm trên ức",
+     "levels": [
+      [
+       0,
+       "Không"
+      ],
+      [
+       2,
+       "Có"
+      ]
+     ]
+    },
+    {
+     "key": "scal",
+     "label": "Co cơ bậc thang",
+     "levels": [
+      [
+       0,
+       "Không"
+      ],
+      [
+       2,
+       "Có"
+      ]
+     ]
+    },
+    {
+     "key": "air",
+     "label": "Thông khí phổi (rì rào phế nang)",
+     "levels": [
+      [
+       0,
+       "Bình thường"
+      ],
+      [
+       1,
+       "Giảm ở đáy"
+      ],
+      [
+       2,
+       "Giảm lan tỏa"
+      ],
+      [
+       3,
+       "Mất / gần như không nghe"
+      ]
+     ]
+    },
+    {
+     "key": "wheeze",
+     "label": "Khò khè",
+     "levels": [
+      [
+       0,
+       "Không"
+      ],
+      [
+       1,
+       "Chỉ thì thở ra"
+      ],
+      [
+       2,
+       "Hai thì"
+      ],
+      [
+       3,
+       "Nghe không cần ống nghe / phổi im lặng"
+      ]
+     ]
+    },
+    {
+     "key": "sat",
+     "label": "SpO₂ khí trời",
+     "levels": [
+      [
+       0,
+       "≥95%"
+      ],
+      [
+       1,
+       "92–94%"
+      ],
+      [
+       2,
+       "<92%"
+      ]
+     ]
+    }
+   ],
+   "bands": [
+    {
+     "max": 3,
+     "label": "Nhẹ",
+     "sev": "mild"
+    },
+    {
+     "max": 7,
+     "label": "Vừa",
+     "sev": "moderate"
+    },
+    {
+     "max": 12,
+     "label": "Nặng",
+     "sev": "severe"
+    }
+   ]
   }
  ]
 }
@@ -6730,7 +7317,7 @@ document.querySelectorAll('script[type="application/json"][id^="data-"]').forEac
   try{const o=JSON.parse(s.textContent);if(!Array.isArray(o.records)||!o.records.length)throw new Error('records rỗng');DATA[s.id.slice(5)]=o}
   catch(e){DATA_ERR.push(s.id+': '+e.message)}
 });
-['eos-models','neo-abx','neo-fluids','drug-doses','tpn-products','modules','neo-rds','neo-transfusion','neo-enteral'].forEach(k=>{if(!DATA[k])DATA_ERR.push('Thiếu bảng dữ liệu data-'+k)});
+['eos-models','neo-abx','neo-fluids','drug-doses','tpn-products','modules','neo-rds','neo-transfusion','neo-enteral','bili','anaphylaxis','phoenix','pram'].forEach(k=>{if(!DATA[k])DATA_ERR.push('Thiếu bảng dữ liệu data-'+k)});
 function rec(table,id){const t=DATA[table];const r=t&&t.records.find(x=>x.id===id);if(!r)throw new Error('Thiếu dữ liệu '+table+' / '+id);return r}
 function P(id){return rec('drug-doses',id).value}                       // tham số phác đồ
 function band(id,wt){return rec('drug-doses',id).bands.find(b=>wt<b.wt_max)}
@@ -6813,10 +7400,10 @@ function buildModuleUI(){
   // 1. Thanh điều hướng
   const nav=document.querySelector('nav.sidebar');
   if(nav){
-    nav.innerHTML=`<div class="nav-item active" onclick="showModule('home')"><span class="nav-icon">${ico('home')}</span><span>Trang chủ</span></div>`+
+    nav.innerHTML=`<div class="nav-item active" role="button" tabindex="0" aria-current="page" onclick="showModule('home')" onkeydown="navKey(event,'home')"><span class="nav-icon">${ico('home')}</span><span>Trang chủ</span></div>`+
       G.map(g=>{const ms=mods.filter(m=>m.group===g.id);if(!ms.length)return'';
         return`<div class="nav-section" style="${gv(g)}"><span class="gdot"></span>${esc(g.title)}</div>`+
-          ms.map(m=>`<div class="nav-item" style="${gv(g)}" onclick="showModule('${m.id}')" title="${esc(m.title)}"><span class="nav-icon">${ico(m.icon)}</span><span>${esc(m.short)}</span>${m.abcde?`<b class="abcde">${m.abcde}</b>`:''}</div>`).join('')}).join('');
+          ms.map(m=>`<div class="nav-item" role="button" tabindex="0" style="${gv(g)}" onclick="showModule('${m.id}')" onkeydown="navKey(event,'${m.id}')" title="${esc(m.title)}"><span class="nav-icon">${ico(m.icon)}</span><span>${esc(m.short)}</span>${m.abcde?`<b class="abcde">${m.abcde}</b>`:''}</div>`).join('')}).join('');
   }
   // 2. Trang chủ – nhóm theo chuyên môn, mã màu theo nhóm
   const home=document.getElementById('home-groups');
@@ -7042,17 +7629,17 @@ function ettNeo(wt){return wt<1?2.5:wt<=2?3.0:3.5}
 
 function showModule(id){
   document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>{n.classList.remove('active');n.removeAttribute('aria-current')});
   const el=document.getElementById(id);
   if(!el)return;
   el.classList.add('active');
   const navItems=document.querySelectorAll('.nav-item');
-  navItems.forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")){n.classList.add('active')}});
+  navItems.forEach(n=>{if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")){n.classList.add('active');n.setAttribute('aria-current','page')}});
   // Set print timestamp for this module
   const tEl=document.getElementById('prt-time-'+id);
   if(tEl)tEl.textContent=new Date().toLocaleString('vi-VN');
   // trigger calculation if needed
-  const triggers={resus:calcResus,neo:calcNeo,paed:calcPaed,burns:calcBurns,sepsis:calcSepsis,dka:calcDKA,seizure:calcSeizure,asthma:calcAsthma,svt:calcSVT,hyperk:calcHyperk,bili:calcBili,hypo:calcHypo,adhoc:calcAdhoc,head:calcHead,cool:buildCool,eos:calcEOS,tpn:calcTPN,rds:calcRDS,transfuse:calcTransfuse,enteral:calcEnteral};
+  const triggers={resus:calcResus,neo:calcNeo,paed:calcPaed,burns:calcBurns,sepsis:()=>{calcSepsis();calcPhoenix()},dka:calcDKA,seizure:calcSeizure,asthma:()=>{calcPRAM(false);calcAsthma()},anaph:calcAnaph,svt:calcSVT,hyperk:calcHyperk,bili:calcBili,hypo:calcHypo,adhoc:calcAdhoc,head:calcHead,cool:buildCool,eos:calcEOS,tpn:calcTPN,rds:calcRDS,transfuse:calcTransfuse,enteral:calcEnteral};
   if(triggers[id]){try{triggers[id]()}catch(e){console.error(e);
     const box=el.querySelector('[id$="-result"]')||el;box.insertAdjacentHTML('afterbegin',`<div class="alert alert-danger">🚨 Lỗi dữ liệu/tính toán: ${e.message}. Không dùng kết quả của module này – báo quản trị dữ liệu.</div>`)}}
   // Điện thoại: cuộn thanh điều hướng ngang tới mục đang mở (không cuộn trang)
@@ -7621,47 +8208,199 @@ function calcHyperk(){
 // Kemper AR, et al. AAP Clinical Practice Guideline Revision. Pediatrics 2022;150(3):e2022058859
 // Ngưỡng chiếu đèn/thay máu AAP 2022 phụ thuộc tuổi thai, giờ tuổi và yếu tố nguy cơ độc thần kinh – tra từ biểu đồ gốc
 // (Figure 2–3 & 7–8) hoặc BiliTool/PediTools; công cụ KHÔNG tự sinh ngưỡng để tránh sai số số hóa đường cong.
+// ============================= TĂNG BILIRUBIN MÁU – v2.2 =============================
+// ≥35 tuần: AAP 2022 (Kemper) – tự tính khi đã nạp Supplemental Tables vào data-bili, nếu chưa thì nhập ngưỡng tra từ biểu đồ gốc.
+// <35 tuần: Maisels 2012 theo tuổi sau kinh chót (PMA). Dữ liệu: data-bili
+function biliToMgdl(v,u){return u==='umol'?v/17.1:v}                       // điểm quy đổi bilirubin DUY NHẤT (1 mg/dL = 17,1 µmol/L)
+function maiselsRow(pma){const rows=rec('bili','maisels2012').rows;return rows.find(r=>pma>=r.pma_lo&&pma<r.pma_hi)||rows[rows.length-1]}
+function aapLoaded(id){const t=rec('bili',id);return Array.isArray(t.rows)&&t.rows.length>1}
+// Nội suy tuyến tính theo giờ tuổi; cột = tuần tuổi thai đã hoàn thành (kẹp vào cột lớn nhất)
+function aapThreshold(id,ga,h){
+  if(!aapLoaded(id))return null;
+  const t=rec('bili',id),cols=t.ga_cols;let ci=0;cols.forEach((c,i)=>{if(Math.floor(ga)>=c)ci=i});
+  const rows=[...t.rows].sort((a,b)=>a[0]-b[0]),v=i=>rows[i][ci+1];
+  if(h<=rows[0][0])return v(0);
+  if(h>=rows[rows.length-1][0])return v(rows.length-1);
+  const k=rows.findIndex(r=>r[0]>=h),h0=rows[k-1][0],h1=rows[k][0];
+  return v(k-1)+(v(k)-v(k-1))*(h-h0)/(h1-h0);
+}
 function calcBili(){
   const out=document.getElementById('bili-result');
-  const ga=num('bl-ga',38);
-  const ageH=num('bl-age',24);
-  const risk=document.getElementById('bl-risk').value;
-  const bili=num('bl-val',12);
-  const photo=num('bl-photo',NaN);
-  const exch=num('bl-exch',NaN);
-  const toUmol=v=>R(v*17.1);
-  if(ga<35){out.innerHTML=warnBox('AAP 2022 chỉ áp dụng cho trẻ ≥35 tuần. Trẻ &lt;35 tuần: dùng ngưỡng theo tuổi thai (NICE CG98 / Maisels 2012).');return}
-  if(ageH<0||ageH>336||bili<0||bili>40){out.innerHTML=warnBox('Kiểm tra lại giờ tuổi (0–336 giờ) và bilirubin (0–40 mg/dL)');return}
-  const rfNote=risk==='yes'
-    ?'Có ≥1 yếu tố nguy cơ độc thần kinh → dùng biểu đồ “có yếu tố nguy cơ” (Figure 3 – chiếu đèn; Figure 8 – thay máu).'
-    :(ga<38?'Tuổi thai &lt;38 tuần đã là yếu tố nguy cơ độc thần kinh → dùng biểu đồ “có yếu tố nguy cơ”.':'Không có yếu tố nguy cơ độc thần kinh → dùng biểu đồ Figure 2 (chiếu đèn) và Figure 7 (thay máu).');
-  const haveT=!isNaN(photo)&&photo>0;
-  const haveE=!isNaN(exch)&&exch>0;
-  let verdict='',col='info';
-  if(haveE&&bili>=exch){verdict='🚨 ≥ NGƯỠNG THAY MÁU – Thay máu khẩn cấp (thay máu thể tích kép 160–180 mL/kg) song song chiếu đèn tích cực.';col='danger'}
-  else if(haveE&&bili>=exch-2){verdict='🚨 NGƯỠNG LEO THANG ĐIỀU TRỊ (≤2 mg/dL dưới ngưỡng thay máu) – Nhập NICU khẩn, chiếu đèn tích cực, bù dịch IV, TSB mỗi 2 giờ, chuẩn bị thay máu; IVIG 0,5–1 g/kg nếu tán huyết đồng miễn dịch.';col='danger'}
-  else if(haveT&&bili>=photo){verdict='💡 CHỈ ĐỊNH CHIẾU ĐÈN. Ngừng chiếu đèn khi TSB giảm ≥2 mg/dL dưới ngưỡng lúc bắt đầu; kiểm tra TSB tái phát sau 12–24 giờ (tùy nguy cơ).';col='warn'}
-  else if(haveT&&bili>=photo-2){verdict='⚠️ Dưới ngưỡng chiếu đèn &lt;2 mg/dL – Có thể cân nhắc chiếu đèn; đo lại TSB/TcB trong 4–24 giờ (AAP 2022, Figure 5/6).';col='warn'}
-  else if(haveT){verdict='✅ Dưới ngưỡng chiếu đèn ≥2 mg/dL – Theo dõi theo giờ tuổi và khoảng cách tới ngưỡng.';col='success'}
-  else{verdict='ℹ️ Nhập ngưỡng chiếu đèn (và thay máu) tra từ biểu đồ AAP 2022 để công cụ phân loại xử trí.';col='info'}
-  const rows=[
-    ['Bilirubin toàn phần huyết thanh (TSB)',bili+' mg/dL = '+toUmol(bili)+' µmol/L','Không trừ bilirubin trực tiếp',''],
-  ];
-  if(haveT)rows.push(['Ngưỡng chiếu đèn (đã nhập)',photo+' mg/dL = '+toUmol(photo)+' µmol/L','Khoảng cách: '+r1(bili-photo)+' mg/dL','highlight-row']);
-  if(haveE){rows.push(['Ngưỡng leo thang điều trị',r1(exch-2)+' mg/dL = '+toUmol(exch-2)+' µmol/L','= ngưỡng thay máu − 2 mg/dL','warn-row']);
-            rows.push(['Ngưỡng thay máu (đã nhập)',exch+' mg/dL = '+toUmol(exch)+' µmol/L','Khoảng cách: '+r1(bili-exch)+' mg/dL','danger-row'])}
-  const html=`
+  const ga=num('bl-ga',38),ageH=num('bl-age',24),risk=document.getElementById('bl-risk').value==='yes';
+  const unit=document.getElementById('bl-unit').value,raw=num('bl-val',NaN),bili=biliToMgdl(raw,unit);
+  const pIn=num('bl-photo',NaN),eIn=num('bl-exch',NaN);
+  const toUmol=v=>R(v*17.1),u2=v=>r1(v)+' mg/dL = '+toUmol(v)+' µmol/L';
+  if(ga<22||ga>42){out.innerHTML=warnBox('Tuổi thai 22–42 tuần');return}
+  if(ageH<0||ageH>1440){out.innerHTML=warnBox('Tuổi 0–1440 giờ (60 ngày)');return}
+  if(!(bili>=0&&bili<=40)){out.innerHTML=warnBox('Bilirubin ngoài khoảng 0–40 mg/dL (0–684 µmol/L) – kiểm tra đơn vị đã chọn');return}
+  const ESC=rec('bili','escalation').below_exch;
+  let photo=null,exch=null,src='',notes=[];
+  if(ga<35){
+    const pma=ga+ageH/24/7,row=maiselsRow(pma);
+    photo=risk?row.photo[0]:row.photo[1];exch=risk?row.exch[0]:row.exch[1];
+    src=`Maisels 2012 – PMA ${r1(pma)} tuần (${row.label}); dùng cận ${risk?'DƯỚI (có nguy cơ)':'TRÊN (không nguy cơ)'} của khoảng chiếu đèn ${row.photo.join('–')} và thay máu ${row.exch.join('–')} mg/dL`;
+    if(pma>=35)notes.push('PMA đã ≥35 tuần: bảng Maisels kết thúc ở 34 6/7 tuần – đang dùng hàng cuối, cân nhắc ngưỡng AAP 2022.');
+  }else{
+    const pT=aapThreshold(risk?'aap_photo_risk':'aap_photo_norisk',ga,ageH),eT=aapThreshold(risk?'aap_exch_risk':'aap_exch_norisk',ga,ageH);
+    const pM=pIn>0?biliToMgdl(pIn,unit):null,eM=eIn>0?biliToMgdl(eIn,unit):null;
+    photo=pT!=null?pT:pM;exch=eT!=null?eT:eM;
+    src=pT!=null?'Bảng AAP 2022 (nội suy theo giờ tuổi)':'Ngưỡng nhập tay – CHƯA nạp bảng ngưỡng AAP 2022 vào data-bili';
+    if(ageH>336)notes.push('AAP 2022 áp dụng tới 14 ngày tuổi (336 giờ).');
+  }
+  let verdict,col;
+  if(exch!=null&&bili>=exch){verdict='🚨 ≥ NGƯỠNG THAY MÁU – thay máu khẩn cấp (thể tích kép = 2 × thể tích máu) song song chiếu đèn tích cực.';col='danger'}
+  else if(exch!=null&&bili>=exch-ESC){verdict=`🚨 NGƯỠNG LEO THANG CHĂM SÓC (≤${ESC} mg/dL dưới ngưỡng thay máu) – nhập NICU, chiếu đèn tích cực, bù dịch, TSB mỗi 2 giờ, chuẩn bị thay máu; cân nhắc IVIG 0,5–1 g/kg nếu tán huyết miễn dịch.`;col='danger'}
+  else if(photo!=null&&bili>=photo){verdict='💡 CHỈ ĐỊNH CHIẾU ĐÈN. Ngừng khi TSB giảm ≥2 mg/dL dưới ngưỡng lúc bắt đầu; kiểm tra tái phát sau 12–24 giờ.';col='warn'}
+  else if(photo!=null&&bili>=photo-2){verdict='⚠️ Dưới ngưỡng chiếu đèn &lt;2 mg/dL – có thể cân nhắc chiếu đèn; đo lại TSB/TcB trong 4–24 giờ.';col='warn'}
+  else if(photo!=null){verdict='✅ Dưới ngưỡng chiếu đèn ≥2 mg/dL – theo dõi theo giờ tuổi.';col='success'}
+  else{verdict='ℹ️ Chưa có ngưỡng: nhập ngưỡng chiếu đèn và thay máu tra từ biểu đồ gốc AAP 2022 (hoặc nạp bảng vào data-bili) để công cụ phân loại.';col='info'}
+  const rows=[['Bilirubin toàn phần huyết thanh (TSB)',u2(bili),'Không trừ bilirubin trực tiếp','']];
+  if(photo!=null)rows.push(['Ngưỡng chiếu đèn',u2(photo),'Khoảng cách: '+r1(bili-photo)+' mg/dL','highlight-row']);
+  if(exch!=null){rows.push(['Ngưỡng leo thang chăm sóc',u2(exch-ESC),'= ngưỡng thay máu − '+ESC+' mg/dL','warn-row']);rows.push(['Ngưỡng thay máu',u2(exch),'Khoảng cách: '+r1(bili-exch)+' mg/dL','danger-row'])}
+  const loaded=['aap_photo_norisk','aap_photo_risk','aap_exch_norisk','aap_exch_risk'].every(aapLoaded);
+  out.innerHTML=`
     <div class="alert alert-${col}">${verdict}</div>
-    <div class="card"><div class="card-title">🟡 Phân Loại Theo AAP 2022 (GA ${ga} tuần · ${ageH} giờ tuổi)</div>
+    ${notes.map(n=>warnBox(n)).join('')}
+    <div class="card"><div class="card-title">🟡 Phân loại xử trí (tuổi thai ${ga} tuần · ${ageH} giờ tuổi · ${risk?'có':'không có'} yếu tố nguy cơ)</div>
     ${drugTable(rows)}
-    <div class="alert alert-info">📌 ${rfNote}<br>Tra ngưỡng chính xác: biểu đồ gốc AAP 2022 hoặc công cụ BiliTool / PediTools (peditools.org/bili2022).</div>
-    <div class="alert alert-warn">
-      <strong>Yếu tố nguy cơ độc thần kinh (AAP 2022):</strong> tuổi thai &lt;38 tuần; albumin &lt;3,0 g/dL; bệnh tán huyết đồng miễn dịch (DAT dương tính), thiếu G6PD hoặc tán huyết khác; nhiễm khuẩn huyết; bất ổn lâm sàng đáng kể trong 24 giờ qua.<br>
-      <strong>Theo dõi:</strong> TcB ≥15 mg/dL hoặc cách ngưỡng &lt;3 mg/dL → đo TSB. Vàng da trong 24 giờ đầu → đo TSB ngay. Đảm bảo bú đủ; kiểm tra nhóm máu, DAT (Coombs), G6PD khi có chỉ định.
-    </div>
-    </div>`;
-  out.innerHTML=html;
+    <div class="alert alert-info">📌 Nguồn ngưỡng: <b>${src}</b>.</div>
+    ${ga>=35&&!loaded?'<div class="alert alert-warn">⚠️ Chưa nạp bảng ngưỡng theo giờ AAP 2022 (Supplemental Tables 1–4) vào khối data-bili – app không tự đặt số. Tra ngưỡng từ biểu đồ gốc AAP 2022 hoặc PediTools rồi nhập tay; bảng nạp xong app sẽ tự tính.</div>':''}
+    <div class="alert alert-warn"><strong>Yếu tố nguy cơ độc thần kinh (AAP 2022) – NGOÀI tuổi thai:</strong> albumin &lt;3,0 g/dL; tán huyết miễn dịch (DAT dương tính), thiếu G6PD hoặc bệnh tán huyết khác; nhiễm khuẩn huyết; tình trạng lâm sàng không ổn định trong 24 giờ qua. Tuổi thai đã nằm sẵn trong các đường ngưỡng – <b>không</b> tự chuyển sang bảng "có yếu tố nguy cơ" chỉ vì tuổi thai &lt;38 tuần.<br>
+    <strong>Theo dõi:</strong> vàng da trong 24 giờ đầu → đo TSB ngay; TcB cách ngưỡng &lt;3 mg/dL hoặc ≥15 mg/dL → đo TSB.</div>
+    </div>`+dataTag('bili');
 }
+
+// ============================= PHẢN VỆ NHI – SƠ SINH – v2.2 =============================
+// TT 51/2017/TT-BYT · WAO 2020 · AAAAI/ACAAI 2020 · EAACI 2021. Dữ liệu: data-anaphylaxis
+function anDose(id,wt){const r=rec('anaphylaxis',id),f=x=>Math.min(x*wt,r.max??Infinity);
+  return r.per_kg!=null?R(f(r.per_kg),2):R(f(r.per_kg_lo),2)+'–'+R(f(r.per_kg_hi),2)}
+function adrIM(wt){const r=rec('anaphylaxis','adr_im'),mg=Math.min(r.per_kg*wt,r.max_mg);return{mg:R(mg,3),ml:R(mg/r.conc_mg_ml,2),capped:r.per_kg*wt>r.max_mg}}
+function adrTT51(wt){return rec('anaphylaxis','adr_tt51').bands.find(b=>wt<b.wt_max)}
+function calcAnaph(){
+  const out=document.getElementById('anaph-result');
+  const wt=num('an-wt',15),grade=document.getElementById('an-grade').value,bb=document.getElementById('an-bb').value==='yes';
+  if(wt<0.4||wt>150){out.innerHTML=warnBox('Cân nặng 0,4–150 kg');return}
+  const G=rec('anaphylaxis','grades').items,g=G.find(x=>x.g===grade),im=adrIM(wt),tt=adrTT51(wt),ttMgKg=tt.ml/wt;
+  const IV=rec('anaphylaxis','adr_iv'),inf=rec('drug-doses','inf_adrenaline'),mgIn50=dz('inf_adrenaline',wt),concMcgMl=mgIn50*1000/50;
+  const mlh=v=>R(v*wt*60/concMcgMl,1),FL=rec('anaphylaxis','fluid');
+  const head=grade==='I'?['info','Độ I – Nhẹ: kháng histamin, theo dõi sát diễn tiến; <b>tiêm bắp adrenaline ngay</b> nếu xuất hiện thêm biểu hiện hô hấp, tuần hoàn hoặc tiêu hóa (chuyển độ II).']
+    :grade==='IV'?['danger','🚨 Độ IV – NGỪNG TUẦN HOÀN: ép tim, thông khí; adrenaline <b>tĩnh mạch</b> theo phác đồ ngừng tim '+dz('p_adr_arrest',wt)+' mg ('+dlab('p_adr_arrest')+', dung dịch 0,1 mg/mL = '+R(dz('p_adr_arrest',wt)/0.1,1)+' mL), mỗi 3–5 phút.']
+    :['danger','🚨 Độ '+grade+' – TIÊM BẮP ADRENALINE NGAY, gọi hỗ trợ, nằm đầu thấp chân cao (ngồi nếu khó thở), thở oxy.'];
+  out.innerHTML=`
+    <div class="alert alert-${head[0]}">${head[1]}</div>
+    <div class="metric-grid">
+      ${metricCard('Adrenaline tiêm bắp',im.mg+' mg',im.ml+' mL dung dịch 1 mg/mL')}
+      ${metricCard('Nhắc lại','3–5 phút','nếu chưa đáp ứng')}
+      ${metricCard('Bù dịch',R(FL.per_kg_lo*wt)+'–'+R(FL.per_kg_hi*wt)+' mL','NaCl 0,9% 10–20 mL/kg')}
+      ${metricCard('Phân độ',grade+' – '+g.label,'TT 51/2017')}
+    </div>
+    <div class="card"><div class="card-title">💉 Adrenaline – ${wt} kg</div>
+    ${drugTable([
+      ['Tiêm bắp – theo cân nặng (WAO 2020, EAACI 2021)',im.mg+' mg = '+im.ml+' mL (1 mg/mL)','0,01 mg/kg, tối đa 0,5 mg; mặt trước ngoài đùi'+(im.capped?' – <b>đã chạm liều tối đa</b>':''),'highlight-row'],
+      ['Tiêm bắp – bảng liều TT 51/2017',tt.ml+' mL (1 mg/mL)',tt.label+' – tương đương '+r2(ttMgKg)+' mg/kg'+(ttMgKg>0.015?'. <b>Cao hơn 0,01 mg/kg</b> – với trẻ nhẹ cân cân nhắc liều theo cân nặng':'')+'. '+rec('anaphylaxis','adr_tt51').note,ttMgKg>0.015?'warn-row':''],
+      ['Truyền tĩnh mạch liên tục (kháng trị)','Pha '+mgIn50+' mg/50 mL → '+mlh(IV.start_mcg_kg_min)+' mL/giờ = '+IV.start_mcg_kg_min+' mcg/kg/phút','Chỉnh '+IV.lo+'–'+IV.hi+' mcg/kg/phút ('+mlh(IV.lo)+'–'+mlh(IV.hi)+' mL/giờ). '+IV.text,'warn-row'],
+    ])}</div>
+    <div class="card"><div class="card-title">🩺 Hỗ trợ sau adrenaline</div>
+    ${drugTable([
+      ['Bù dịch',R(FL.per_kg_lo*wt)+'–'+R(FL.per_kg_hi*wt)+' mL NaCl 0,9%',FL.text,''],
+      ['Salbutamol khí dung',band('p_salb_neb',wt).fixed+' mg','Co thắt phế quản còn sau adrenaline; nhắc lại theo đáp ứng',''],
+      ...['diphenhydramine','methylpred'].map(id=>{const r=rec('anaphylaxis',id);return[r.drug,anDose(id,wt)+' '+r.unit+' '+r.route,r.note,'']}),
+      ...(bb?[[rec('anaphylaxis','glucagon').drug,anDose('glucagon',wt)+' mg '+rec('anaphylaxis','glucagon').route,rec('anaphylaxis','glucagon').note,'highlight-row']]:[]),
+    ])}
+    <div class="alert alert-info">${rec('anaphylaxis','observe').text}</div></div>
+    <div class="card"><div class="card-title">📋 Phân độ phản vệ (TT 51/2017)</div>
+    <table class="result-table"><tbody>${G.map(x=>`<tr${x.g===grade?' class="highlight-row"':''}><td style="width:150px"><b>Độ ${x.g} – ${x.label}</b></td><td>${x.text}</td></tr>`).join('')}</tbody></table></div>`+dataTag('anaphylaxis','drug-doses');
+}
+
+// ============================= TIÊU CHÍ PHOENIX 2024 (trong module Nhiễm khuẩn huyết) =============================
+function phoenixScore(x){
+  const R_=rec('phoenix','resp'),C=rec('phoenix','cardio'),K=rec('phoenix','coag'),Nn=rec('phoenix','neuro');
+  // Hô hấp – ưu tiên PaO₂/FiO₂; SpO₂/FiO₂ chỉ khi SpO₂ ≤97%
+  let lvl=0;const pf=x.pf,sf=x.sf;
+  if(pf>0){lvl=pf<R_.pf_3?3:pf<=R_.pf_2?2:pf<R_.pf_1?1:0}
+  else if(sf>0){lvl=sf<R_.sf_3?3:sf<=R_.sf_2?2:sf<R_.sf_1?1:0}
+  const resp=x.support==='none'?0:x.support==='imv'?lvl:Math.min(lvl,1);
+  // Tim mạch
+  const m=C.map.find(a=>a.age===x.age);
+  const mapP=x.map>0&&m?(x.map<m.p2?2:x.map<=m.p1?1:0):0;
+  const lacP=x.lact>=C.lact_2?2:x.lact>=C.lact_1?1:0;
+  const cardio=Math.min(6,Math.min(2,x.vaso||0)+lacP+mapP);
+  // Đông máu
+  const coag=Math.min(2,(x.plt>0&&x.plt<K.plt?1:0)+(x.inr>K.inr?1:0)+(x.dd>K.ddimer?1:0)+(x.fib>0&&x.fib<K.fib?1:0));
+  // Thần kinh
+  const neuro=x.pupils==='fixed'?2:(x.gcs>0&&x.gcs<=Nn.gcs?1:0);
+  const total=resp+cardio+coag+neuro,sepsis=x.infect&&total>=rec('phoenix','define').sepsis_min;
+  return{resp,cardio,coag,neuro,total,sepsis,shock:sepsis&&cardio>=1,mapP,lacP};
+}
+function calcPhoenix(){
+  const out=document.getElementById('phoenix-result');if(!out)return;
+  const g=id=>num(id,NaN),v=id=>document.getElementById(id).value;
+  const x={infect:v('ph-infect')==='yes',age:v('ph-age'),support:v('ph-resp'),pf:g('ph-pf'),sf:g('ph-sf'),spo2:g('ph-spo2'),vaso:+v('ph-vaso'),lact:g('ph-lact'),map:g('ph-map'),plt:g('ph-plt'),inr:g('ph-inr'),dd:g('ph-dd'),fib:g('ph-fib'),gcs:g('ph-gcs'),pupils:v('ph-pupil')};
+  const warn=[];
+  if(x.sf>0&&!(x.pf>0)&&x.spo2>97)warn.push('SpO₂ &gt;97%: không dùng SpO₂/FiO₂ để chấm điểm hô hấp – giảm FiO₂ hoặc dùng PaO₂/FiO₂.');
+  if(x.sf>0&&!(x.pf>0)&&x.spo2>97)x.sf=NaN;
+  if(/^neo/.test(document.getElementById('s-type').value))warn.push('Tiêu chí Phoenix KHÔNG áp dụng cho trẻ sơ sinh trong đợt nằm viện sau sinh hoặc tuổi sau kinh chót &lt;37 tuần.');
+  const s=phoenixScore(x),D=rec('phoenix','define');
+  out.innerHTML=`${warn.map(w=>warnBox(w)).join('')}
+    <div class="alert alert-${s.shock?'danger':s.sepsis?'warn':'info'}">${s.shock?'🚨 <b>SỐC NHIỄM KHUẨN</b> (Phoenix): nhiễm khuẩn huyết kèm ≥1 điểm tim mạch':s.sepsis?'⚠️ <b>NHIỄM KHUẨN HUYẾT</b> (Phoenix): nghi nhiễm khuẩn và tổng điểm ≥'+D.sepsis_min:x.infect?'Chưa đủ tiêu chí Phoenix (tổng điểm &lt;'+D.sepsis_min+') – đánh giá lại khi có thêm dữ liệu':'Chưa xác định nghi nhiễm khuẩn – Phoenix chỉ áp dụng khi nghi/xác định nhiễm khuẩn'}</div>
+    <div class="metric-grid">${metricCard('Tổng điểm',s.total,'0–13')}${metricCard('Hô hấp',s.resp+' / 3','')}${metricCard('Tim mạch',s.cardio+' / 6','MAP '+s.mapP+' · lactat '+s.lacP)}${metricCard('Đông máu',s.coag+' / 2','')}${metricCard('Thần kinh',s.neuro+' / 2','')}</div>
+    <details><summary style="cursor:pointer;font-weight:700">Cách chấm điểm</summary>${drugTable(['resp','cardio','coag','neuro','define'].map(k=>[rec('phoenix',k).id==='define'?'Định nghĩa':({resp:'Hô hấp',cardio:'Tim mạch',coag:'Đông máu',neuro:'Thần kinh'})[k],'',rec('phoenix',k).text,'']))}</details>`+dataTag('phoenix');
+}
+
+// ============================= ĐIỂM PRAM (trong module Hen) =============================
+function pramScore(sel){const P=rec('pram','items');const t=P.items.reduce((a,it)=>a+(+sel[it.key]||0),0);return{total:t,band:P.bands.find(b=>t<=b.max)}}
+function buildPRAM(){
+  const box=document.getElementById('pram-form');if(!box||box.childElementCount)return;
+  box.innerHTML=rec('pram','items').items.map(it=>`<div class="form-group"><label>${it.label}</label><select id="pram-${it.key}" onchange="calcPRAM(true)">${it.levels.map(l=>`<option value="${l[0]}">${l[0]} – ${l[1]}</option>`).join('')}</select></div>`).join('');
+}
+function calcPRAM(apply){
+  buildPRAM();const out=document.getElementById('pram-result');if(!out)return;
+  const sel={};rec('pram','items').items.forEach(it=>sel[it.key]=document.getElementById('pram-'+it.key).value);
+  const s=pramScore(sel);
+  if(apply&&s.band.sev!=='mild'){const a=document.getElementById('a-sev');if(a&&a.value!=='critical')a.value=s.band.sev}
+  out.innerHTML=`<div class="alert alert-${s.band.sev==='severe'?'danger':s.band.sev==='moderate'?'warn':'success'}">PRAM <b>${s.total}/12</b> → cơn hen <b>${s.band.label}</b>${s.band.sev==='mild'?' – SABA hít đơn thuần, đánh giá lại sau 1 giờ (phác đồ bên dưới dành cho mức vừa – nặng)':apply?' – đã chọn mức độ "'+s.band.label+'" cho phác đồ bên dưới':''}. Mức <b>nguy kịch</b> (phổi im lặng, rối loạn ý thức, kiệt sức) chọn tay.</div>`+dataTag('pram');
+  if(apply)calcAsthma();
+}
+
+// ============================= THANH "BỆNH NHÂN HIỆN TẠI" – v2.2 =============================
+// Nhập một lần cân nặng / tuổi thai / ngày tuổi / tuổi → điền vào mọi module (chỉ ô có giới hạn min–max phù hợp).
+// Chỉ giữ trong bộ nhớ trang: KHÔNG lưu localStorage, mất khi tải lại trang.
+const PT_MAP={
+  wt:['r-wt','n-wt','p-wt','b-wt','s-wt','d-wt','sz-wt','a-wt','sv-wt','k-wt','hy-wt','rds-wt','tf-wt','en-wt','tpn-wt','an-wt'],
+  ga:['r-ga','n-ga','s-ga','bl-ga','rds-ga','tf-ga','en-ga','tpn-ga','eos-ga'],
+  dol:['n-dol','s-dol','tf-pna','en-dol','tpn-dol'],
+  age:['p-age','b-age','sz-age']};
+function expectedWt(age){return age<1?null:age<=5?2*age+8:age<=12?3*age+7:null}   // APLS – chỉ để kiểm tra hợp lý
+function applyPatient(){
+  const v={wt:num('pt-wt',NaN),ga:num('pt-ga',NaN),dol:num('pt-dol',NaN),age:num('pt-age',NaN)};
+  let n=0;const skip=[];
+  for(const k in PT_MAP){if(!(v[k]>=0))continue;
+    PT_MAP[k].forEach(id=>{const el=document.getElementById(id);if(!el)return;
+      if((el.min!==''&&v[k]<+el.min)||(el.max!==''&&v[k]>+el.max)){skip.push(id);return}
+      el.value=v[k];n++})}
+  if(v.age>=0){const h=document.getElementById('h-age');if(h&&v.age*12<=+h.max){h.value=Math.round(v.age*12);n++}}
+  const msg=[];
+  if(n)msg.push('Đã điền '+n+' ô'+(skip.length?' · bỏ qua '+skip.length+' ô ngoài phạm vi module':''));
+  const ew=expectedWt(v.age);
+  if(ew&&v.wt>0&&(v.wt<ew*0.5||v.wt>ew*2))msg.push('<span class="pt-warn">⚠️ Cân nặng '+v.wt+' kg lệch xa ước tính theo tuổi (~'+ew+' kg, APLS) – kiểm tra lại</span>');
+  if(v.wt>0&&v.ga>0&&v.ga<37&&v.wt>6)msg.push('<span class="pt-warn">⚠️ Tuổi thai '+v.ga+' tuần mà cân nặng '+v.wt+' kg – kiểm tra đơn vị (kg / g)</span>');
+  document.getElementById('pt-status').innerHTML=msg.join(' · ')||'Nhập để điền nhanh vào mọi module';
+  const act=document.querySelector('.module.active');if(act&&act.id!=='home')showModule(act.id);
+}
+function clearPatient(){['pt-wt','pt-ga','pt-dol','pt-age'].forEach(id=>{const e=document.getElementById(id);if(e)e.value=''});
+  document.getElementById('pt-status').textContent='Đã xóa thanh bệnh nhân (các module giữ giá trị đang có)'}
+
+// ============================= TRỢ NĂNG (bàn phím, trình đọc màn hình) – v2.2 =============================
+let _lblN=0;
+function linkLabels(root){const r=root&&root.querySelectorAll?root:document;
+  r.querySelectorAll('.form-group > label:not([for])').forEach(l=>{const c=l.parentElement.querySelector('input,select,textarea');if(!c)return;if(!c.id)c.id='fld-'+(++_lblN);l.htmlFor=c.id})}
+function navKey(e,id){if(e.key==='Enter'||e.key===' '){e.preventDefault();showModule(id)}}
+(function(){
+  linkLabels(document);
+  document.querySelectorAll('[id$="-result"]').forEach(e=>{e.setAttribute('aria-live','polite')});
+  const m=document.querySelector('.main');
+  if(m)new MutationObserver(ms=>{for(const x of ms)x.addedNodes.forEach(n=>{if(n.nodeType===1&&(n.matches('label')||n.querySelector('label')))linkLabels(n.parentElement||n)})}).observe(m,{childList:true,subtree:true});
+})();
 
 // ============================= HYPOGLYCEMIA =============================
 // AAP Committee on Fetus and Newborn 2011 (Adamkin) · BAPM Framework 2017 · PES 2015
@@ -7932,6 +8671,7 @@ function applyEnteralToTPN(){
 function buildCool(){
   const critHtml=`
     <div style="font-size:13px;">
+    <div class="alert alert-danger">🚨 <b>Điều kiện bắt buộc:</b> chỉ hạ thân nhiệt tại NICU có thở máy, theo dõi aEEG/điện não, huyết động xâm lấn và xét nghiệm 24/7, khởi động trong 6 giờ đầu sau sinh. Thử nghiệm <b>HELIX</b> (Thayyil S, <i>Lancet Glob Health</i> 2021;9:e1273–85) ở nước thu nhập thấp – trung bình: hạ thân nhiệt <b>không</b> giảm tử vong hoặc tàn tật và tử vong cao hơn nhóm chứng. Không áp dụng ngoài tiêu chí, &gt;6 giờ hoặc &lt;36 tuần ngoài nghiên cứu.</div>
     <div class="alert alert-info">Phải thỏa mãn tiêu chí A VÀ B (và đủ điều kiện) để chỉ định hạ thân nhiệt điều trị (TH)</div>
     <strong>Tiêu chí A – Bằng chứng ngạt chu sinh (≥1):</strong>
     <ul style="margin:.5rem 0 .75rem 1.2rem;line-height:2">
@@ -8090,7 +8830,7 @@ function printCurrentModule(){
   // 2. Update footer
   const footer = document.getElementById('print-footer-bar');
   if(footer) footer.textContent =
-    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v2.1 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
+    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v2.2 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
 
   // 3. Print — CSS @media print sẽ tự ẩn sidebar/header, chỉ hiện module active
   window.print();
@@ -8832,7 +9572,7 @@ function printTPNReport(){
     <div class="sig-box"><div class="sig-line"></div><b>Bác sĩ Điều trị</b><br><small>${d.dr||'(Ký &amp; ghi rõ họ tên)'}</small></div>
   </div>
   <div style="text-align:center;font-size:10px;color:#999;margin-top:10px;border-top:1px solid #ddd;padding-top:6px">
-    BV Phương Nam · Tập Đoàn Y Tế Phương Châu · Máy Tính Lâm Sàng v2.1 · 2026 · DSCKI. Lê Mới Em · ${new Date().toLocaleString('vi-VN')}
+    BV Phương Nam · Tập Đoàn Y Tế Phương Châu · Máy Tính Lâm Sàng v2.2 · 2026 · DSCKI. Lê Mới Em · ${new Date().toLocaleString('vi-VN')}
   </div>
   <script>setTimeout(()=>window.print(),900);<\/script>
   </body></html>`);

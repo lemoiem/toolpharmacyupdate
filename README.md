@@ -7,7 +7,7 @@
 - 🌐 **Web app:** <https://lemoiem.github.io/toolpharmacyupdate/>
 - 🏥 **Đơn vị:** Bệnh viện Phương Nam – Tập đoàn Y tế Phương Châu
 - 👤 **Tác giả:** DSCKI. Lê Mới Em – Dược sĩ lâm sàng
-- 🔖 **Phiên bản:** 2.1 (10/2026)
+- 🔖 **Phiên bản:** 2.2 (10/2026)
 
 > [!WARNING]
 > **Đây là công cụ HỖ TRỢ quyết định, không thay thế phán đoán lâm sàng.** Mọi liều và chỉ định phải được bác sĩ/dược sĩ lâm sàng kiểm tra và phê duyệt trước khi dùng cho người bệnh. Các khối dữ liệu gắn nhãn **"chưa kiểm chứng"** cần một dược sĩ hoặc bác sĩ thứ hai đối chiếu với nguồn gốc trước khi áp dụng lâm sàng.
@@ -16,7 +16,7 @@
 
 ## Danh mục module
 
-Có 20 module lâm sàng, chia thành 4 nhóm. Nhóm Cấp cứu nhi khoa được xếp theo tiếp cận **ABCDE** (APLS/PALS).
+Có 21 module lâm sàng, chia thành 4 nhóm. Nhóm Cấp cứu nhi khoa được xếp theo tiếp cận **ABCDE** (APLS/PALS).
 
 ### 🟢 Hồi sức
 | Module | Hướng dẫn | Phạm vi |
@@ -30,7 +30,7 @@ Có 20 module lâm sàng, chia thành 4 nhóm. Nhóm Cấp cứu nhi khoa đư�
 | Thuốc và thủ thuật sơ sinh (NICU) | ETT · UVC/UAC · kháng sinh theo PMA/PNA · truyền liên tục | 0,3–6 kg |
 | 🆕 Suy hô hấp sinh non (RDS) – surfactant, CPAP | European Consensus 2022 · OI/OSI · điểm Silverman–Andersen | 0,3–6 kg |
 | Nguy cơ nhiễm khuẩn huyết sơ sinh sớm (EOS) | Kaiser Permanente 2024 (có mô hình 2017 để so sánh) | 34–43 tuần |
-| Tăng bilirubin máu sơ sinh | AAP 2022 – ngưỡng chiếu đèn/thay máu tra từ biểu đồ | ≥35 tuần |
+| Tăng bilirubin máu sơ sinh | AAP 2022 (≥35 tuần, tự tính khi nạp bảng gốc) · Maisels 2012 (<35 tuần, theo PMA) · mg/dL hoặc µmol/L | ≥22 tuần |
 | Hạ glucose máu sơ sinh | AAP 2011 / BAPM 2017 · GIR | 0,3–6 kg |
 | 🆕 Nuôi ăn đường tiêu hóa sơ sinh | ESPGHAN 2022 · SIFT 2019 – lịch tăng sữa, kcal/protein, chuyển sang PN | 0,3–6 kg |
 | 🆕 Truyền chế phẩm máu sơ sinh | TOP / ETTNO 2020 · PlaNeT-2 2019 · BSH 2016 | 0,3–6 kg |
@@ -39,8 +39,9 @@ Có 20 module lâm sàng, chia thành 4 nhóm. Nhóm Cấp cứu nhi khoa đư�
 ### 🔵 Cấp cứu nhi khoa (ABCDE)
 | | Module | Hướng dẫn | Phạm vi |
 |---|---|---|---|
-| **B** | Cơn hen phế quản cấp nặng | GINA 2024 · BTS/SIGN · NAC | 3–150 kg |
-| **C** | Nhiễm khuẩn huyết và sốc nhiễm khuẩn – kháng sinh kinh nghiệm | SSC Pediatric 2020 · EOS/LOS sơ sinh | 0,3–150 kg |
+| **A** | 🆕 Phản vệ ở trẻ em và sơ sinh | TT 51/2017 · WAO 2020 · EAACI 2021 | 0,4–150 kg |
+| **B** | Cơn hen phế quản cấp nặng (kèm điểm PRAM) | GINA 2024 · BTS/SIGN · NAC · PRAM | 3–150 kg |
+| **C** | Nhiễm khuẩn huyết và sốc nhiễm khuẩn – kháng sinh kinh nghiệm (kèm tiêu chí Phoenix 2024) | SSC Pediatric 2020 · Phoenix 2024 · EOS/LOS sơ sinh | 0,3–150 kg |
 | **C** | Nhịp nhanh kịch phát trên thất (SVT) | PALS 2020 | 0,4–150 kg |
 | **C** | Tăng kali máu | APLS · BNFc · Cochrane 2012 | 0,3–150 kg |
 | **D** | Trạng thái động kinh co giật | AES 2016 · ESETT 2019 | 2–150 kg |
@@ -74,6 +75,10 @@ Ngoài ra còn hai trang thông tin: **Hướng dẫn sử dụng** và **Tài l
 | `data-tpn-products` | Chế phẩm acid amin/lipid, dung dịch gốc, vi chất, phác đồ PN mặc định, ngưỡng an toàn | 1.0.0 | ⚠️ Chưa kiểm chứng |
 | `data-neo-rds` | Điểm Silverman–Andersen, phân tầng OI, tiêu chí surfactant – CPAP, 3 chế phẩm surfactant | 1.0.0 | ⚠️ Chưa kiểm chứng |
 | `data-neo-transfusion` | Ngưỡng Hb TOP (thấp/cao), liều – tốc độ hồng cầu, ngưỡng tiểu cầu, huyết tương, tủa lạnh, yêu cầu chế phẩm | 1.0.0 | ⚠️ Chưa kiểm chứng |
+| `data-bili` | Ngưỡng Maisels 2012 (<35 tuần) và khung 4 bảng ngưỡng theo giờ AAP 2022 (**đang trống – chờ chép nguyên văn từ Supplemental Tables 1–4**) | 1.0.0 | ⚠️ Chưa kiểm chứng |
+| `data-anaphylaxis` | Phân độ TT 51, adrenaline tiêm bắp/tĩnh mạch, dịch, thuốc hỗ trợ | 1.0.0 | ⚠️ Chưa kiểm chứng |
+| `data-phoenix` | Ngưỡng 4 hệ cơ quan của tiêu chí Phoenix 2024 | 1.0.0 | ⚠️ Chưa kiểm chứng |
+| `data-pram` | 5 mục điểm PRAM và phân mức | 1.0.0 | ⚠️ Chưa kiểm chứng |
 | `data-neo-enteral` | Đích dinh dưỡng ESPGHAN 2022, bước tăng sữa, thành phần sữa, chất tăng cường sữa mẹ (**giá trị tham khảo – thay theo nhãn sản phẩm bệnh viện**) | 1.0.0 | ⚠️ Chưa kiểm chứng |
 
 Khối nào có trạng thái "chưa kiểm chứng" thì giao diện tự hiển thị nhãn cảnh báo ở cuối mỗi module có dùng khối đó.
@@ -101,7 +106,7 @@ npx playwright install chromium
 node tests/cdss.test.js            # mặc định kiểm thử ./index.html
 ```
 
-Kết quả phiên bản 2.1: **220/220 ca đạt**. Bộ kiểm thử tự chạy trên GitHub Actions (`.github/workflows/tests.yml`) ở mỗi pull request và mỗi lần đẩy lên `main`.
+Kết quả phiên bản 2.2: **266/266 ca đạt**. Bộ kiểm thử tự chạy trên GitHub Actions (`.github/workflows/tests.yml`) ở mỗi pull request và mỗi lần đẩy lên `main`.
 
 ---
 
@@ -113,6 +118,8 @@ Kết quả phiên bản 2.1: **220/220 ca đạt**. Bộ kiểm thử tự ch�
   - **Ấm:** nền giấy ngà, giảm ánh sáng xanh – đọc phác đồ lâu, phòng đèn vàng.
   - **Tối:** nền xanh than (không đen tuyệt đối) – trực đêm, phòng tối.
   - Lần đầu mở, app theo cài đặt sáng/tối của hệ điều hành; sau khi chọn, lựa chọn được nhớ trên trình duyệt. Có thể ép bằng `?mode=light`, `?mode=warm`, `?mode=dark`. Màu cảnh báo đỏ/cam/xanh lá giữ nguyên ý nghĩa ở mọi chế độ; bản in luôn nền trắng.
+- **Thanh "Bệnh nhân hiện tại"** (đầu trang): nhập một lần cân nặng, tuổi thai, ngày tuổi, tuổi → tự điền vào mọi module có giới hạn phù hợp; cảnh báo cân nặng lệch tuổi hoặc nhầm đơn vị. Không lưu vào trình duyệt.
+- **Nạp bảng ngưỡng AAP 2022:** chép nguyên văn Supplemental Tables 1–4 vào 4 bản ghi `aap_*` của khối `data-bili` theo định dạng `ga_cols` + `rows: [[giờ, cột 1, cột 2, …]]`; app tự nội suy theo giờ. Khi chưa nạp, người dùng nhập ngưỡng tra từ biểu đồ gốc.
 - **Giao diện cũ:** bấm nút "↩︎ Giao diện cũ" ở góc dưới bên phải, hoặc mở trang kèm `?theme=classic`.
 - **Điện thoại:** điều hướng dạng dải ngang cuộn được, bảng cuộn trong thẻ, không tràn ngang ở màn hình 320–390 px.
 - **In:** nút "In module này" cho từng module; phiếu pha chế TPN in riêng.
@@ -135,6 +142,7 @@ Kết quả phiên bản 2.1: **220/220 ca đạt**. Bộ kiểm thử tự ch�
 
 | Phiên bản | Nội dung chính |
 |---|---|
+| 2.2 | Thẩm định P1: module Phản vệ; bilirubin <35 tuần (Maisels) + µmol/L + khung bảng AAP 2022; Phoenix 2024; PRAM; cảnh báo HELIX; thanh "Bệnh nhân hiện tại"; trợ năng bàn phím |
 | 2.1 | Sửa lỗi an toàn sau thẩm định (P0): liều diazepam, tách thuốc hồi sức sơ sinh, dấu phẩy thập phân, tắt AI, CSP, bỏ JCI/RTAC trên bản in, CI tự chạy test |
 | 2.0 | Thêm 3 module Sơ sinh: Suy hô hấp sinh non (RDS), Nuôi ăn đường tiêu hóa, Truyền chế phẩm máu |
 | 1.9 | Chế độ hiển thị Sáng · Ấm · Tối (nhóm 3 nút trên header, mặc định theo hệ điều hành), bản in luôn nền trắng |

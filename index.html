@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Bảo mật (P0 v2.1): chỉ cho phép tài nguyên nội tuyến + font Google; CHẶN mọi kết nối mạng (connect-src 'none') và ảnh ngoài -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#fffdf8">
 <title>NeoPed CDSS – Hỗ trợ quyết định lâm sàng Nhi – Sơ sinh</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22 role=%22img%22 aria-label=%22NeoPed CDSS%22%3E%3Cdefs%3E%3ClinearGradient id=%22npl-bg%22 x1=%226%22 y1=%222%22 x2=%2260%22 y2=%2264%22 gradientUnits=%22userSpaceOnUse%22%3E%3Cstop offset=%220%22 stop-color=%22%2334d399%22/%3E%3Cstop offset=%22.45%22 stop-color=%22%230d9488%22/%3E%3Cstop offset=%221%22 stop-color=%22%234338ca%22/%3E%3C/linearGradient%3E%3CradialGradient id=%22npl-hl%22 cx=%2218%22 cy=%224%22 r=%2244%22 gradientUnits=%22userSpaceOnUse%22%3E%3Cstop offset=%220%22 stop-color=%22%23fff%22 stop-opacity=%22.42%22/%3E%3Cstop offset=%22.6%22 stop-color=%22%23fff%22 stop-opacity=%22.06%22/%3E%3Cstop offset=%221%22 stop-color=%22%23fff%22 stop-opacity=%220%22/%3E%3C/radialGradient%3E%3ClinearGradient id=%22npl-ft%22 x1=%220%22 y1=%220%22 x2=%220%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23fff%22/%3E%3Cstop offset=%221%22 stop-color=%22%23e0f2fe%22/%3E%3C/linearGradient%3E%3CclipPath id=%22npl-sole%22%3E%3Cpath d=%22M33 23.6c-6.6 0-10 6.1-9.6 13.1.4 7.4 4.3 13.9 10.2 13.9 5.8 0 8.7-5.1 8.3-10.7-.3-3.9-1.8-5.9-1.4-9.5.5-4.1-2.4-6.8-7.5-6.8z%22/%3E%3C/clipPath%3E%3C/defs%3E%3Crect width=%2264%22 height=%2264%22 rx=%2218%22 fill=%22url%28%23npl-bg%29%22/%3E%3Crect width=%2264%22 height=%2264%22 rx=%2218%22 fill=%22url%28%23npl-hl%29%22/%3E%3Cg transform=%22translate%281.3 2.4%29%22%3E%3Cg fill=%22url%28%23npl-ft%29%22%3E%3Cpath d=%22M33 23.6c-6.6 0-10 6.1-9.6 13.1.4 7.4 4.3 13.9 10.2 13.9 5.8 0 8.7-5.1 8.3-10.7-.3-3.9-1.8-5.9-1.4-9.5.5-4.1-2.4-6.8-7.5-6.8z%22/%3E%3Cellipse cx=%2238.6%22 cy=%2216%22 rx=%223.9%22 ry=%224.8%22 transform=%22rotate%2812 38.6 16%29%22/%3E%3Ccircle cx=%2232.1%22 cy=%2213.1%22 r=%222.95%22/%3E%3Ccircle cx=%2226.9%22 cy=%2214.2%22 r=%222.5%22/%3E%3Ccircle cx=%2222.9%22 cy=%2217.2%22 r=%222.1%22/%3E%3Ccircle cx=%2220.6%22 cy=%2221.4%22 r=%221.75%22/%3E%3C/g%3E%3Cg clip-path=%22url%28%23npl-sole%29%22%3E%3Cpath d=%22M20 38.6h7.4l2.3-5.6 3.6 11.2 2.7-8.6 1.7 3h8.3%22 fill=%22none%22 stroke=%22%230d9488%22 stroke-width=%222.7%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E">
@@ -556,7 +559,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
 
   <div class="hdr-right">
     <div class="hdr-author">DSCKI. Lê Mới Em</div>
-    <div class="ver-badge">Phiên bản 2.0 · 2026</div>
+    <div class="ver-badge">Phiên bản 2.1 · 2026</div>
   </div>
   <div class="mode-switch no-print" id="mode-switch" data-mode="light" role="radiogroup" aria-label="Chế độ hiển thị" onkeydown="modeKey(event)">
     <span class="mode-seg"><button type="button" class="mode-opt" data-mode="light" role="radio" aria-checked="true" tabindex="0" aria-label="Sáng" title="Sáng – nền kem tiêu chuẩn" onclick="applyMode('light',true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></button><button type="button" class="mode-opt" data-mode="warm" role="radio" aria-checked="false" tabindex="-1" aria-label="Ấm" title="Ấm – nền giấy ngà, giảm ánh sáng xanh khi đọc lâu" onclick="applyMode('warm',true)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6.5 16.5a5.5 5.5 0 0 1 11 0z" fill="currentColor"/><path d="M2.5 20h19M12 4.5v3M5 9.5l1.6 1.6M19 9.5l-1.6 1.6M2.5 16.5h1.5M20 16.5h1.5"/></svg></button><button type="button" class="mode-opt" data-mode="dark" role="radio" aria-checked="false" tabindex="-1" aria-label="Tối" title="Tối – trực đêm, phòng tối" onclick="applyMode('dark',true)"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.4 14.6A8.6 8.6 0 0 1 9.4 3.6a.6.6 0 0 0-.8-.7 9.6 9.6 0 1 0 12.5 12.5.6.6 0 0 0-.7-.8z"/></svg></button></span>
@@ -579,9 +582,9 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
     </div>
-    <div class="prt-meta"><div>In lúc: <b id="prt-time-home"></b></div><div>⭐ JCI Accredited · RTAC</div></div>
+    <div class="prt-meta"><div>In lúc: <b id="prt-time-home"></b></div></div>
   </div>
   <div class="module-topbar">
     <div>
@@ -589,7 +592,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
       <div class="module-subtitle" style="margin-bottom:0">Neonatal &amp; Paediatric Clinical Decision Support System · DSCKI. Lê Mới Em</div>
     </div>
     <div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap" class="no-print">
-      <div class="home-badge" style="background:var(--layer2,#f4f2e9);border:1px solid var(--border);border-radius:10px;padding:.5rem 1rem;font-size:12px;font-weight:600;color:var(--text)">Phiên bản 2.0 · 2026</div>
+      <div class="home-badge" style="background:var(--layer2,#f4f2e9);border:1px solid var(--border);border-radius:10px;padding:.5rem 1rem;font-size:12px;font-weight:600;color:var(--text)">Phiên bản 2.1 · 2026</div>
       <button class="print-bar-btn" onclick="printCurrentModule()">🖨️ In trang chủ</button>
     </div>
   </div>
@@ -608,12 +611,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🆘 Hồi Sức Sơ Sinh</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-resus"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -637,12 +639,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍼 Máy Tính Sơ Sinh</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-neo"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -666,12 +667,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">👦 Máy Tính Nhi Khoa</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-paed"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -695,12 +695,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🔥 Bỏng – Công Thức Parkland</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-burns"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -739,10 +738,10 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">💊 Kháng Sinh – Sepsis Sơ Sinh &amp; Nhi</div>
     </div>
-    <div class="prt-meta"><div>In lúc: <b id="prt-time-sepsis"></b></div><div>⭐ JCI · RTAC</div></div>
+    <div class="prt-meta"><div>In lúc: <b id="prt-time-sepsis"></b></div></div>
   </div>
 
   <div class="form-row">
@@ -765,12 +764,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🩸 Nhiễm Toan Cetone Đái Tháo Đường (DKA)</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-dka"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -795,12 +793,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">⚡ Động Kinh Liên Tục (Status Epilepticus)</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-seizure"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -822,12 +819,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">💨 Hen Phế Quản Nặng – Cấp Cứu</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-asthma"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -849,12 +845,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">❤️ Nhịp Nhanh Trên Thất (SVT)</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-svt"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -876,12 +871,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">⚗️ Tăng Kali Máu – Điều Trị Khẩn Cấp</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-hyperk"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -904,12 +898,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🟡 Ngưỡng Điều Trị Bilirubin Sơ Sinh</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-bili"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -936,12 +929,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍬 Hạ Đường Huyết Sơ Sinh</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-hypo"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -964,7 +956,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🌬️ Suy hô hấp sinh non (RDS)</div>
     </div>
     <div class="prt-meta">
@@ -1012,7 +1004,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🩸 Truyền chế phẩm máu sơ sinh</div>
     </div>
     <div class="prt-meta">
@@ -1067,7 +1059,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🥛 Nuôi ăn đường tiêu hóa sơ sinh</div>
     </div>
     <div class="prt-meta">
@@ -1107,12 +1099,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🌡️ Hạ Thân Nhiệt Trị Liệu – Tiêu Chí HIE</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-cool"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -1139,12 +1130,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🧠 Chấn Thương Đầu – Công Cụ PREDICT</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-head"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -1171,12 +1161,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🧪 Pha Dịch Truyền (Ad Hoc Fluids)</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-adhoc"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -1199,10 +1188,10 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🦠 Ước Tính Nguy Cơ Nhiễm Khuẩn Huyết Sơ Sinh Sớm (EOS)</div>
     </div>
-    <div class="prt-meta"><div>In lúc: <b id="prt-time-eos"></b></div><div>⭐ JCI · RTAC</div></div>
+    <div class="prt-meta"><div>In lúc: <b id="prt-time-eos"></b></div></div>
   </div>
 
   <!-- Topbar -->
@@ -1431,10 +1420,10 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">🍶 Dinh Dưỡng Tĩnh Mạch Toàn Phần (TPN)</div>
     </div>
-    <div class="prt-meta"><div>In lúc: <b id="prt-time-tpn"></b></div><div>⭐ JCI · RTAC</div></div>
+    <div class="prt-meta"><div>In lúc: <b id="prt-time-tpn"></b></div></div>
   </div>
   <div class="module-topbar">
     <div class="module-title" style="margin-bottom:0">🍶 Dinh Dưỡng Tĩnh Mạch Toàn Phần (TPN)</div>
@@ -1450,8 +1439,8 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="card no-print">
     <div class="card-title">🏷️ A. Thông Tin Bệnh Nhân &amp; Lâm Sàng</div>
     <div class="tpn-grid4">
-      <div class="form-group"><label>Họ tên bệnh nhân</label><input type="text" id="tpn-name" value="Nguyễn Văn A"></div>
-      <div class="form-group"><label>Mã hồ sơ (MRN)</label><input type="text" id="tpn-mrn" value="PN-2025-001"></div>
+      <div class="form-group"><label>Họ tên bệnh nhân</label><input type="text" id="tpn-name" value="" placeholder="Chỉ để in phiếu – không lưu" autocomplete="off"></div>
+      <div class="form-group"><label>Mã hồ sơ (MRN)</label><input type="text" id="tpn-mrn" value="" placeholder="Mã hồ sơ" autocomplete="off"></div>
       <div class="form-group"><label>Bác sĩ điều trị</label><input type="text" id="tpn-dr" value="BS. "></div>
       <div class="form-group"><label>Ngày y lệnh</label><input type="text" id="tpn-date" value=""></div>
     </div>
@@ -1579,16 +1568,15 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">📖 Hướng Dẫn Sử Dụng</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-guide"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
-  <div class="module-subtitle">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · Bệnh Viện Phương Nam · v2.0 · 2026</div>
+  <div class="module-subtitle">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · Bệnh Viện Phương Nam · v2.1 · 2026</div>
 
   <div class="card">
     <div class="card-title">🎯 Mục Đích &amp; Phạm Vi Ứng Dụng</div>
@@ -1660,7 +1648,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
       <tr><td>Đơn vị</td><td>Bệnh viện Phương Nam · Tập Đoàn Y Tế Phương Châu</td></tr>
       <tr><td>Phiên bản</td><td>1.0 – 2026</td></tr>
       <tr><td>Cập nhật</td><td>17 module lâm sàng · Phân tích AI Claude · In báo cáo TPN · Logo &amp; nhận diện thương hiệu · Tài liệu tham khảo Bộ Y tế Việt Nam</td></tr>
-      <tr><td>Kiểm duyệt y khoa</td><td>Hội đồng thuốc &amp; Điều trị Bệnh viện Phương Nam</td></tr>
+      <tr><td>Kiểm duyệt y khoa</td><td><b>Chưa thẩm định độc lập.</b> Cần Hội đồng Thuốc &amp; Điều trị Bệnh viện Phương Nam phê duyệt từng module trước khi áp dụng lâm sàng; các khối dữ liệu gắn nhãn “chưa kiểm chứng” phải được người thứ hai đối chiếu nguồn gốc.</td></tr>
       <tr><td>Disclaimer</td><td>Sử dụng theo điều kiện "AS IS" – Không chịu trách nhiệm pháp lý khi sử dụng sai mục đích</td></tr>
     </tbody></table>
   </div>
@@ -1826,12 +1814,11 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="module-print-hdr">
     <div>
       <div class="prt-logo-txt">🏥 BỆNH VIỆN PHƯƠNG NAM – Tập Đoàn Y Tế Phương Châu</div>
-      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.0 · 2026</div>
+      <div class="prt-sub">Công Cụ Hỗ Trợ Quyết Định Lâm Sàng · DSCKI. Lê Mới Em · v2.1 · 2026</div>
       <div class="prt-sub" style="font-style:normal;font-weight:700;color:#880e4f;font-size:13px;margin-top:3px">📚 Tài Liệu Tham Khảo</div>
     </div>
     <div class="prt-meta">
       <div>In lúc: <b id="prt-time-refs"></b></div>
-      <div>⭐ JCI Accredited · RTAC</div>
     </div>
   </div>
 
@@ -2002,7 +1989,8 @@ body:not(.theme-ease) .mode-label{color:#fff}
   <div class="card">
     <div class="card-title">📝 Lịch Sử Cập Nhật</div>
     <table class="result-table"><thead><tr><th>Phiên bản</th><th>Ngày</th><th>Nội dung</th></tr></thead><tbody>
-      <tr class="highlight-row"><td>v2.0</td><td>10/2026</td><td>Thêm 3 module nhóm Sơ sinh: <b>Suy hô hấp sinh non (RDS)</b> – tiêu chí và liều surfactant theo chế phẩm, CPAP, đích SpO₂, OI/OSI, điểm Silverman–Andersen (European Consensus 2022); <b>Nuôi ăn đường tiêu hóa</b> – lịch tăng sữa, mL mỗi cữ, năng lượng – protein so với đích ESPGHAN 2022, chất tăng cường sữa mẹ, chuyển sang module PN (SIFT); <b>Truyền chế phẩm máu</b> – ngưỡng Hb theo TOP/ETTNO, tiểu cầu theo PlaNeT-2, liều – tốc độ, huyết tương, tủa lạnh, yêu cầu chế phẩm (BSH 2016). Ba khối dữ liệu mới data-neo-rds, data-neo-transfusion, data-neo-enteral (chưa kiểm chứng); icon Hạ glucose máu đổi sang 🍬</td></tr>
+      <tr class="highlight-row"><td>v2.1</td><td>10/2026</td><td>Sửa lỗi an toàn sau thẩm định (P0): diazepam IV 0,15–0,2 mg/kg, tối đa 10 mg (AES 2016); module Thuốc NICU tách thuốc hồi sức (adrenaline, bù thể tích) khỏi bicarbonat/calci (chỉ định đặc hiệu, ILCOR/NRP 2020); dấu phẩy thập phân thống nhất toàn app (ISMP); tắt phân tích AI (không gửi dữ liệu ra ngoài); thoát ký tự HTML ô chữ TPN; Content-Security-Policy chặn kết nối mạng; bỏ dòng “JCI Accredited · RTAC” trên bản in; ghi rõ “chưa thẩm định độc lập”; GitHub Actions tự chạy bộ kiểm thử</td></tr>
+      <tr><td>v2.0</td><td>10/2026</td><td>Thêm 3 module nhóm Sơ sinh: <b>Suy hô hấp sinh non (RDS)</b> – tiêu chí và liều surfactant theo chế phẩm, CPAP, đích SpO₂, OI/OSI, điểm Silverman–Andersen (European Consensus 2022); <b>Nuôi ăn đường tiêu hóa</b> – lịch tăng sữa, mL mỗi cữ, năng lượng – protein so với đích ESPGHAN 2022, chất tăng cường sữa mẹ, chuyển sang module PN (SIFT); <b>Truyền chế phẩm máu</b> – ngưỡng Hb theo TOP/ETTNO, tiểu cầu theo PlaNeT-2, liều – tốc độ, huyết tương, tủa lạnh, yêu cầu chế phẩm (BSH 2016). Ba khối dữ liệu mới data-neo-rds, data-neo-transfusion, data-neo-enteral (chưa kiểm chứng); icon Hạ glucose máu đổi sang 🍬</td></tr>
       <tr><td>v1.9</td><td>10/2026</td><td>Chế độ hiển thị Sáng · Ấm · Tối: nhóm 3 nút ☀️/🌅/🌙 trên header (dùng được bằng phím mũi tên), nhớ lựa chọn, mặc định theo cài đặt hệ điều hành; chế độ Ấm nền giấy ngà giảm ánh sáng xanh khi đọc lâu; chữ cam hàng cảnh báo đậm hơn đạt tương phản AA; bảng màu tối xanh than ngả ngọc, màu nhóm lâm sàng có bản sáng hơn đạt tương phản WCAG AA; màu inline của bảng/kết quả được đảo độ sáng nhưng giữ sắc độ (đỏ/cam/xanh lá vẫn mang nghĩa mức nguy cơ); bản in luôn nền trắng</td></tr>
       <tr><td>v1.8</td><td>10/2026</td><td>Đổi tên ứng dụng thành NeoPed CDSS (Neonatal &amp; Paediatric Clinical Decision Support System); logo mới “bàn chân em bé + nhịp tim”; favicon; bỏ khối logo/tên bệnh viện, khẩu hiệu và huy hiệu JCI/RTAC khỏi header và trang chủ; theme Ease: thay màu hồng Phương Nam bằng màu thương hiệu NeoPed (xanh ngọc đậm) cho nút và mục đang chọn ở trang chủ, trong module nút In và mục đang chọn theo màu nhóm lâm sàng</td></tr>
       <tr><td>v1.7</td><td>10/2026</td><td>Icon 3D cho tiêu đề thẻ trong tất cả module và bảng liều tham khảo (ánh xạ emoji → icon trong data-modules, áp dụng cả nội dung sinh lại khi tính toán); đánh số bước liên tục ở module Cơn hen cấp nặng</td></tr>
@@ -2021,7 +2009,7 @@ body:not(.theme-ease) .mode-label{color:#fff}
 
 <!-- ── PRINT FOOTER (ẩn trên màn hình, hiện khi in) ── -->
 <div id="print-footer-bar">
-  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v2.0 · 2026 · DSCKI. Lê Mới Em
+  🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v2.1 · 2026 · DSCKI. Lê Mới Em
 </div>
 
 </div>
@@ -3377,8 +3365,8 @@ body:not(.theme-ease) .mode-label{color:#fff}
 </script>
 <script type="application/json" id="data-drug-doses">
 {
- "version": "1.1.1",
- "updated": "2026-10-13",
+ "version": "1.2.0",
+ "updated": "2026-10-15",
  "status": "unverified",
  "title": "Liều thuốc theo cân nặng, tham số phác đồ và bố cục bảng liều tham khảo",
  "source": "1. ANZCOR Neonatal Guidelines 13.x; 2023. 2. Topjian AA, et al. Pediatric Basic and Advanced Life Support: 2020 AHA Guidelines. Circulation. 2020;142(16 Suppl 2):S469-523. 3. Advanced Paediatric Life Support (APLS) ANZ. 7th ed. Wiley; 2024. 4. Glauser T, et al. AES Guideline: Convulsive Status Epilepticus. Epilepsy Curr. 2016;16(1):48-61. 5. Kapur J, et al. ESETT. N Engl J Med. 2019;381(22):2103-13. 6. Glaser N, et al. ISPAD 2022: DKA and HHS. Pediatr Diabetes. 2022;23(7):835-56. 7. Weiss SL, et al. Surviving Sepsis Campaign Pediatric 2020. Pediatr Crit Care Med. 2020;21(2):e52-106. 8. GINA 2024; BTS/SIGN 2019; NAC Australia. 9. BNF for Children; ANMF; NeoFax. 10. Pham TN, et al. ABA Practice Guidelines: Burn Shock Resuscitation. J Burn Care Res. 2008;29(1):257-66.",
@@ -3955,7 +3943,8 @@ body:not(.theme-ease) .mode-label{color:#fff}
    "route": "IV",
    "unit": "mg",
    "round": 1,
-   "per_kg": 0.25,
+   "per_kg_lo": 0.15,
+   "per_kg_hi": 0.2,
    "max": 10,
    "source": "AES 2016; ESETT 2019"
   },
@@ -6772,6 +6761,28 @@ function dataTag(...tables){
     return`📦 Dữ liệu <b>${k}</b> v${t.version} (${t.updated})${t.status==='unverified'?' · <span class="unv">CHƯA KIỂM CHỨNG trực tiếp nguồn gốc</span>':' · đã đối chiếu nguồn'}`}).join('<br>')+'</div>';
 }
 
+// ===== AN TOÀN HIỂN THỊ (P0 v2.1) =====
+// Thoát ký tự HTML cho mọi chuỗi do người dùng nhập hoặc từ bên ngoài trước khi chèn vào innerHTML / document.write
+function escHTML(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+// Dấu thập phân kiểu Việt Nam ở MỘT chỗ: mọi số hiển thị trong module thành "9,5" (không "9.5") – tránh nhầm gấp 10 lần (ISMP).
+// Chỉ đổi nút văn bản sau khi render; không chạm ô nhập, mã, số phiên bản, trích dẫn (Hướng dẫn, Tài liệu tham khảo), nhãn dữ liệu.
+// "1:10.000" (dấu chấm phân cách hàng nghìn sau dấu hai chấm) và "v2.0" (sau chữ cái) được giữ nguyên.
+const VN_SKIP='script,style,code,pre,textarea,input,.module-print-hdr,.no-vn,.data-tag,.home-badge,.ver-badge,#guide,#refs';
+const VN_DEC=/(^|[^\w.,:/])(\d+)\.(\d+)(?![\d.])/g;
+function vnDecText(t){return t.replace(VN_DEC,'$1$2,$3')}
+function vnDecimalize(root){
+  if(!root||!root.ownerDocument&&root.nodeType!==9)return;
+  const doc=root.ownerDocument||root,base=root.nodeType===3?root.parentNode:root;if(!base)return;
+  const ok=n=>{const p=n.parentElement;return p&&!p.closest(VN_SKIP)&&/\d\.\d/.test(n.nodeValue)};
+  if(root.nodeType===3){if(ok(root))root.nodeValue=vnDecText(root.nodeValue);return}
+  if(root.nodeType===1&&root.closest(VN_SKIP))return;
+  const w=doc.createTreeWalker(base,NodeFilter.SHOW_TEXT,{acceptNode:n=>ok(n)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT});
+  const ns=[];while(w.nextNode())ns.push(w.currentNode);
+  ns.forEach(n=>{const v=vnDecText(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v});
+}
+(function(){const m=document.querySelector('.main');if(!m)return;vnDecimalize(m);
+  new MutationObserver(ms=>{for(const x of ms)x.addedNodes.forEach(vnDecimalize)}).observe(m,{childList:true,subtree:true});})();
+
 // ===== Liều kháng sinh sơ sinh – đọc luật từ data-neo-abx =====
 function abxRule(drug,ga,pna){
   const pma=ga+pna/7;
@@ -7135,16 +7146,20 @@ function calcNeo(){
       ['UVC (chỗ nối TM chủ dưới–nhĩ phải)',uvc+' cm','1,5 × CN + 5,5 (+ cuống rốn) – xác nhận X-quang/siêu âm','highlight-row'],
       ['Ống thông dạ dày',ng+' cm (ước tính)','Ưu tiên đo NEMU'],
     ])}</div>
-    <div class="card"><div class="card-title">💊 Thuốc Cấp Cứu</div>
+    <div class="card"><div class="card-title">💊 Thuốc Hồi Sức Sơ Sinh (thuộc phác đồ NRP/ANZCOR)</div>
     ${drugTable([
       ['Adrenaline 0,1 mg/mL (IV/IO)',dmlr('neo_adr_iv',wt)+' mL','= '+dzr('neo_adr_iv',wt)+' mg ('+dlab('neo_adr_iv')+')','highlight-row'],
       ['Adrenaline 0,1 mg/mL (qua ETT)',dmlr('neo_adr_ett',wt)+' mL',dlab('neo_adr_ett'),''],
+      ['NaCl 0,9% (bù thể tích)',dz('neo_volume',wt)+' mL IV 5–10 phút',dlab('neo_volume')+'; nghi mất máu/sốc – đánh giá lại',''],
+    ])}</div>
+    <div class="card"><div class="card-title">⚠️ Thuốc Có Chỉ Định Đặc Hiệu – KHÔNG thuộc phác đồ hồi sức phòng sinh</div>
+    <div class="alert alert-warn">ILCOR 2020 / NRP 2020: natri bicarbonat và calci <b>không</b> dùng thường quy trong hồi sức sơ sinh. Chỉ dùng sau hồi sức khi có chỉ định đã xác định bằng xét nghiệm.</div>
+    ${drugTable([
       ['Adenosine (SVT)',dz('neo_adenosine',wt)+' mg IV nhanh',dlab('neo_adenosine')+'; tăng 0,05–0,1 mg/kg mỗi lần, tối đa 0,3 mg/kg',''],
       ['Atropine',dz('neo_atropine',wt)+' mg IV',dlab('neo_atropine')+' (không áp dụng liều tối thiểu 0,1 mg ở sơ sinh)',''],
       ['Dextrose 10% (hạ glucose máu)',dz('neo_d10',wt)+' mL IV 5–10 phút',dlab('neo_d10')+' = 200 mg/kg (AAP 2011)','warn-row'],
-      ['Natri bicarbonat 4,2% (0,5 mmol/mL)',dmlr('neo_bicarb42',wt)+' mL IV chậm',dlab('neo_bicarb42')+'; chỉ khi đã thông khí hiệu quả; không thường quy',''],
-      ['Calci gluconat 10%',dzr('neo_cagluc',wt)+' mL IV chậm ≥10 phút',dlab('neo_cagluc')+' (100–200 mg/kg); theo dõi HR/ECG, tránh thoát mạch',''],
-      ['NaCl 0,9% (bù thể tích)',dz('neo_volume',wt)+' mL IV 5–10 phút',dlab('neo_volume')+'; đánh giá lại',''],
+      ['Natri bicarbonat 4,2% (0,5 mmol/mL)',dmlr('neo_bicarb42',wt)+' mL IV chậm',dlab('neo_bicarb42')+'; chỉ toan chuyển hóa nặng đã xác định bằng khí máu, SAU khi thông khí hiệu quả – không thường quy','warn-row'],
+      ['Calci gluconat 10%',dzr('neo_cagluc',wt)+' mL IV chậm ≥10 phút',dlab('neo_cagluc')+' (100–200 mg/kg); chỉ hạ calci máu đã xác định, tăng kali máu có biến đổi ECG, ngộ độc chẹn kênh calci; theo dõi HR/ECG, tránh thoát mạch','warn-row'],
     ])}</div>
     <div class="card"><div class="card-title">💉 Kháng Sinh & Thuốc Điều Trị (GA ${ga} tuần · PNA ${dol} ngày · PMA ${ab.pma} tuần)</div>
     ${drugTable([
@@ -7243,7 +7258,7 @@ function calcPaed(){
     ${drugTable([
       ['Midazolam (buccal/IN)',dzr('p_midazolam_buccal',w)+' mg','Bước 1 – chưa có đường truyền','highlight-row'],
       ['Lorazepam',dz('p_lorazepam',w)+' mg IV/IO','Bước 1 – có đường truyền ('+dlab('p_lorazepam')+')',''],
-      ['Diazepam',dz('p_diazepam_iv',w)+' mg IV · '+dz('p_diazepam_pr',w)+' mg PR','IV '+dlab('p_diazepam_iv')+'; PR '+dlab('p_diazepam_pr'),''],
+      ['Diazepam',dzr('p_diazepam_iv',w)+' mg IV · '+dz('p_diazepam_pr',w)+' mg PR','IV '+dlab('p_diazepam_iv')+'; PR '+dlab('p_diazepam_pr'),''],
       ['Levetiracetam',dz('p_levetiracetam',w)+' mg IV 10–15 phút','Bước 2 – '+dlab('p_levetiracetam')+' (ESETT)','warn-row'],
       ['Fosphenytoin / Phenytoin',dz('p_phenytoin',w)+' mg PE / mg IV',dlab('p_phenytoin')+'; phenytoin ≤1 mg/kg/phút (≤50 mg/phút) – theo dõi ECG',''],
       ['Valproate',dz('p_valproate',w)+' mg IV 10 phút',dlab('p_valproate')+' – tránh nếu nghi bệnh ty thể/gan, &lt;2 tuổi',''],
@@ -7438,11 +7453,11 @@ function calcSeizure(){
     <div class="card"><div class="card-title">⚡ Trạng Thái Động Kinh Co Giật (0–60 Phút)</div>
     <div class="step-card"><div class="step-num">A</div><div class="step-content"><div class="step-title">0–5 phút: Ổn định ABC + glucose</div><div class="step-body">O₂, tư thế an toàn, monitor. Glucose &lt;3,0 mmol/L → Dextrose 10% <strong>${dz('p_d10',w)} mL</strong> IV (${dlab('p_d10')}). Nhũ nhi: cân nhắc pyridoxine, calci, magie.</div></div></div>
     <div class="step-card"><div class="step-num">B</div><div class="step-content"><div class="step-title">5 phút: Benzodiazepine lần 1</div><div class="step-body">
-      <strong>IV/IO:</strong> Lorazepam ${dz('p_lorazepam',w)} mg (${dlab('p_lorazepam')}) – HOẶC Diazepam ${dz('p_diazepam_iv',w)} mg IV (${dlab('p_diazepam_iv')}) – HOẶC Midazolam ${dz('p_midazolam_iv',w)} mg IV (${dlab('p_midazolam_iv')})<br>
+      <strong>IV/IO:</strong> Lorazepam ${dz('p_lorazepam',w)} mg (${dlab('p_lorazepam')}) – HOẶC Diazepam ${dzr('p_diazepam_iv',w)} mg IV (${dlab('p_diazepam_iv')}) – HOẶC Midazolam ${dz('p_midazolam_iv',w)} mg IV (${dlab('p_midazolam_iv')})<br>
       <strong>Không có đường truyền:</strong> Midazolam IM ${dz('p_midazolam_im',w)} mg${imB.per_kg?' ('+String(imB.per_kg).replace('.',',')+' mg/kg)':''} · đường má ${dzr('p_midazolam_buccal',w)} mg · nhỏ mũi ${dz('p_midazolam_in',w)} mg (${dlab('p_midazolam_in')}) · Diazepam PR ${dz('p_diazepam_pr',w)} mg
     </div></div></div>
     <div class="step-card"><div class="step-num">C</div><div class="step-content"><div class="step-title">10 phút: Benzodiazepine lần 2 (tối đa 2 liều, tính cả liều trước viện)</div><div class="step-body">
-      Lorazepam ${dz('p_lorazepam',w)} mg IV – HOẶC Diazepam ${dz('p_diazepam_iv',w)} mg IV. Chuẩn bị thuốc bậc 2 song song.
+      Lorazepam ${dz('p_lorazepam',w)} mg IV – HOẶC Diazepam ${dzr('p_diazepam_iv',w)} mg IV. Chuẩn bị thuốc bậc 2 song song.
     </div></div></div>
     <div class="step-card"><div class="step-num">D</div><div class="step-content"><div class="step-title">20 phút: Thuốc bậc 2 (chọn một – hiệu quả tương đương, ESETT)</div><div class="step-body">
       <strong>Levetiracetam</strong> ${dz('p_levetiracetam',w)} mg IV 10–15 phút (${dlab('p_levetiracetam')})<br>
@@ -7460,7 +7475,7 @@ function calcSeizure(){
     ${drugTable([
       ['Lorazepam',dz('p_lorazepam',w)+' mg IV/IO',dlab('p_lorazepam'),'highlight-row'],
       ['Midazolam đường má / nhỏ mũi',dzr('p_midazolam_buccal',w)+' / '+dz('p_midazolam_in',w)+' mg','Má '+dlab('p_midazolam_buccal')+'; mũi '+dlab('p_midazolam_in')+' (dùng ống IV 5 mg/mL + MAD)',''],
-      ['Diazepam IV / PR',dz('p_diazepam_iv',w)+' / '+dz('p_diazepam_pr',w)+' mg','IV '+dlab('p_diazepam_iv')+'; PR '+dlab('p_diazepam_pr'),''],
+      ['Diazepam IV / PR',dzr('p_diazepam_iv',w)+' / '+dz('p_diazepam_pr',w)+' mg','IV '+dlab('p_diazepam_iv')+'; PR '+dlab('p_diazepam_pr'),''],
       ['Levetiracetam',dz('p_levetiracetam',w)+' mg IV',dlab('p_levetiracetam'),'warn-row'],
       ['Fosphenytoin / Phenytoin',dz('p_phenytoin',w)+' mg PE / mg IV',dlab('p_phenytoin')+'; ECG',''],
       ['Valproate',dz('p_valproate',w)+' mg IV',dlab('p_valproate'),''],
@@ -8075,7 +8090,7 @@ function printCurrentModule(){
   // 2. Update footer
   const footer = document.getElementById('print-footer-bar');
   if(footer) footer.textContent =
-    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v2.0 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
+    '🏥 Bệnh Viện Phương Nam · Tập Đoàn Y Tế Phương Châu · CDSS v2.1 · 2026 · DSCKI. Lê Mới Em · In lúc: ' + ts;
 
   // 3. Print — CSS @media print sẽ tự ẩn sidebar/header, chỉ hiện module active
   window.print();
@@ -8340,11 +8355,11 @@ function calcTPN(){
   const ga   = parseInt(gEl('tpn-ga',28));
   const dol  = parseInt(gEl('tpn-dol',1));
   const type = gSel('tpn-type')||'vlbw';
-  const ptName= document.getElementById('tpn-name')?document.getElementById('tpn-name').value:'';
-  const mrn  = document.getElementById('tpn-mrn')?document.getElementById('tpn-mrn').value:'';
-  const dr   = document.getElementById('tpn-dr')?document.getElementById('tpn-dr').value:'';
-  const ptDate= document.getElementById('tpn-date')?document.getElementById('tpn-date').value||new Date().toLocaleDateString('vi-VN'):'';
-  const dx   = document.getElementById('tpn-dx')?document.getElementById('tpn-dx').value:'';
+  const ptName= escHTML(document.getElementById('tpn-name')?document.getElementById('tpn-name').value:'');
+  const mrn  = escHTML(document.getElementById('tpn-mrn')?document.getElementById('tpn-mrn').value:'');
+  const dr   = escHTML(document.getElementById('tpn-dr')?document.getElementById('tpn-dr').value:'');
+  const ptDate= escHTML(document.getElementById('tpn-date')?document.getElementById('tpn-date').value||new Date().toLocaleDateString('vi-VN'):'');
+  const dx   = escHTML(document.getElementById('tpn-dx')?document.getElementById('tpn-dx').value:'');
   const route= gSel('tpn-route')||'central';
   const aaSrc= gSel('tpn-aa')||'primene';
   const lipSrc=gSel('tpn-lipid-src')||'smoflipid20';
@@ -8645,7 +8660,15 @@ function calcTPN(){
 }
 
 // ============================= AI ANALYSIS =============================
+// Phân tích AI TẮT mặc định (thẩm định P0 v2.1): gọi API trực tiếp từ trình duyệt làm lộ khóa và đưa dữ liệu lâm sàng ra ngoài.
+// Chỉ bật lại khi có máy chủ trung gian (xác thực, ẩn danh, ghi nhật ký) – và phải mở connect-src trong Content-Security-Policy.
+const AI_ENABLED=false;
 async function runAIAnalysis(){
+  if(!AI_ENABLED){
+    const sec=document.getElementById('tpn-ai-section'),cont=document.getElementById('tpn-ai-content');
+    if(sec&&cont){sec.style.display='block';cont.innerHTML='<div class="alert alert-info">🔒 Chức năng phân tích AI đang <b>tắt</b> để bảo vệ dữ liệu người bệnh: không có dữ liệu nào được gửi ra khỏi máy. Chức năng chỉ bật lại khi bệnh viện có máy chủ trung gian được phê duyệt. Toàn bộ kết quả tính toán PN phía trên vẫn đầy đủ.</div>'}
+    return;
+  }
   if(!_tpnData||!_tpnData.wt)calcTPN();
   const d=_tpnData;
   const aiSec=document.getElementById('tpn-ai-section');
@@ -8692,9 +8715,9 @@ Trả lời theo 7 mục:
     const data=await resp.json();
     if(data.error)throw new Error(data.error.message);
     const txt=(data.content||[]).map(c=>c.text||'').join('');
-    aiCont.innerHTML='<p>'+txt.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n- /g,'<br>• ').replace(/\n/g,'<br>')+'</p>';
+    aiCont.innerHTML='<p>'+escHTML(txt).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n- /g,'<br>• ').replace(/\n/g,'<br>')+'</p>';
   }catch(err){
-    aiCont.innerHTML=`<div class="alert alert-warn">⚠️ Không kết nối được API: ${err.message}. Kết quả tính toán phía trên vẫn đầy đủ.</div>`;
+    aiCont.innerHTML=`<div class="alert alert-warn">⚠️ Không kết nối được API: ${escHTML(err.message)}. Kết quả tính toán phía trên vẫn đầy đủ.</div>`;
   }
 }
 
@@ -8809,11 +8832,12 @@ function printTPNReport(){
     <div class="sig-box"><div class="sig-line"></div><b>Bác sĩ Điều trị</b><br><small>${d.dr||'(Ký &amp; ghi rõ họ tên)'}</small></div>
   </div>
   <div style="text-align:center;font-size:10px;color:#999;margin-top:10px;border-top:1px solid #ddd;padding-top:6px">
-    BV Phương Nam · Tập Đoàn Y Tế Phương Châu · Máy Tính Lâm Sàng v2.0 · 2026 · DSCKI. Lê Mới Em · ${new Date().toLocaleString('vi-VN')}
+    BV Phương Nam · Tập Đoàn Y Tế Phương Châu · Máy Tính Lâm Sàng v2.1 · 2026 · DSCKI. Lê Mới Em · ${new Date().toLocaleString('vi-VN')}
   </div>
   <script>setTimeout(()=>window.print(),900);<\/script>
   </body></html>`);
   w.document.close();
+  try{vnDecimalize(w.document.body)}catch(e){}
 }
 
 // ============================= INIT =============================

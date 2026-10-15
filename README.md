@@ -7,7 +7,7 @@
 - 🌐 **Web app:** <https://lemoiem.github.io/toolpharmacyupdate/>
 - 🏥 **Đơn vị:** Bệnh viện Phương Nam – Tập đoàn Y tế Phương Châu
 - 👤 **Tác giả:** DSCKI. Lê Mới Em – Dược sĩ lâm sàng
-- 🔖 **Phiên bản:** 2.0 (10/2026)
+- 🔖 **Phiên bản:** 2.1 (10/2026)
 
 > [!WARNING]
 > **Đây là công cụ HỖ TRỢ quyết định, không thay thế phán đoán lâm sàng.** Mọi liều và chỉ định phải được bác sĩ/dược sĩ lâm sàng kiểm tra và phê duyệt trước khi dùng cho người bệnh. Các khối dữ liệu gắn nhãn **"chưa kiểm chứng"** cần một dược sĩ hoặc bác sĩ thứ hai đối chiếu với nguồn gốc trước khi áp dụng lâm sàng.
@@ -87,7 +87,7 @@ Khối nào có trạng thái "chưa kiểm chứng" thì giao diện tự hiể
 3. Khi đã có người thứ hai đối chiếu với nguồn gốc, đổi `status` từ `"unverified"` sang `"verified"`.
 4. Chạy bộ kiểm thử (mục dưới) trước khi đẩy lên GitHub.
 
-**Không sửa hằng số liều trực tiếp trong mã JavaScript.** Nhãn liều (ví dụ "0,1 mg/kg, tối đa 6 mg") được sinh tự động từ dữ liệu.
+**Không sửa hằng số liều trực tiếp trong mã JavaScript.** Số hiển thị luôn dùng dấu phẩy thập phân (định dạng ở một chỗ duy nhất – hàm `vnDecimalize`). Nhãn liều (ví dụ "0,1 mg/kg, tối đa 6 mg") được sinh tự động từ dữ liệu.
 
 ---
 
@@ -101,7 +101,7 @@ npx playwright install chromium
 node tests/cdss.test.js            # mặc định kiểm thử ./index.html
 ```
 
-Kết quả phiên bản 2.0: **200/200 ca đạt**.
+Kết quả phiên bản 2.1: **220/220 ca đạt**. Bộ kiểm thử tự chạy trên GitHub Actions (`.github/workflows/tests.yml`) ở mỗi pull request và mỗi lần đẩy lên `main`.
 
 ---
 
@@ -124,7 +124,9 @@ Kết quả phiên bản 2.0: **200/200 ca đạt**.
 - Mọi phép tính chạy ngay trên trình duyệt. **Không gửi và không lưu thông tin người bệnh lên máy chủ.**
 - Trình duyệt chỉ lưu lựa chọn giao diện (Ease/cũ) và chế độ hiển thị (Sáng/Ấm/Tối).
 - Họ tên và mã hồ sơ nhập ở module PN chỉ dùng để in phiếu pha chế; prompt gửi cho chức năng phân tích AI đã được ẩn danh.
-- Chức năng **"Phân tích AI"** ở module PN gọi trực tiếp API từ trình duyệt và **sẽ không hoạt động** nếu không có máy chủ trung gian giữ khóa API. Phần tính toán PN vẫn đầy đủ khi không dùng AI.
+- Chức năng **"Phân tích AI"** ở module PN **đang tắt** (`AI_ENABLED = false`): không có dữ liệu nào được gửi ra khỏi máy. Chỉ bật lại khi có máy chủ trung gian giữ khóa API (xác thực, ẩn danh, ghi nhật ký) và phải mở `connect-src` trong Content-Security-Policy.
+- **Content-Security-Policy** chặn mọi kết nối mạng và ảnh từ bên ngoài (chỉ cho phép font Google); **Referrer-Policy** `no-referrer`. Mọi chuỗi người dùng nhập được thoát ký tự HTML trước khi hiển thị hoặc in.
+- **Bảo vệ nhánh `main`** (khuyến nghị, chủ repo tự bật trong *Settings → Branches*): bắt buộc qua pull request và bắt buộc kiểm tra `tests` đạt trước khi gộp; khi có người duyệt thứ hai thì bật thêm "Require approvals".
 - Dữ liệu sức khỏe là dữ liệu cá nhân nhạy cảm theo Nghị định 13/2023/NĐ-CP. Đơn vị triển khai chịu trách nhiệm pháp lý và nên tham vấn bộ phận pháp chế.
 
 ---
@@ -133,6 +135,7 @@ Kết quả phiên bản 2.0: **200/200 ca đạt**.
 
 | Phiên bản | Nội dung chính |
 |---|---|
+| 2.1 | Sửa lỗi an toàn sau thẩm định (P0): liều diazepam, tách thuốc hồi sức sơ sinh, dấu phẩy thập phân, tắt AI, CSP, bỏ JCI/RTAC trên bản in, CI tự chạy test |
 | 2.0 | Thêm 3 module Sơ sinh: Suy hô hấp sinh non (RDS), Nuôi ăn đường tiêu hóa, Truyền chế phẩm máu |
 | 1.9 | Chế độ hiển thị Sáng · Ấm · Tối (nhóm 3 nút trên header, mặc định theo hệ điều hành), bản in luôn nền trắng |
 | 1.8 | Đổi tên thành NeoPed CDSS; logo mới; bỏ khối thông tin bệnh viện khỏi header; màu hành động theo thương hiệu (trang chủ) và theo nhóm lâm sàng (module), bỏ màu hồng cũ |

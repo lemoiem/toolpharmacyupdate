@@ -7,7 +7,7 @@
 - 🌐 **Web app:** <https://lemoiem.github.io/toolpharmacyupdate/>
 - 🏥 **Đơn vị:** Bệnh viện Phương Nam – Tập đoàn Y tế Phương Châu
 - 👤 **Tác giả:** DSCKI. Lê Mới Em – Dược sĩ lâm sàng
-- 🔖 **Phiên bản:** 2.2 (10/2026)
+- 🔖 **Phiên bản:** 2.3 (10/2026)
 
 > [!WARNING]
 > **Đây là công cụ HỖ TRỢ quyết định, không thay thế phán đoán lâm sàng.** Mọi liều và chỉ định phải được bác sĩ/dược sĩ lâm sàng kiểm tra và phê duyệt trước khi dùng cho người bệnh. Các khối dữ liệu gắn nhãn **"chưa kiểm chứng"** cần một dược sĩ hoặc bác sĩ thứ hai đối chiếu với nguồn gốc trước khi áp dụng lâm sàng.
@@ -16,7 +16,7 @@
 
 ## Danh mục module
 
-Có 21 module lâm sàng, chia thành 4 nhóm. Nhóm Cấp cứu nhi khoa được xếp theo tiếp cận **ABCDE** (APLS/PALS).
+Có 24 module lâm sàng, chia thành 4 nhóm. Mỗi module có nhãn **"Chưa thẩm định độc lập"** cho tới khi Hội đồng Thuốc & Điều trị phê duyệt (trường `review` trong `data-modules`). Nhóm Cấp cứu nhi khoa được xếp theo tiếp cận **ABCDE** (APLS/PALS).
 
 ### 🟢 Hồi sức
 | Module | Hướng dẫn | Phạm vi |
@@ -41,7 +41,9 @@ Có 21 module lâm sàng, chia thành 4 nhóm. Nhóm Cấp cứu nhi khoa đư�
 |---|---|---|---|
 | **A** | 🆕 Phản vệ ở trẻ em và sơ sinh | TT 51/2017 · WAO 2020 · EAACI 2021 | 0,4–150 kg |
 | **B** | Cơn hen phế quản cấp nặng (kèm điểm PRAM) | GINA 2024 · BTS/SIGN · NAC · PRAM | 3–150 kg |
+| **B** | 🆕 Viêm tiểu phế quản nhũ nhi | AAP 2014 · NICE NG9 · PARIS (HFNC) | 0–24 tháng |
 | **C** | Nhiễm khuẩn huyết và sốc nhiễm khuẩn – kháng sinh kinh nghiệm (kèm tiêu chí Phoenix 2024) | SSC Pediatric 2020 · Phoenix 2024 · EOS/LOS sơ sinh | 0,3–150 kg |
+| **C** | 🆕 Sốt xuất huyết Dengue | WHO 2009 – **đối chiếu hướng dẫn Bộ Y tế hiện hành** | 2–150 kg |
 | **C** | Nhịp nhanh kịch phát trên thất (SVT) | PALS 2020 | 0,4–150 kg |
 | **C** | Tăng kali máu | APLS · BNFc · Cochrane 2012 | 0,3–150 kg |
 | **D** | Trạng thái động kinh co giật | AES 2016 · ESETT 2019 | 2–150 kg |
@@ -52,6 +54,7 @@ Có 21 module lâm sàng, chia thành 4 nhóm. Nhóm Cấp cứu nhi khoa đư�
 ### 🟠 Dịch truyền & dinh dưỡng
 | Module | Hướng dẫn | Phạm vi |
 |---|---|---|
+| 🆕 Dịch duy trì đường tĩnh mạch (trẻ >28 ngày) | AAP 2018 · NICE NG29 · Holliday–Segar | 2–150 kg |
 | Nuôi dưỡng tĩnh mạch (PN) | ESPGHAN/ESPEN 2018 · ASPEN | 0,3–10 kg |
 | Pha dung dịch truyền | Dextrose · NaCl theo nồng độ đích | – |
 
@@ -61,7 +64,8 @@ Ngoài ra còn hai trang thông tin: **Hướng dẫn sử dụng** và **Tài l
 
 ## Kiến trúc
 
-- **Một tệp duy nhất `index.html`** (HTML + CSS + JavaScript thuần), không cần máy chủ hay cơ sở dữ liệu, chạy được offline: tải tệp về và mở bằng trình duyệt.
+- **`index.html`** (HTML + CSS + JavaScript thuần) chứa toàn bộ logic và dữ liệu; không cần máy chủ hay cơ sở dữ liệu.
+- **Ứng dụng web chạy offline (PWA):** `manifest.webmanifest`, `sw.js` (service worker), `icons/`, `fonts/` (Be Vietnam Pro, OFL). Mở trang trên GitHub Pages một lần là dùng được khi mất mạng; có thể "Cài đặt ứng dụng" trên điện thoại/máy tính. **Mỗi lần phát hành phải tăng `CACHE` trong `sw.js`** (ví dụ `neoped-v2.3.0` → `neoped-v2.4.0`).
 - **Dữ liệu tách khỏi mã nguồn.** Mọi liều, luật kháng sinh, bảng dịch, hệ số mô hình và cấu trúc module nằm trong các khối `<script type="application/json" id="data-…">` ở đầu phần script. Mỗi khối có `version`, `updated`, `source` (trích dẫn kiểu Vancouver), `status` và `records`.
 - **Một nguồn sự thật.** Module tính liều, bảng liều tham khảo, phiếu in và nhãn liều đều đọc cùng một bộ dữ liệu, nên không có chuyện hai nơi hiển thị hai con số khác nhau.
 
@@ -79,6 +83,9 @@ Ngoài ra còn hai trang thông tin: **Hướng dẫn sử dụng** và **Tài l
 | `data-anaphylaxis` | Phân độ TT 51, adrenaline tiêm bắp/tĩnh mạch, dịch, thuốc hỗ trợ | 1.0.0 | ⚠️ Chưa kiểm chứng |
 | `data-phoenix` | Ngưỡng 4 hệ cơ quan của tiêu chí Phoenix 2024 | 1.0.0 | ⚠️ Chưa kiểm chứng |
 | `data-pram` | 5 mục điểm PRAM và phân mức | 1.0.0 | ⚠️ Chưa kiểm chứng |
+| `data-dengue` | Dấu hiệu cảnh báo, tiêu chuẩn nặng, 3 phác đồ dịch theo bậc (WHO 2009) | 1.0.0 | ⚠️ Chưa kiểm chứng |
+| `data-bronch` | Tiêu chí nhập viện, ngưỡng oxy, HFNC, điều trị không khuyến cáo | 1.0.0 | ⚠️ Chưa kiểm chứng |
+| `data-mfluid` | Holliday–Segar, giới hạn tối đa, hạn chế dịch, bolus, loại dịch, theo dõi | 1.0.0 | ⚠️ Chưa kiểm chứng |
 | `data-neo-enteral` | Đích dinh dưỡng ESPGHAN 2022, bước tăng sữa, thành phần sữa, chất tăng cường sữa mẹ (**giá trị tham khảo – thay theo nhãn sản phẩm bệnh viện**) | 1.0.0 | ⚠️ Chưa kiểm chứng |
 
 Khối nào có trạng thái "chưa kiểm chứng" thì giao diện tự hiển thị nhãn cảnh báo ở cuối mỗi module có dùng khối đó.
@@ -106,7 +113,7 @@ npx playwright install chromium
 node tests/cdss.test.js            # mặc định kiểm thử ./index.html
 ```
 
-Kết quả phiên bản 2.2: **266/266 ca đạt**. Bộ kiểm thử tự chạy trên GitHub Actions (`.github/workflows/tests.yml`) ở mỗi pull request và mỗi lần đẩy lên `main`.
+Kết quả phiên bản 2.3: **298/298 ca đạt** (gồm phép thử cắt mạng thật qua service worker). Bộ kiểm thử tự chạy trên GitHub Actions (`.github/workflows/tests.yml`) ở mỗi pull request và mỗi lần đẩy lên `main`.
 
 ---
 
@@ -118,6 +125,7 @@ Kết quả phiên bản 2.2: **266/266 ca đạt**. Bộ kiểm thử tự ch�
   - **Ấm:** nền giấy ngà, giảm ánh sáng xanh – đọc phác đồ lâu, phòng đèn vàng.
   - **Tối:** nền xanh than (không đen tuyệt đối) – trực đêm, phòng tối.
   - Lần đầu mở, app theo cài đặt sáng/tối của hệ điều hành; sau khi chọn, lựa chọn được nhớ trên trình duyệt. Có thể ép bằng `?mode=light`, `?mode=warm`, `?mode=dark`. Màu cảnh báo đỏ/cam/xanh lá giữ nguyên ý nghĩa ở mọi chế độ; bản in luôn nền trắng.
+- **Tìm module nhanh:** nút 🔍 trên header, phím **Ctrl+K** (⌘K trên Mac) hoặc **/**; gõ không dấu hoặc viết tắt (sxh, phan ve, rds, dka).
 - **Thanh "Bệnh nhân hiện tại"** (đầu trang): nhập một lần cân nặng, tuổi thai, ngày tuổi, tuổi → tự điền vào mọi module có giới hạn phù hợp; cảnh báo cân nặng lệch tuổi hoặc nhầm đơn vị. Không lưu vào trình duyệt.
 - **Nạp bảng ngưỡng AAP 2022:** chép nguyên văn Supplemental Tables 1–4 vào 4 bản ghi `aap_*` của khối `data-bili` theo định dạng `ga_cols` + `rows: [[giờ, cột 1, cột 2, …]]`; app tự nội suy theo giờ. Khi chưa nạp, người dùng nhập ngưỡng tra từ biểu đồ gốc.
 - **Giao diện cũ:** bấm nút "↩︎ Giao diện cũ" ở góc dưới bên phải, hoặc mở trang kèm `?theme=classic`.
@@ -129,10 +137,10 @@ Kết quả phiên bản 2.2: **266/266 ca đạt**. Bộ kiểm thử tự ch�
 ## Bảo mật và dữ liệu người bệnh
 
 - Mọi phép tính chạy ngay trên trình duyệt. **Không gửi và không lưu thông tin người bệnh lên máy chủ.**
-- Trình duyệt chỉ lưu lựa chọn giao diện (Ease/cũ) và chế độ hiển thị (Sáng/Ấm/Tối).
+- Trình duyệt chỉ lưu lựa chọn giao diện (Ease/cũ) và chế độ hiển thị (Sáng/Ấm/Tối); service worker lưu đệm tệp ứng dụng để chạy offline (không chứa dữ liệu bệnh nhân).
 - Họ tên và mã hồ sơ nhập ở module PN chỉ dùng để in phiếu pha chế; prompt gửi cho chức năng phân tích AI đã được ẩn danh.
 - Chức năng **"Phân tích AI"** ở module PN **đang tắt** (`AI_ENABLED = false`): không có dữ liệu nào được gửi ra khỏi máy. Chỉ bật lại khi có máy chủ trung gian giữ khóa API (xác thực, ẩn danh, ghi nhật ký) và phải mở `connect-src` trong Content-Security-Policy.
-- **Content-Security-Policy** chặn mọi kết nối mạng và ảnh từ bên ngoài (chỉ cho phép font Google); **Referrer-Policy** `no-referrer`. Mọi chuỗi người dùng nhập được thoát ký tự HTML trước khi hiển thị hoặc in.
+- **Content-Security-Policy** chặn mọi kết nối mạng và ảnh từ bên ngoài (chỉ cho phép tệp cùng nguồn: font tự chứa, icon, service worker); **Referrer-Policy** `no-referrer`. Mọi chuỗi người dùng nhập được thoát ký tự HTML trước khi hiển thị hoặc in.
 - **Bảo vệ nhánh `main`** (khuyến nghị, chủ repo tự bật trong *Settings → Branches*): bắt buộc qua pull request và bắt buộc kiểm tra `tests` đạt trước khi gộp; khi có người duyệt thứ hai thì bật thêm "Require approvals".
 - Dữ liệu sức khỏe là dữ liệu cá nhân nhạy cảm theo Nghị định 13/2023/NĐ-CP. Đơn vị triển khai chịu trách nhiệm pháp lý và nên tham vấn bộ phận pháp chế.
 
@@ -142,6 +150,7 @@ Kết quả phiên bản 2.2: **266/266 ca đạt**. Bộ kiểm thử tự ch�
 
 | Phiên bản | Nội dung chính |
 |---|---|
+| 2.3 | Thẩm định P2: module Dengue, Viêm tiểu phế quản, Dịch duy trì; tìm module Ctrl+K; nhãn thẩm định; PWA chạy offline; font tự chứa |
 | 2.2 | Thẩm định P1: module Phản vệ; bilirubin <35 tuần (Maisels) + µmol/L + khung bảng AAP 2022; Phoenix 2024; PRAM; cảnh báo HELIX; thanh "Bệnh nhân hiện tại"; trợ năng bàn phím |
 | 2.1 | Sửa lỗi an toàn sau thẩm định (P0): liều diazepam, tách thuốc hồi sức sơ sinh, dấu phẩy thập phân, tắt AI, CSP, bỏ JCI/RTAC trên bản in, CI tự chạy test |
 | 2.0 | Thêm 3 module Sơ sinh: Suy hô hấp sinh non (RDS), Nuôi ăn đường tiêu hóa, Truyền chế phẩm máu |
@@ -170,5 +179,5 @@ Danh mục đầy đủ có trong ứng dụng (trang **Tài liệu tham khảo*
 
 - Logo NeoPed CDSS (`assets/logo-neoped.svg`): bàn chân em bé (sơ sinh – nhi) với đường nhịp tim khoét trong lòng bàn chân (lâm sàng); nền gradient xanh lá ngọc → xanh chàm, có điểm sáng nổi khối.
 - Icon 3D: [Microsoft Fluent Emoji](https://github.com/microsoft/fluentui-emoji), giấy phép MIT. Icon được nhúng dạng WebP để dùng offline.
-- Font chữ: [Be Vietnam Pro](https://fonts.google.com/specimen/Be+Vietnam+Pro), SIL Open Font License.
+- Font chữ: [Be Vietnam Pro](https://fonts.google.com/specimen/Be+Vietnam+Pro), SIL Open Font License 1.1 – tệp font và giấy phép trong thư mục `fonts/` (`fonts/OFL.txt`).
 - Mã nguồn của ứng dụng: chưa công bố giấy phép sử dụng. Muốn dùng lại hoặc triển khai tại đơn vị khác, vui lòng liên hệ tác giả.

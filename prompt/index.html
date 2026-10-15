@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thư viện prompt Khoa Dược</title>
+<meta name="description" content="Thư viện 20 prompt chuẩn cho Khoa Dược lâm sàng: tìm kiếm, điền thông tin ca đã ẩn danh và sao chép sang AI.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#115e59">
+<link rel="icon" href="../icons/icon-192.png">
+<style>
+@font-face{font-family:'Be Vietnam Pro';font-weight:400;font-display:swap;src:url(../fonts/be-vietnam-pro-400-vietnamese.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Be Vietnam Pro';font-weight:400;font-display:swap;src:url(../fonts/be-vietnam-pro-400-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Be Vietnam Pro';font-weight:400;font-display:swap;src:url(../fonts/be-vietnam-pro-400-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Be Vietnam Pro';font-weight:600;font-display:swap;src:url(../fonts/be-vietnam-pro-600-vietnamese.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Be Vietnam Pro';font-weight:600;font-display:swap;src:url(../fonts/be-vietnam-pro-600-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Be Vietnam Pro';font-weight:600;font-display:swap;src:url(../fonts/be-vietnam-pro-600-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Be Vietnam Pro';font-weight:700;font-display:swap;src:url(../fonts/be-vietnam-pro-700-vietnamese.woff2) format('woff2');unicode-range:U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB}
+@font-face{font-family:'Be Vietnam Pro';font-weight:700;font-display:swap;src:url(../fonts/be-vietnam-pro-700-latin-ext.woff2) format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Be Vietnam Pro';font-weight:700;font-display:swap;src:url(../fonts/be-vietnam-pro-700-latin.woff2) format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+
+:root{
+  --font:'Be Vietnam Pro',system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --bg:#faf8f2;--card:#fff;--border:#e3e0d2;--text:#1d2a21;--muted:#5f6b62;--ink:#16301d;
+  --primary:#115e59;--primary-dark:#134e4a;--primary-light:#e6f4f1;--on-primary:#fff;
+  --val:#e6f4f1;--fill:#d9f2e6;--fill-text:#14532d;--empty:#fdf1cf;--empty-text:#7a5200;
+  --warn-bg:#fff6e5;--warn-border:#f2c46d;--warn-text:#6b4300;
+  --danger:#b42318;--rad:16px;--rad-sm:10px;
+  --g-lamsang:#0f766e;--g-lieu:#4338ca;--g-thongtin:#a16207;--g-quanly:#be185d;--g-kiemdinh:#475569;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0e1716;--card:#15201f;--border:#2a3a37;--text:#d8e3df;--muted:#97a8a2;--ink:#e9f2ee;
+  --primary:#2dd4bf;--primary-dark:#5eead4;--primary-light:#12302c;--on-primary:#04201c;
+  --val:#12302c;--fill:#123a2a;--fill-text:#a7f3d0;--empty:#3a2e10;--empty-text:#fcd34d;
+  --warn-bg:#2b2210;--warn-border:#7a5a1c;--warn-text:#fcd9a0;--danger:#f87171;
+  --g-lamsang:#2dd4bf;--g-lieu:#a5b4fc;--g-thongtin:#fbbf24;--g-quanly:#f9a8d4;--g-kiemdinh:#cbd5e1;
+}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+
+.top{background:var(--primary-dark);color:#fff;padding:14px 16px}
+@media (prefers-color-scheme:dark){.top{background:#0b2724}}
+.top-in{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.mark{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.14);display:grid;place-items:center;flex-shrink:0}
+.top h1{margin:0;font-size:17px;font-weight:700;line-height:1.25}
+.top p{margin:2px 0 0;font-size:12.5px;opacity:.82}
+.top a{color:inherit}
+.top .home{margin-left:auto;font-size:13px;opacity:.85;white-space:nowrap}
+
+.layout{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:20px;padding:16px}
+@media (max-width:860px){.layout{grid-template-columns:1fr;padding:12px 16px}
+  body.show-detail .list-pane{display:none}
+  body:not(.show-detail) .detail-pane{display:none}}
+
+.list-pane{align-self:start;position:sticky;top:12px;max-height:calc(100vh - 24px);display:flex;flex-direction:column;gap:10px}
+@media (max-width:860px){.list-pane{position:static;max-height:none}}
+.search{position:relative}
+.search input{width:100%;padding:11px 12px 11px 38px;border:1px solid var(--border);border-radius:var(--rad-sm);background:var(--card)}
+.search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:11px var(--mono);color:var(--muted);border:1px solid var(--border);border-radius:5px;padding:1px 5px}
+@media (hover:none){.search kbd{display:none}}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--border);background:var(--card);border-radius:999px;padding:5px 11px;font-size:13px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--primary);border-color:var(--primary);color:var(--on-primary);font-weight:600}
+.chip .n{opacity:.7;margin-left:3px;font-variant-numeric:tabular-nums}
+.count{font-size:12.5px;color:var(--muted);margin:0}
+#list{list-style:none;margin:0;padding:0;overflow:auto;display:flex;flex-direction:column;gap:6px;padding-bottom:4px}
+.item{width:100%;text-align:left;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;background:var(--card);border:1px solid var(--border);border-radius:var(--rad-sm);padding:10px 12px}
+.item:hover{border-color:var(--primary)}
+.item[aria-current="true"]{background:var(--val);border-color:var(--primary)}
+.num{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-weight:700;font-size:14px;color:var(--gc);background:color-mix(in srgb,var(--gc) 14%,transparent);font-variant-numeric:tabular-nums}
+.item b{display:block;font-weight:600;font-size:14.5px;line-height:1.35;color:var(--ink)}
+.item .desc{display:block;font-size:12.5px;color:var(--muted);line-height:1.4;margin-top:2px}
+.empty-list{color:var(--muted);font-size:14px;padding:12px;text-align:center}
+
+.detail-pane{min-width:0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--rad)}
+.welcome{padding:28px 24px}
+.welcome h2{margin:0 0 8px;font-size:20px;color:var(--ink)}
+.welcome ol{padding-left:20px;margin:10px 0 0}
+.welcome li{margin:6px 0}
+.d-head{padding:18px 20px 14px;border-bottom:1px solid var(--border)}
+.back{display:none;border:0;background:none;color:var(--primary);font-weight:600;padding:0 0 10px}
+@media (max-width:860px){.back{display:inline-flex;align-items:center;gap:4px}}
+.d-head h2{margin:6px 0 4px;font-size:20px;line-height:1.3;color:var(--ink)}
+.d-head p{margin:0;color:var(--muted);font-size:14px}
+.tag{display:inline-block;font-size:12px;font-weight:600;color:var(--gc);background:color-mix(in srgb,var(--gc) 13%,transparent);border-radius:999px;padding:2px 10px}
+.notice{margin:14px 20px 0;padding:10px 12px;border:1px solid var(--warn-border);background:var(--warn-bg);color:var(--warn-text);border-radius:var(--rad-sm);font-size:13.5px}
+.notice b{font-weight:700}
+
+.tabs{display:flex;gap:4px;padding:14px 20px 0;border-bottom:1px solid var(--border)}
+.tab{border:0;background:none;padding:8px 12px;border-bottom:2px solid transparent;color:var(--muted);font-weight:600;margin-bottom:-1px}
+.tab[aria-selected="true"]{color:var(--primary);border-bottom-color:var(--primary)}
+.panel{padding:16px 20px}
+.panel[hidden]{display:none}
+fieldset{border:0;margin:0 0 14px;padding:0}
+legend{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--ink);margin-bottom:4px;line-height:1.4}
+.field label .slot{display:inline-block;min-width:26px;padding:0 4px;border-radius:4px;background:var(--empty);color:var(--empty-text);text-align:center;font-weight:700}
+.field .hint{font-size:12.5px;color:var(--muted);margin:-2px 0 4px}
+.field textarea{width:100%;min-height:42px;padding:9px 11px;border:1px solid var(--border);border-radius:var(--rad-sm);background:var(--bg);resize:vertical;line-height:1.45}
+.field textarea:focus{border-color:var(--primary);background:var(--card)}
+.field.done textarea{border-color:color-mix(in srgb,var(--primary) 55%,var(--border))}
+.no-field{color:var(--muted);font-size:14px}
+.phi{margin:0 0 12px;padding:10px 12px;border:1px solid var(--danger);border-radius:var(--rad-sm);color:var(--danger);font-size:13.5px;background:color-mix(in srgb,var(--danger) 8%,transparent)}
+.phi[hidden]{display:none}
+.phi ul{margin:4px 0 0;padding-left:18px}
+
+pre.preview{margin:0;white-space:pre-wrap;word-break:break-word;font:13.5px/1.65 var(--font);color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:var(--rad-sm);padding:14px;max-height:70vh;overflow:auto}
+pre.preview mark{border-radius:3px;padding:0 2px}
+pre.preview mark.f{background:var(--fill);color:var(--fill-text)}
+pre.preview mark.e{background:var(--empty);color:var(--empty-text)}
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.legend-row i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+
+.actions{position:sticky;bottom:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 20px;border-top:1px solid var(--border);background:var(--card);border-radius:0 0 var(--rad) var(--rad)}
+.progress{font-size:13px;color:var(--muted);margin-right:auto;font-variant-numeric:tabular-nums}
+.progress b{color:var(--ink)}
+.btn{border:1px solid var(--border);background:var(--card);border-radius:var(--rad-sm);padding:9px 14px;font-weight:600;font-size:14px}
+.btn:hover{border-color:var(--primary)}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+.btn.ghost{border-color:transparent;color:var(--muted)}
+@media (max-width:520px){.actions{padding:10px 16px}.progress{width:100%}.btn{flex:1}.btn.ghost{flex:0 0 auto}}
+
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.2s}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.foot{max-width:1280px;margin:0 auto;padding:4px 16px 28px;font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="mark" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M14 3v5h5"/><path d="M8 13h8M8 17h5"/></svg>
+    </div>
+    <div>
+      <h1>Thư viện prompt Khoa Dược</h1>
+      <p id="meta">Dược lâm sàng · BV Phương Nam</p>
+    </div>
+    <a class="home" href="../">← NeoPed CDSS</a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="list-pane" aria-label="Danh sách prompt">
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Tìm: vancomycin, ADR, thai kỳ…" aria-label="Tìm prompt" autocomplete="off">
+      <kbd>/</kbd>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Lọc theo nhóm"></div>
+    <p class="count" id="count" aria-live="polite"></p>
+    <ul id="list"></ul>
+  </aside>
+
+  <main class="detail-pane" id="detail">
+    <section class="card welcome">
+      <h2>Chọn một prompt để bắt đầu</h2>
+      <p>Mỗi prompt đã có đủ vai trò, nhiệm vụ, định dạng đầu ra, ràng buộc chống bịa nguồn và bước tự kiểm tra.</p>
+      <ol>
+        <li>Chọn prompt ở danh sách bên trái (hoặc tìm theo từ khóa).</li>
+        <li>Điền các ô <b>[CẦN ĐIỀN]</b> bằng dữ liệu <b>đã ẩn danh</b>. Ô để trống sẽ giữ nguyên chỗ trống trong prompt.</li>
+        <li>Bấm <b>Sao chép prompt</b> rồi dán vào AI được bệnh viện cho phép.</li>
+        <li>Với ca thật, dán kết quả vào một phiên AI khác kèm <b>Prompt kiểm định chéo</b>.</li>
+      </ol>
+    </section>
+  </main>
+</div>
+<p class="foot" id="foot"></p>
+<div class="toast" id="toast" role="status"></div>
+
+<script type="application/json" id="data-prompts">
+{
+ "version": "1.1.0",
+ "updated": "2026-10-15",
+ "source": "1. Lê Mới Em. Bộ prompt chuẩn cho Khoa Dược lâm sàng. docs/bo-prompt-khoa-duoc.md; 2026.",
+ "status": "unverified",
+ "groups": [
+  {
+   "id": "lamsang",
+   "name": "Lâm sàng"
+  },
+  {
+   "id": "lieu",
+   "name": "Liều & TDM"
+  },
+  {
+   "id": "thongtin",
+   "name": "EBM & thông tin thuốc"
+  },
+  {
+   "id": "quanly",
+   "name": "Quản lý & chất lượng"
+  },
+  {
+   "id": "kiemdinh",
+   "name": "Kiểm định chéo"
+  }
+ ],
+ "records": [
+  {
+   "id": "p01",
+   "num": 1,
+   "title": "Thẩm định đơn kháng sinh (Antimicrobial Stewardship)",
+   "use": "Bình đơn, duyệt kháng sinh hạn chế, xuống thang, chuyển IV→PO",
+   "group": "lamsang",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng chuyên về quản lý sử dụng kháng sinh (ASP) tại bệnh viện đa khoa, làm việc theo QĐ 5631/QĐ-BYT (2020) và phác đồ của bệnh viện.\n\n# BỐI CẢNH\n- Cơ sở: [CẦN ĐIỀN: tên khoa / loại bệnh viện]\n- Tài liệu tham chiếu ưu tiên: [CẦN ĐIỀN: phác đồ BV / Sanford / IDSA ... kèm năm] (nếu đính kèm thì CHỈ dùng tài liệu đính kèm)\n- Dữ liệu ca (đã ẩn danh):\n  - Tuổi/giới, cân nặng, chiều cao: [CẦN ĐIỀN]\n  - Chẩn đoán, nơi mắc (cộng đồng / bệnh viện / ICU): [CẦN ĐIỀN]\n  - Creatinin huyết thanh, CrCl/eGFR, chức năng gan, dị ứng: [CẦN ĐIỀN]\n  - Dấu hiệu sinh tồn, WBC, CRP/PCT: [CẦN ĐIỀN]\n  - Vi sinh (bệnh phẩm, vi khuẩn, kháng sinh đồ, MIC): [CẦN ĐIỀN hoặc \"chưa có\"]\n  - Kháng sinh đang dùng (thuốc, liều, đường dùng, khoảng cách, ngày bắt đầu): [CẦN ĐIỀN]\n  - Thuốc dùng kèm: [CẦN ĐIỀN]\n\n# NHIỆM VỤ\n1. Đánh giá chỉ định: có nhiễm khuẩn cần điều trị không, hay là dự phòng hoặc vi khuẩn định cư (colonization)?\n2. Đánh giá lựa chọn: phổ có phù hợp với tác nhân thường gặp hoặc tác nhân đã phân lập, và với dịch tễ kháng thuốc?\n3. Đánh giá liều theo PK/PD (thời gian phụ thuộc hay nồng độ phụ thuộc), chức năng thận/gan, cân nặng. Hiển thị công thức tính.\n4. Đánh giá đường dùng, cơ hội chuyển IV→PO, và thời gian điều trị dự kiến.\n5. Đánh giá cơ hội xuống thang hoặc ngừng thuốc dựa trên vi sinh và diễn tiến lâm sàng.\n6. Rà soát ADR, tương tác và chống chỉ định liên quan đến kháng sinh.\n7. Kết luận: ĐỒNG Ý / ĐỒNG Ý CÓ ĐIỀU KIỆN / ĐỀ NGHỊ THAY ĐỔI, kèm lý do.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng 1: Tiêu chí | Hiện tại | Đánh giá (Phù hợp / Chưa phù hợp / Không đủ dữ liệu) | Đề xuất | Nguồn [số].\n- Mục \"Ý kiến dược sĩ ghi bệnh án\": tối đa 80 từ, văn phong lâm sàng.\n- Mục \"Theo dõi\": các chỉ số và mốc thời gian đánh giá lại (ví dụ sau 48–72 giờ).\n- Tài liệu tham khảo theo kiểu Vancouver.\n\n# RÀNG BUỘC\n- Chỉ dùng nguồn có thật (Bộ Y tế, IDSA, Sanford, WHO AWaRe, FDA, EMA); ghi tên, năm, phiên bản. NGHIÊM CẤM bịa DOI, PMID, số liệu.\n- Không tự đoán dữ liệu ca chưa được cung cấp. Thiếu dữ liệu thì ghi \"KHÔNG ĐỦ DỮ LIỆU\" và nêu cần bổ sung gì.\n- Phân biệt rõ dữ kiện từ nguồn với suy luận của bạn.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Nếu có công cụ tìm kiếm: mọi trích dẫn phải kèm URL, PMID hoặc DOI tìm thấy thực tế. Nếu không có: KHÔNG tạo DOI/PMID, đánh dấu [CẦN XÁC MINH] cho mọi trích dẫn cụ thể.\n2. Đã tính lại liều và CrCl một lần?\n3. Có mâu thuẫn giữa bảng và kết luận không?\n4. Đầu ra có lọt dữ liệu định danh không?\n5. Cuối bài liệt kê: điểm chưa chắc chắn, giả định đã dùng, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p02",
+   "num": 2,
+   "title": "Phân tích bài báo theo chuẩn EBM",
+   "use": "Journal club, cập nhật bằng chứng (RCT, cohort, meta-analysis)",
+   "group": "thongtin",
+   "text": "# VAI TRÒ\nBạn là chuyên gia dịch tễ lâm sàng và y học dựa trên bằng chứng, thẩm định bài báo cho Journal club của Khoa Dược lâm sàng.\n\n# BỐI CẢNH\n- Bài báo: [CẦN ĐIỀN: tên bài / file đính kèm]. Chỉ phân tích dựa trên nội dung bài; thông tin ngoài bài phải gắn nhãn [NGOÀI NGUỒN].\n- Câu hỏi lâm sàng của khoa: [CẦN ĐIỀN: ví dụ \"có nên áp dụng X cho bệnh nhân Y tại BV?\"]\n- Người đọc: dược sĩ và bác sĩ, đã quen thuật ngữ thống kê.\n\n# NHIỆM VỤ\n1. Tóm tắt PICO(T) và thiết kế nghiên cứu (RCT / cohort / case-control / SR-MA ...), đăng ký thử nghiệm (nếu có).\n2. Trích xuất kết cục chính và phụ: chỉ số hiệu quả (RR, OR, HR, MD), 95% CI, giá trị p. Tính ARR, RRR, NNT hoặc NNH nếu có đủ dữ liệu, hiển thị công thức.\n3. Đánh giá nguy cơ sai lệch bằng công cụ phù hợp: RoB 2 (RCT), ROBINS-I (quan sát), AMSTAR 2 (SR-MA). Ghi rõ từng domain.\n4. Đánh giá thêm: ITT hay per-protocol, cỡ mẫu và power, kết cục thay thế (surrogate) hay kết cục cứng, kết cục gộp, dừng sớm, nguồn tài trợ.\n5. Đánh giá mức chắc chắn bằng chứng theo GRADE cho kết cục chính.\n6. Đánh giá tính áp dụng (external validity) cho người bệnh tại bệnh viện Việt Nam: đặc điểm dân số, chi phí, danh mục thuốc BHYT.\n7. Kết luận thực hành: 3 thông điệp chính.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng PICO; bảng kết quả (Kết cục | Can thiệp | Chứng | Hiệu quả (95% CI) | p | NNT/NNH).\n- Bảng nguy cơ sai lệch theo domain (Thấp / Có vấn đề / Cao) kèm lý do 1 dòng.\n- Mục \"Điểm mạnh / Hạn chế\" (mỗi mục tối đa 5 ý).\n- \"3 thông điệp mang về\" + mức GRADE.\n- Tổng độ dài không quá 900 từ.\n\n# RÀNG BUỘC\n- Chỉ dùng số liệu có trong bài. NGHIÊM CẤM bịa số, tác giả, DOI. Bài không báo cáo thì ghi \"Không báo cáo\".\n- Phân biệt ý nghĩa thống kê với ý nghĩa lâm sàng (MCID nếu có).\n- Không kết luận vượt quá bằng chứng của thiết kế (ví dụ nghiên cứu quan sát không đủ để kết luận nhân quả).\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Mỗi con số đã đối chiếu lại với bảng hoặc đoạn trong bài (ghi bảng/hình/trang).\n2. Đã tính lại NNT một lần?\n3. Mức GRADE có nhất quán với đánh giá nguy cơ sai lệch không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p03",
+   "num": 3,
+   "title": "Đánh giá ADR và quan hệ nhân quả",
+   "use": "Ca nghi ADR cần thẩm định theo WHO-UMC và Naranjo",
+   "group": "lamsang",
+   "text": "# VAI TRÒ\nBạn là dược sĩ cảnh giác dược (pharmacovigilance), thẩm định báo cáo ADR theo thang WHO-UMC và thang Naranjo, phục vụ báo cáo gửi Trung tâm DI & ADR Quốc gia.\n\n# BỐI CẢNH (đã ẩn danh)\n- Tuổi/giới, cân nặng, bệnh nền, tiền sử dị ứng: [CẦN ĐIỀN]\n- Biểu hiện ADR, thời điểm khởi phát, mức độ: [CẦN ĐIỀN]\n- Danh sách thuốc nghi ngờ và dùng đồng thời (liều, đường dùng, ngày bắt đầu/ngừng): [CẦN ĐIỀN]\n- Xử trí, diễn biến sau ngừng thuốc (dechallenge), tái sử dụng (rechallenge): [CẦN ĐIỀN]\n- Xét nghiệm liên quan: [CẦN ĐIỀN]\n\n# NHIỆM VỤ\n1. Lập trục thời gian: thuốc → khởi phát → xử trí → kết quả.\n2. Xác định thuốc nghi ngờ chính và các nguyên nhân thay thế (bệnh lý, thuốc khác).\n3. Chấm Naranjo theo từng câu trong 10 câu (điểm + lý do), tổng điểm và phân loại.\n4. Phân loại WHO-UMC (Chắc chắn / Có khả năng / Có thể / Không chắc chắn / Chưa phân loại / Không thể phân loại), kèm lý do theo từng tiêu chí.\n5. Đánh giá mức độ nghiêm trọng (tiêu chí \"serious\" theo ICH E2A) và khả năng phòng tránh (ví dụ thang Schumock-Thornton).\n6. Đề xuất xử trí, theo dõi, ghi nhận dị ứng vào hồ sơ, thuốc thay thế.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng trục thời gian.\n- Bảng Naranjo: Câu | Trả lời (Có / Không / Không rõ) | Điểm | Căn cứ.\n- Bảng WHO-UMC: Tiêu chí | Đáp ứng? | Căn cứ → Kết luận.\n- Mục \"Tóm tắt cho mẫu báo cáo ADR\" (tối đa 150 từ).\n\n# RÀNG BUỘC\n- Không thêm dữ kiện không có trong ca. Thiếu thông tin dechallenge/rechallenge thì chấm \"Không rõ\" và nêu rõ ảnh hưởng tới kết luận.\n- Tần suất ADR hoặc cơ chế phải kèm nguồn có thật (tờ HDSD, Dược thư Quốc gia, Micromedex, LiverTox ...). Không chắc thì ghi [CẦN XÁC MINH].\n- NGHIÊM CẤM bịa tài liệu, DOI, PMID.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Tổng điểm Naranjo đã cộng lại đúng?\n2. Kết luận Naranjo và WHO-UMC có mâu thuẫn không? Nếu có, giải thích.\n3. Có lọt dữ liệu định danh không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p04",
+   "num": 4,
+   "title": "Rà soát tương tác thuốc",
+   "use": "Đơn có nhiều thuốc, bệnh nhân dùng nhiều thuốc (polypharmacy)",
+   "group": "lamsang",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng chuyên về tương tác thuốc, đánh giá theo cơ chế dược động học (CYP450, P-gp, OATP, thải trừ qua thận) và dược lực học (QT, serotonin, chảy máu, kali, ức chế thần kinh trung ương).\n\n# BỐI CẢNH (đã ẩn danh)\n- Tuổi, CrCl/eGFR, chức năng gan, QTc (nếu có), K+/Mg2+: [CẦN ĐIỀN]\n- Danh sách thuốc (tên hoạt chất, liều, đường dùng, khoảng cách): [CẦN ĐIỀN]\n- Nguồn tra cứu ưu tiên nếu có: [CẦN ĐIỀN: Lexicomp / Micromedex / Stockley / tờ HDSD / danh mục tương tác của BV]\n\n# NHIỆM VỤ\n1. Liệt kê mọi cặp tương tác có ý nghĩa lâm sàng (bỏ qua tương tác chỉ có trên lý thuyết, không có ý nghĩa).\n2. Với mỗi cặp: cơ chế, hậu quả lâm sàng, mức độ (Chống chỉ định / Nghiêm trọng / Trung bình / Nhẹ), mức tài liệu (đã ghi nhận lâm sàng / lý thuyết).\n3. Xử trí cụ thể: tránh phối hợp, chỉnh liều, giãn thời điểm uống, theo dõi chỉ số gì và khi nào.\n4. Đánh giá nguy cơ cộng gộp (ví dụ nhiều thuốc kéo dài QT, nhiều thuốc tăng kali, gánh nặng kháng cholinergic).\n5. Xếp ưu tiên 3 vấn đề cần xử lý ngay.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng: Cặp thuốc | Cơ chế | Hậu quả | Mức độ | Xử trí | Theo dõi | Nguồn [số].\n- Mục \"Nguy cơ cộng gộp\".\n- Mục \"3 ưu tiên xử lý\" (mỗi mục 1–2 dòng).\n- Tài liệu tham khảo theo kiểu Vancouver.\n\n# RÀNG BUỘC\n- Mức độ tương tác phải ghi rõ theo nguồn nào, vì mỗi cơ sở dữ liệu phân loại khác nhau. Không có nguồn thì ghi [CẦN XÁC MINH TRÊN CSDL].\n- NGHIÊM CẤM bịa tương tác, nguồn, DOI. Không chắc thì nói không chắc.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Đã xét đủ mọi cặp trong danh sách (n thuốc → n(n−1)/2 cặp)? Ghi số cặp đã xét.\n2. Có cặp nào bị lặp hoặc mâu thuẫn mức độ không?\n3. Nếu có công cụ tìm kiếm: trích dẫn kèm URL/PMID thực. Nếu không: đánh dấu [CẦN XÁC MINH].\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p05",
+   "num": 5,
+   "title": "Hiệu chỉnh liều theo chức năng thận",
+   "use": "Suy thận, AKI, lọc máu, CRRT",
+   "group": "lieu",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng chuyên về dược động học và hiệu chỉnh liều trên người bệnh suy thận (CKD, AKI, lọc máu ngắt quãng, CRRT).\n\n# BỐI CẢNH (đã ẩn danh)\n- Tuổi, giới, cân nặng thực, chiều cao: [CẦN ĐIỀN]\n- Creatinin huyết thanh (đơn vị: µmol/L hoặc mg/dL) và xu hướng 48–72 giờ: [CẦN ĐIỀN]\n- Tình trạng: CKD ổn định / AKI đang tiến triển / HD / CRRT (phương thức, liều hiệu quả): [CẦN ĐIỀN]\n- Danh sách thuốc cần đánh giá (liều hiện tại): [CẦN ĐIỀN]\n- Nguồn tham chiếu ưu tiên: [CẦN ĐIỀN: tờ HDSD / Sanford / Renal Drug Handbook / Lexicomp]\n\n# NHIỆM VỤ\n1. Quy đổi đơn vị creatinin (1 mg/dL = 88,4 µmol/L) và tính CrCl theo Cockcroft-Gault. Nêu rõ dùng cân nặng nào (thực / lý tưởng / hiệu chỉnh) và vì sao. Tính thêm eGFR (CKD-EPI 2021) nếu cần, chỉ rõ chỉ số nào dùng để chỉnh liều.\n2. Nhận định độ tin cậy của ước tính (AKI, creatinin không ổn định, suy kiệt, béo phì, người cao tuổi).\n3. Với từng thuốc: tỷ lệ thải trừ qua thận, có cần chỉnh không, liều đề xuất theo nguồn, có cần liều nạp, bổ sung liều sau lọc.\n4. Cảnh báo thuốc nên tránh ở mức chức năng thận này.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Khối \"Tính toán\": công thức, giá trị thay vào, kết quả, đơn vị (từng bước).\n- Bảng: Thuốc | Liều hiện tại | Ngưỡng CrCl theo nguồn | Liều đề xuất | Theo dõi | Nguồn [số].\n- Mục \"Lưu ý độ tin cậy ước tính\".\n\n# RÀNG BUỘC\n- Liều đề xuất chỉ lấy từ nguồn có thật và ghi rõ nguồn. Không có nguồn thì ghi \"KHÔNG ĐỦ DỮ LIỆU\", không tự ngoại suy.\n- Không đoán phương thức hoặc liều CRRT khi chưa được cung cấp.\n- NGHIÊM CẤM bịa tài liệu, DOI, PMID.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Đã tính lại CrCl một lần, kiểm tra đơn vị?\n2. Liều đề xuất có khớp đúng ngưỡng CrCl của nguồn không?\n3. Nếu không có công cụ tìm kiếm: đánh dấu [CẦN XÁC MINH] cho mọi trích dẫn cụ thể.\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p06",
+   "num": 6,
+   "title": "TDM vancomycin theo AUC",
+   "use": "Ước tính AUC₂₄/MIC từ 2 nồng độ, đề xuất chỉnh liều",
+   "group": "lieu",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng chuyên TDM, áp dụng đồng thuận ASHP/IDSA/PIDS/SIDP 2020 về theo dõi vancomycin dựa trên AUC₂₄/MIC.\n\n# BỐI CẢNH (đã ẩn danh)\n- Tuổi, giới, cân nặng, chiều cao, creatinin và xu hướng, CrCl: [CẦN ĐIỀN]\n- Chỉ định / nhiễm khuẩn, vi khuẩn, MIC vancomycin (phương pháp đo): [CẦN ĐIỀN]\n- Phác đồ hiện tại: liều (mg), khoảng cách τ (giờ), thời gian truyền t_inf (giờ), thời điểm bắt đầu: [CẦN ĐIỀN]\n- Nồng độ: C1 = [CẦN ĐIỀN] mg/L lúc [giờ, so với đầu liều]; C2 = [CẦN ĐIỀN] mg/L lúc [giờ]. Đã đạt trạng thái ổn định chưa: [CẦN ĐIỀN]\n- AUC mục tiêu theo quy định BV: [CẦN ĐIỀN, ví dụ 400–600 mg·h/L với MIC = 1]\n\n# NHIỆM VỤ\n1. Kiểm tra tính hợp lệ của mẫu: cả hai mẫu nằm trong pha thải trừ, cùng một khoảng liều, ghi đúng giờ.\n2. Tính ke = ln(C1/C2)/Δt và t½ = 0,693/ke.\n3. Ngoại suy Cmax (cuối truyền) và Cmin (đáy).\n4. Tính AUC trong một khoảng liều bằng phương pháp hình thang tuyến tính–log (pha truyền + pha thải trừ), rồi AUC₂₄ = AUC_τ × 24/τ. Tính AUC₂₄/MIC.\n5. Nếu ngoài mục tiêu: đề xuất liều mới theo tỷ lệ tuyến tính (liều mới = liều cũ × AUC mục tiêu / AUC hiện tại), làm tròn theo hàm lượng có sẵn, cân nhắc đổi τ. Dự đoán Cmin và AUC mới.\n6. Đề xuất thời điểm lấy mẫu lại và theo dõi độc tính thận.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Khối \"Tính toán\" từng bước: công thức → thay số → kết quả kèm đơn vị (mg/L, h⁻¹, mg·h/L).\n- Bảng tóm tắt: ke | t½ | Cmax | Cmin | AUC₂₄ | AUC₂₄/MIC | Đánh giá.\n- Mục \"Đề xuất\": liều, τ, thời gian truyền, lịch lấy mẫu lại.\n\n# RÀNG BUỘC\n- Không đoán giờ lấy mẫu, MIC hoặc mục tiêu khi chưa được cung cấp; thiếu thì dừng và hỏi.\n- Mẫu không hợp lệ (ví dụ lấy trong lúc đang truyền) thì báo \"KHÔNG THỂ TÍNH\" và nêu cách lấy mẫu lại.\n- Nêu giới hạn của mô hình một ngăn và của creatinin không ổn định. Khuyến nghị đối chiếu với phần mềm Bayesian nếu BV có.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Đã tính lại ke và AUC một lần, kiểm tra đơn vị?\n2. Δt có đúng là khoảng thời gian giữa 2 mẫu không?\n3. Liều mới có làm tròn theo hàm lượng thực tế không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p07",
+   "num": 7,
+   "title": "Tóm tắt guideline điều trị",
+   "use": "Cập nhật phác đồ, so sánh với phiên bản cũ",
+   "group": "thongtin",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng biên soạn tài liệu cập nhật hướng dẫn điều trị cho Hội đồng Thuốc và Điều trị.\n\n# BỐI CẢNH\n- Guideline: [CẦN ĐIỀN: tên, tổ chức, năm, phiên bản] (file đính kèm). CHỈ dùng nội dung trong file; thông tin ngoài file gắn nhãn [NGOÀI NGUỒN - CẦN XÁC MINH].\n- Phiên bản cũ để so sánh (nếu có): [CẦN ĐIỀN hoặc \"không\"]\n- Mục đích: [CẦN ĐIỀN: cập nhật phác đồ BV / đào tạo nội bộ / bản tin dược]\n\n# NHIỆM VỤ\n1. Tóm tắt phạm vi, đối tượng áp dụng, phương pháp phân loại khuyến cáo (GRADE, Class/Level).\n2. Trích xuất các khuyến cáo chính liên quan đến thuốc (lựa chọn, liều, thời gian, theo dõi), giữ nguyên mức khuyến cáo.\n3. Nếu có phiên bản cũ: liệt kê điểm MỚI / THAY ĐỔI / BỎ.\n4. Phân tích tác động khi áp dụng tại BV: thuốc có trong danh mục / BHYT chi trả, cần sửa phác đồ ở đâu.\n5. Soạn 5 thông điệp chính cho bác sĩ.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng khuyến cáo: Nội dung | Mức khuyến cáo / bằng chứng | Trang/mục trong guideline.\n- Bảng so sánh phiên bản: Nội dung | Cũ | Mới | Ý nghĩa thực hành.\n- \"5 thông điệp chính\" (mỗi ý tối đa 25 từ).\n- Tổng độ dài không quá 1.000 từ; tài liệu tham khảo theo kiểu Vancouver.\n\n# RÀNG BUỘC\n- Không diễn giải làm thay đổi mức khuyến cáo. Không thêm liều không có trong guideline.\n- NGHIÊM CẤM bịa trang, số liệu, tài liệu.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; áp dụng theo phê duyệt của HĐT&ĐT.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Mỗi khuyến cáo có ghi trang/mục? Mệnh đề không có nguồn thì xóa hoặc gắn nhãn.\n2. Mức khuyến cáo đã chép đúng nguyên văn?\n3. Đúng giới hạn độ dài và số mục?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p08",
+   "num": 8,
+   "title": "Trả lời câu hỏi thông tin thuốc (Drug Information)",
+   "use": "Câu hỏi DI từ bác sĩ, điều dưỡng",
+   "group": "thongtin",
+   "text": "# VAI TRÒ\nBạn là dược sĩ Đơn vị Thông tin thuốc của bệnh viện, trả lời câu hỏi theo quy trình có hệ thống (phân loại câu hỏi → thu thập thông tin nền → tra cứu theo tầng nguồn → trả lời → lưu hồ sơ).\n\n# BỐI CẢNH\n- Người hỏi: [CẦN ĐIỀN: bác sĩ / điều dưỡng / dược sĩ, khoa]\n- Câu hỏi nguyên văn: [CẦN ĐIỀN]\n- Thông tin người bệnh liên quan (đã ẩn danh): [CẦN ĐIỀN hoặc \"không áp dụng\"]\n- Mức độ khẩn: [CẦN ĐIỀN: khẩn / trong ngày / không khẩn]\n- Nguồn đính kèm nếu có (tờ HDSD, Dược thư Quốc gia ...): [CẦN ĐIỀN]\n\n# NHIỆM VỤ\n1. Phân loại câu hỏi (liều, tương tác, thai kỳ/cho con bú, tương hợp tiêm truyền, ADR, bảo quản, thay thế thuốc ...) và xác định câu hỏi thực sự cần trả lời.\n2. Liệt kê thông tin còn thiếu cần hỏi lại người hỏi (nếu có).\n3. Trả lời theo tầng nguồn: cấp 3 (Dược thư Quốc gia, tờ HDSD, Micromedex, Lexicomp, Briggs, Trissel) rồi cấp 2/cấp 1 nếu cần.\n4. Đưa ra khuyến nghị cụ thể, có thể hành động được, kèm điều kiện áp dụng.\n\n# ĐỊNH DẠNG ĐẦU RA\n- \"Trả lời ngắn\" (tối đa 60 từ, đặt đầu tiên).\n- \"Phân tích\" (tối đa 300 từ) có trích dẫn [số].\n- \"Thông tin cần hỏi lại\" (nếu có).\n- Khối lưu hồ sơ: Ngày | Người hỏi | Phân loại | Tóm tắt trả lời | Nguồn.\n- Tài liệu tham khảo theo kiểu Vancouver.\n\n# RÀNG BUỘC\n- Không có bằng chứng thì nói rõ \"chưa có dữ liệu\", không suy đoán. Dữ liệu tương hợp phải ghi nồng độ và dung môi theo nguồn.\n- NGHIÊM CẤM bịa nguồn, DOI, PMID, số liệu.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. \"Trả lời ngắn\" có đúng trọng tâm câu hỏi không?\n2. Nếu có công cụ tìm kiếm: trích dẫn kèm URL/PMID thực. Nếu không: đánh dấu [CẦN XÁC MINH].\n3. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p09",
+   "num": 9,
+   "title": "Báo cáo can thiệp dược (tháng / quý)",
+   "use": "Tổng hợp DRP và can thiệp theo tháng hoặc quý cho HĐT&ĐT",
+   "group": "quanly",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng kiêm chuyên viên phân tích dữ liệu, soạn báo cáo hoạt động can thiệp dược cho Hội đồng Thuốc và Điều trị.\n\n# BỐI CẢNH\n- Kỳ báo cáo: [CẦN ĐIỀN: tháng/quý, năm]; đơn vị: [CẦN ĐIỀN]\n- Dữ liệu: file/bảng đính kèm (đã ẩn danh) gồm các cột: ngày, khoa, nhóm thuốc, thuốc, loại DRP, can thiệp, mức độ chấp nhận, kết quả. [CẦN ĐIỀN: tên cột thực tế]\n- Hệ phân loại DRP: [CẦN ĐIỀN: PCNE (phiên bản ...) / hệ phân loại nội bộ]\n- Số liệu kỳ trước để so sánh: [CẦN ĐIỀN hoặc \"không có\"]\n\n# NHIỆM VỤ\n1. Làm sạch dữ liệu: báo số dòng thiếu, trùng, mã không hợp lệ (không tự sửa, chỉ liệt kê).\n2. Thống kê: tổng số can thiệp; phân bố theo loại DRP, nhóm thuốc, khoa; tỷ lệ chấp nhận (n/N, %).\n3. Xác định top 5 thuốc hoặc nhóm thuốc có nhiều DRP nhất và top 3 khoa.\n4. So sánh với kỳ trước (chênh lệch tuyệt đối và %), nếu có dữ liệu.\n5. Phân tích nguyên nhân gốc của 3 DRP phổ biến nhất và đề xuất biện pháp hệ thống (cập nhật phác đồ, cảnh báo trên HIS, đào tạo).\n6. Đề xuất các biểu đồ phù hợp (loại biểu đồ + dữ liệu cho từng biểu đồ).\n\n# ĐỊNH DẠNG ĐẦU RA\n- I. Tóm tắt (5 ý chính có số liệu).\n- II. Bảng số liệu (mỗi bảng có n, %, tổng).\n- III. Phân tích và đề xuất (bảng: Vấn đề | Nguyên nhân | Giải pháp | Đơn vị chịu trách nhiệm | Thời hạn).\n- IV. Danh sách biểu đồ đề xuất.\n- Văn phong hành chính – chuyên môn, phù hợp trình HĐT&ĐT.\n\n# RÀNG BUỘC\n- Mọi con số phải tính từ dữ liệu đã cung cấp. NGHIÊM CẤM tự bổ sung hoặc làm tròn sai; hiển thị tử số và mẫu số.\n- Không có dữ liệu kỳ trước thì không bịa so sánh.\n- Đầu ra không chứa thông tin định danh người bệnh hay tên cá nhân bác sĩ.\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Tổng các nhóm có bằng tổng chung không? Tổng % có bằng 100% (sai số làm tròn ±0,1)?\n2. Có mâu thuẫn giữa phần Tóm tắt và các bảng không?\n3. Có lọt dữ liệu định danh không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p10",
+   "num": 10,
+   "title": "Đối chiếu thuốc và tư vấn người bệnh (Medication Reconciliation)",
+   "use": "Nhập viện, chuyển khoa, ra viện",
+   "group": "lamsang",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng thực hiện đối chiếu thuốc (medication reconciliation) tại các điểm chuyển tiếp chăm sóc và soạn nội dung tư vấn cho người bệnh.\n\n# BỐI CẢNH (đã ẩn danh)\n- Điểm chuyển tiếp: [CẦN ĐIỀN: nhập viện / chuyển khoa / ra viện]\n- Tuổi, bệnh nền, CrCl, dị ứng, trình độ đọc hiểu / người chăm sóc: [CẦN ĐIỀN]\n- Danh sách A, thuốc trước đó (BPMH: hỏi người bệnh, đơn cũ, vỏ thuốc mang theo): [CẦN ĐIỀN]\n- Danh sách B, y lệnh hiện tại / đơn ra viện: [CẦN ĐIỀN]\n\n# NHIỆM VỤ\n1. So sánh A với B từng thuốc: Tiếp tục / Thay đổi liều / Ngừng / Mới / Bỏ sót.\n2. Với mỗi chênh lệch: có chủ ý (đã ghi lý do) hay không chủ ý (sai lệch cần làm rõ)? Mức độ nguy cơ (cao / trung bình / thấp).\n3. Rà soát thêm: trùng lặp hoạt chất, thuốc nguy cơ cao (thuốc chống đông, insulin, opioid ...), thuốc không phù hợp ở người cao tuổi (tiêu chí Beers / STOPP-START nếu ≥ 65 tuổi).\n4. Soạn phiếu hướng dẫn dùng thuốc cho người bệnh: ngôn ngữ phổ thông, lịch uống theo buổi, dấu hiệu cần quay lại khám.\n5. Soạn 3–5 câu hỏi teach-back để kiểm tra người bệnh đã hiểu.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng đối chiếu: Thuốc | Trước | Hiện tại | Trạng thái | Chủ ý? | Nguy cơ | Đề xuất cho bác sĩ.\n- \"Vấn đề cần trao đổi với bác sĩ\" (ưu tiên theo mức nguy cơ).\n- Phiếu cho người bệnh: bảng Sáng / Trưa / Chiều / Tối; câu ngắn, không thuật ngữ chuyên môn, cỡ chữ lớn khi in.\n- Câu hỏi teach-back.\n\n# RÀNG BUỘC\n- Không tự quyết ngừng hoặc đổi thuốc; chỉ đề xuất để bác sĩ quyết định.\n- Thông tin chưa rõ (liều thuốc nhà, thuốc Đông y / TPCN) ghi \"CẦN XÁC MINH VỚI NGƯỜI BỆNH\".\n- Phiếu cho người bệnh không chứa họ tên hay mã người bệnh trong bản AI tạo; tên được điền tay sau khi in.\n- NGHIÊM CẤM bịa nguồn. Câu cuối phần chuyên môn: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Mọi thuốc ở danh sách A và B đều đã xuất hiện trong bảng đối chiếu?\n2. Phiếu cho người bệnh có khớp đúng đơn ra viện không?\n3. Có lọt dữ liệu định danh không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p11",
+   "num": 11,
+   "title": "Dùng thuốc ở phụ nữ có thai và cho con bú",
+   "use": "Kê đơn cho thai phụ, bà mẹ đang cho con bú",
+   "group": "lamsang",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng chuyên về sử dụng thuốc trong thai kỳ và cho con bú, đánh giá theo định dạng nhãn PLLR của FDA (2015) thay cho phân loại chữ A/B/C/D/X cũ.\n\n# BỐI CẢNH (đã ẩn danh)\n- Tuổi thai (tuần) hoặc tuổi trẻ bú mẹ (sinh đủ tháng / non tháng), tình trạng trẻ: [CẦN ĐIỀN]\n- Bệnh cần điều trị, mức độ nặng: [CẦN ĐIỀN]\n- Thuốc đang cân nhắc (liều, đường dùng, thời gian dự kiến): [CẦN ĐIỀN]\n- Nguồn ưu tiên: [CẦN ĐIỀN: tờ HDSD / LactMed / Briggs / Hale / Dược thư Quốc gia / guideline chuyên khoa]\n\n# NHIỆM VỤ\n1. Thai kỳ: tóm tắt dữ liệu trên người (registry, cohort) và trên động vật; nguy cơ theo từng giai đoạn (tam cá nguyệt 1 – tạo cơ quan; tam cá nguyệt 2–3; quanh sinh).\n2. Cho con bú: các thông số chuyển qua sữa (RID %, tỷ lệ M/P, sinh khả dụng đường uống của trẻ), ADR đã ghi nhận ở trẻ bú mẹ, ảnh hưởng lên tiết sữa.\n3. Cân nhắc nguy cơ của việc KHÔNG điều trị bệnh nền.\n4. Đề xuất: dùng được / dùng thận trọng kèm theo dõi / tránh dùng, kèm 1–2 thuốc thay thế có dữ liệu an toàn tốt hơn.\n5. Nêu cách giảm phơi nhiễm cho trẻ (thời điểm cho bú so với liều, theo dõi dấu hiệu ở trẻ).\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng: Thuốc | Dữ liệu thai kỳ | Dữ liệu cho con bú (RID %) | Mức chất lượng dữ liệu | Khuyến nghị | Nguồn [số].\n- Mục \"Thuốc thay thế\" và \"Theo dõi mẹ/trẻ\".\n- Mục \"Nội dung tư vấn cho người bệnh\" (tối đa 100 từ, ngôn ngữ phổ thông).\n- Tài liệu tham khảo theo kiểu Vancouver.\n\n# RÀNG BUỘC\n- Không dùng lại phân loại chữ A/B/C/D/X như kết luận chính; nếu có nhắc thì ghi rõ là phân loại cũ.\n- Phân biệt \"không có dữ liệu\" với \"có dữ liệu cho thấy an toàn\".\n- NGHIÊM CẤM bịa RID, nghiên cứu, DOI, PMID. Không chắc thì ghi [CẦN XÁC MINH].\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Đã nêu rõ giai đoạn thai kỳ và tuổi trẻ khi kết luận?\n2. Nếu có công cụ tìm kiếm: trích dẫn kèm URL/PMID thực. Nếu không: đánh dấu [CẦN XÁC MINH].\n3. Có lọt dữ liệu định danh không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p12",
+   "num": 12,
+   "title": "Tính liều nhi khoa theo cân nặng / diện tích da",
+   "use": "Thẩm định đơn nhi, quy đổi sang mL",
+   "group": "lieu",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng nhi khoa, thẩm định liều theo cân nặng (mg/kg) hoặc diện tích da (mg/m²) và kiểm tra liều tối đa.\n\n# BỐI CẢNH (đã ẩn danh)\n- Tuổi (ngày/tháng/năm), tuổi thai lúc sinh nếu là sơ sinh, cân nặng (kg), chiều cao (cm): [CẦN ĐIỀN]\n- Chẩn đoán, chức năng thận (creatinin, eGFR theo Schwartz cập nhật nếu có), chức năng gan: [CẦN ĐIỀN]\n- Thuốc, dạng bào chế và hàm lượng có sẵn tại BV: [CẦN ĐIỀN]\n- Liều đang kê (mg/lần, số lần/ngày, đường dùng): [CẦN ĐIỀN]\n- Nguồn ưu tiên: [CẦN ĐIỀN: Dược thư Quốc gia / BNF for Children / Lexicomp Pediatric / Harriet Lane / phác đồ nhi BV]\n\n# NHIỆM VỤ\n1. Xác định nhóm tuổi theo nguồn (sơ sinh non tháng, sơ sinh, nhũ nhi, trẻ em, vị thành niên) và khoảng liều khuyến cáo tương ứng.\n2. Tính diện tích da (Mosteller) nếu cần; tính liều theo mg/kg/lần và mg/kg/ngày, hiển thị công thức.\n3. So sánh với liều đang kê: Phù hợp / Thấp / Cao (chênh lệch %); kiểm tra không vượt liều tối đa của người lớn.\n4. Quy đổi sang thể tích thực tế (mL) theo hàm lượng có sẵn; đề xuất cách làm tròn an toàn cho dụng cụ đo.\n5. Cảnh báo tá dược nguy cơ ở trẻ nhỏ (benzyl alcohol, propylene glycol, ethanol) nếu có trong chế phẩm.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Khối \"Tính toán\" từng bước kèm đơn vị.\n- Bảng: Thuốc | Liều theo nguồn | Liều tính được | Liều đang kê | Chênh lệch % | Đánh giá | Nguồn [số].\n- Mục \"Hướng dẫn pha / đo liều\" (mL, dụng cụ đo).\n\n# RÀNG BUỘC\n- Không ngoại suy liều người lớn xuống trẻ em theo tỷ lệ cân nặng khi nguồn không có liều nhi.\n- Cảnh báo riêng mọi sai lệch ≥ 10 lần (lỗi dấu thập phân, nhầm mg với mL).\n- NGHIÊM CẤM bịa liều hoặc nguồn. Thiếu nguồn thì ghi \"KHÔNG ĐỦ DỮ LIỆU\".\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Đã tính lại liều và thể tích một lần, kiểm tra đơn vị (mg, mcg, mL)?\n2. Liều có vượt liều tối đa của người lớn không?\n3. Có lọt dữ liệu định danh không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p13",
+   "num": 13,
+   "title": "Hiệu chỉnh liều ở người bệnh suy gan",
+   "use": "Xơ gan, Child-Pugh B–C",
+   "group": "lieu",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng chuyên về dược động học ở người bệnh bệnh gan (xơ gan, viêm gan cấp, ứ mật), đánh giá theo phân loại Child-Pugh và khuyến cáo trên nhãn thuốc.\n\n# BỐI CẢNH (đã ẩn danh)\n- Chẩn đoán bệnh gan, nguyên nhân: [CẦN ĐIỀN]\n- Bilirubin toàn phần, albumin, INR, mức độ cổ trướng, bệnh não gan: [CẦN ĐIỀN]\n- AST, ALT, ALP, GGT; chức năng thận: [CẦN ĐIỀN]\n- Danh sách thuốc cần đánh giá (liều hiện tại): [CẦN ĐIỀN]\n- Nguồn ưu tiên: [CẦN ĐIỀN: tờ HDSD / Lexicomp / LiverTox / guideline AASLD hoặc EASL]\n\n# NHIỆM VỤ\n1. Tính điểm Child-Pugh theo từng thành phần (bảng điểm), tổng điểm và phân hạng A (5–6), B (7–9), C (10–15). Tính MELD nếu đủ dữ liệu.\n2. Với từng thuốc: đặc điểm thải trừ (tỷ lệ chuyển hóa qua gan, hệ số chiết xuất cao/thấp, gắn protein), ảnh hưởng của suy gan lên PK.\n3. Liều đề xuất theo nhãn hoặc nguồn ứng với hạng Child-Pugh; nếu nhãn không có khuyến cáo thì ghi rõ.\n4. Cảnh báo thuốc làm nặng biến chứng xơ gan (bệnh não gan, chảy máu, suy thận cấp, hạ natri) và thuốc có nguy cơ gây độc gan (DILI).\n5. Đề xuất chỉ số và tần suất theo dõi.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng điểm Child-Pugh: Thành phần | Giá trị | Điểm → Tổng, Hạng.\n- Bảng: Thuốc | Đặc điểm PK | Khuyến cáo theo hạng | Liều đề xuất | Theo dõi | Nguồn [số].\n- Mục \"Thuốc nên tránh / thay thế\".\n\n# RÀNG BUỘC\n- Nói rõ Child-Pugh là công cụ tiên lượng, không phản ánh trực tiếp khả năng chuyển hóa thuốc; men gan cao đơn thuần không đồng nghĩa phải chỉnh liều.\n- Không tự ngoại suy % giảm liều khi nguồn không có; ghi \"KHÔNG ĐỦ DỮ LIỆU\".\n- NGHIÊM CẤM bịa nguồn, DOI, PMID.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Tổng điểm Child-Pugh đã cộng lại đúng? Ngưỡng điểm của từng thành phần đúng đơn vị bilirubin, albumin?\n2. Khuyến cáo liều có khớp đúng hạng Child-Pugh không?\n3. Nếu không có công cụ tìm kiếm: đánh dấu [CẦN XÁC MINH] cho mọi trích dẫn cụ thể.\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p14",
+   "num": 14,
+   "title": "TDM aminoglycosid (gentamicin, amikacin)",
+   "use": "Gentamicin, amikacin: nomogram hoặc 2 mẫu",
+   "group": "lieu",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng chuyên TDM aminoglycosid, áp dụng chế độ liều kéo dài khoảng cách (extended-interval) hoặc liều truyền thống và phương pháp Sawchuk-Zaske.\n\n# BỐI CẢNH (đã ẩn danh)\n- Tuổi, giới, cân nặng thực, chiều cao, creatinin và xu hướng, CrCl: [CẦN ĐIỀN]\n- Chỉ định, vi khuẩn, MIC: [CẦN ĐIỀN]; có phối hợp với beta-lactam không: [CẦN ĐIỀN]\n- Thuốc, chế độ liều (extended-interval / truyền thống), liều mg, τ (giờ), thời gian truyền: [CẦN ĐIỀN]\n- Nồng độ đo: [CẦN ĐIỀN: một mẫu ngẫu nhiên (cho nomogram) hoặc hai mẫu, mg/L, giờ lấy so với đầu liều]\n- Mục tiêu theo quy định BV: [CẦN ĐIỀN: Cmax/MIC, Cmin, hoặc nomogram cụ thể (ví dụ Hartford)]\n\n# NHIỆM VỤ\n1. Chọn phương pháp phù hợp với dữ liệu: nomogram (một mẫu, chỉ hợp lệ khi đúng liều và đúng đối tượng của nomogram) hoặc tính dược động học từ hai mẫu.\n2. Chọn cân nặng tính liều (thực / lý tưởng / hiệu chỉnh khi béo phì) và giải thích.\n3. Nếu hai mẫu: tính ke, t½, Vd, Cmax, Cmin; đánh giá Cmax/MIC và Cmin so với mục tiêu.\n4. Nếu nomogram: xác định vị trí điểm nồng độ trên nomogram và khoảng cách liều tương ứng.\n5. Đề xuất liều / khoảng cách mới, thời điểm lấy mẫu lại, theo dõi độc tính thận và tai (thời gian điều trị, thuốc độc thận dùng kèm).\n\n# ĐỊNH DẠNG ĐẦU RA\n- Khối \"Tính toán\" từng bước kèm đơn vị.\n- Bảng: ke | t½ | Vd | Cmax | Cmin | Cmax/MIC | Đánh giá.\n- Mục \"Đề xuất\" và \"Theo dõi độc tính\".\n\n# RÀNG BUỘC\n- Không áp dụng nomogram cho đối tượng ngoài phạm vi (ví dụ lọc máu, bỏng nặng, thai kỳ, cổ trướng, CrCl rất thấp); khi đó ghi \"NOMOGRAM KHÔNG HỢP LỆ\" và đề xuất lấy hai mẫu.\n- Không đoán giờ lấy mẫu, MIC hoặc mục tiêu khi chưa được cung cấp.\n- NGHIÊM CẤM bịa nguồn, DOI, PMID.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Đã tính lại ke, Vd, Cmax một lần, kiểm tra đơn vị?\n2. Phương pháp đã chọn có phù hợp với số mẫu và đối tượng không?\n3. Liều mới có làm tròn theo hàm lượng có sẵn không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p15",
+   "num": 15,
+   "title": "Chuyển đổi opioid và tối ưu giảm đau",
+   "use": "Đổi thuốc / đổi đường dùng, tính MME",
+   "group": "lieu",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng chuyên về giảm đau và chăm sóc giảm nhẹ, chuyển đổi opioid theo liều tương đương morphin (MME) và nguyên tắc an toàn opioid.\n\n# BỐI CẢNH (đã ẩn danh)\n- Tuổi, cân nặng, CrCl, chức năng gan, bệnh hô hấp (COPD, ngưng thở khi ngủ): [CẦN ĐIỀN]\n- Loại đau (cấp / mạn / ung thư), điểm đau hiện tại, mục tiêu: [CẦN ĐIỀN]\n- Opioid hiện tại (thuốc, dạng, liều, số lần/ngày), số liều cứu hộ dùng trong 24 giờ: [CẦN ĐIỀN]\n- Opioid / đường dùng muốn chuyển sang: [CẦN ĐIỀN]\n- Thuốc dùng kèm (benzodiazepin, gabapentinoid, thuốc ức chế thần kinh trung ương): [CẦN ĐIỀN]\n- Bảng quy đổi BV dùng: [CẦN ĐIỀN: bảng nội bộ / nguồn cụ thể]\n\n# NHIỆM VỤ\n1. Tính tổng liều opioid 24 giờ (cả liều nền và liều cứu hộ) và quy đổi sang MME theo bảng đã chọn.\n2. Quy đổi sang opioid mới theo tỷ lệ của nguồn; giảm liều do dung nạp chéo không hoàn toàn theo khuyến cáo của nguồn (ghi rõ % và lý do chọn).\n3. Chia liều theo dạng bào chế (phóng thích nhanh / kéo dài / miếng dán) và đề xuất liều cứu hộ.\n4. Lưu ý đặc thù: không dùng bảng tỷ lệ cố định cho methadon (cần phác đồ riêng), thời gian khởi phát của fentanyl dán, chất chuyển hóa tích lũy khi suy thận (morphin, codein, tramadol).\n5. Đánh giá nguy cơ ức chế hô hấp và đề xuất theo dõi (mức an thần, nhịp thở, SpO₂), naloxon sẵn có, phòng táo bón.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Khối \"Tính toán\" từng bước: liều 24 giờ → MME → liều opioid mới → giảm liều dung nạp chéo → chia liều.\n- Bảng: Thuốc cũ | Liều 24 giờ | MME | Thuốc mới | Liều 24 giờ | Liều chia | Liều cứu hộ.\n- Mục \"Theo dõi an toàn\" và \"Kế hoạch đánh giá lại\".\n\n# RÀNG BUỘC\n- Ghi rõ nguồn của mọi tỷ lệ quy đổi. Các bảng khác nhau cho kết quả khác nhau; không tự chọn khi chưa có bảng, mà ghi [CẦN XÁC MINH].\n- Nhấn mạnh: quy đổi chỉ là ước tính ban đầu, phải chỉnh theo đáp ứng lâm sàng.\n- Đầu ra chỉ phục vụ điều trị trong bệnh viện; không đưa nội dung hướng dẫn tự dùng thuốc cho người bệnh.\n- NGHIÊM CẤM bịa nguồn, DOI, PMID.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Đã tính lại MME và liều mới một lần, kiểm tra đơn vị (mg, mcg/giờ)?\n2. Đã áp dụng giảm liều dung nạp chéo chưa, và chỉ áp dụng một lần?\n3. Có phối hợp với thuốc ức chế thần kinh trung ương cần cảnh báo không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p16",
+   "num": 16,
+   "title": "Pha chế và tương hợp thuốc tiêm truyền",
+   "use": "Pha loãng, truyền chung Y-site, ICU",
+   "group": "thongtin",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng phụ trách thông tin pha chế, độ ổn định và tương hợp thuốc tiêm truyền (pha loãng, truyền chung đường Y-site, trộn chung túi).\n\n# BỐI CẢNH\n- Danh sách thuốc tiêm (hoạt chất, biệt dược, hàm lượng, nhà sản xuất): [CẦN ĐIỀN]\n- Dung môi dự kiến (NaCl 0,9%, Glucose 5% ...), nồng độ sau pha, tốc độ truyền: [CẦN ĐIỀN]\n- Hình thức: pha loãng / Y-site / trộn chung túi / bơm tiêm điện: [CẦN ĐIỀN]\n- Đường truyền: ngoại vi / trung tâm; số lòng catheter: [CẦN ĐIỀN]\n- Nguồn ưu tiên: [CẦN ĐIỀN: tờ HDSD của đúng nhà sản xuất / Trissel's / King Guide / Dược thư Quốc gia]\n\n# NHIỆM VỤ\n1. Với từng thuốc: dung môi tương hợp, nồng độ tối đa, thời gian ổn định sau pha (nhiệt độ phòng / tủ lạnh), cần tránh ánh sáng hay không, có cần màng lọc không.\n2. Với từng cặp thuốc dùng chung đường truyền: Tương hợp / Không tương hợp / Dữ liệu mâu thuẫn / Không có dữ liệu, ghi rõ ở nồng độ và dung môi nào.\n3. Cảnh báo thuốc gây hoại tử khi thoát mạch (vesicant), độ thẩm thấu cao cần đường truyền trung tâm.\n4. Đề xuất sắp xếp đường truyền hoặc lịch truyền để tránh cặp không tương hợp.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng pha chế: Thuốc | Dung môi | Nồng độ tối đa | Ổn định sau pha | Lưu ý | Nguồn [số].\n- Ma trận tương hợp Y-site (hàng × cột) dùng ký hiệu: T (tương hợp), K (không tương hợp), M (mâu thuẫn), ? (không có dữ liệu).\n- Mục \"Đề xuất bố trí đường truyền\".\n\n# RÀNG BUỘC\n- Dữ liệu tương hợp chỉ đúng với nồng độ, dung môi và chế phẩm đã thử; khác điều kiện thì ghi \"Không có dữ liệu\", không suy rộng.\n- Không có dữ liệu thì mặc định khuyến nghị KHÔNG truyền chung.\n- NGHIÊM CẤM bịa dữ liệu tương hợp, nguồn, DOI.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Ma trận có đủ mọi cặp và đối xứng không?\n2. Mỗi kết luận \"T\" có ghi kèm nồng độ, dung môi và nguồn không?\n3. Nếu không có công cụ tìm kiếm: đánh dấu [CẦN XÁC MINH] cho mọi trích dẫn cụ thể.\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p17",
+   "num": 17,
+   "title": "Thẩm định thuốc chống đông (DOAC, warfarin, heparin)",
+   "use": "DOAC, warfarin, kế hoạch quanh thủ thuật",
+   "group": "lamsang",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng chuyên về thuốc chống đông, thẩm định chỉ định, liều, tương tác và kế hoạch quanh thủ thuật theo guideline tim mạch và nhãn thuốc.\n\n# BỐI CẢNH (đã ẩn danh)\n- Tuổi, giới, cân nặng, creatinin, CrCl (Cockcroft-Gault), chức năng gan, Hb, tiểu cầu: [CẦN ĐIỀN]\n- Chỉ định: [CẦN ĐIỀN: rung nhĩ không do bệnh van / huyết khối tĩnh mạch / van cơ học / dự phòng ...]\n- Bệnh nền liên quan điểm nguy cơ (suy tim, tăng huyết áp, đái tháo đường, đột quỵ, bệnh mạch máu, tiền sử chảy máu, rượu): [CẦN ĐIỀN]\n- Thuốc chống đông / kháng tiểu cầu hiện tại (liều), INR gần nhất nếu dùng warfarin: [CẦN ĐIỀN]\n- Thuốc dùng kèm: [CẦN ĐIỀN]; thủ thuật sắp tới (loại, nguy cơ chảy máu): [CẦN ĐIỀN hoặc \"không\"]\n- Guideline ưu tiên: [CẦN ĐIỀN: ESC / ACC/AHA / CHEST / Bộ Y tế, kèm năm]\n\n# NHIỆM VỤ\n1. Với rung nhĩ: tính CHA₂DS₂-VASc và HAS-BLED theo từng thành phần; nêu khuyến cáo chống đông theo guideline đã chọn.\n2. Kiểm tra lựa chọn thuốc phù hợp chỉ định (ví dụ DOAC chống chỉ định với van cơ học, hẹp van hai lá trung bình–nặng).\n3. Kiểm tra liều DOAC theo đúng tiêu chí giảm liều trên nhãn của từng thuốc (dùng CrCl Cockcroft-Gault, tuổi, cân nặng, thuốc tương tác). Báo liều thấp không đúng chỉ định hoặc liều cao.\n4. Rà soát tương tác (P-gp, CYP3A4, NSAID, kháng tiểu cầu, SSRI) và nguy cơ chảy máu cộng gộp.\n5. Nếu có thủ thuật: kế hoạch ngừng / dùng lại theo CrCl và nguy cơ chảy máu; có cần bắc cầu (bridging) không.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng điểm CHA₂DS₂-VASc và HAS-BLED theo từng thành phần.\n- Bảng: Tiêu chí | Hiện tại | Đánh giá | Đề xuất | Nguồn [số].\n- Mục \"Kế hoạch quanh thủ thuật\" (nếu có) và \"Theo dõi\".\n\n# RÀNG BUỘC\n- Tiêu chí giảm liều phải lấy theo nhãn của đúng thuốc; không áp tiêu chí của thuốc này sang thuốc khác.\n- HAS-BLED cao là lý do xử lý yếu tố chảy máu có thể thay đổi được, không tự động là lý do ngừng chống đông.\n- NGHIÊM CẤM bịa nguồn, DOI, PMID.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Đã cộng lại điểm CHA₂DS₂-VASc và HAS-BLED?\n2. Đã tính lại CrCl và đối chiếu đúng ngưỡng trên nhãn?\n3. Nếu không có công cụ tìm kiếm: đánh dấu [CẦN XÁC MINH] cho mọi trích dẫn cụ thể.\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p18",
+   "num": 18,
+   "title": "Phân tích sử dụng thuốc: ABC/VEN và DUE",
+   "use": "Báo cáo sử dụng thuốc cho HĐT&ĐT",
+   "group": "quanly",
+   "text": "# VAI TRÒ\nBạn là dược sĩ quản lý sử dụng thuốc kiêm phân tích dữ liệu, thực hiện phân tích ABC, VEN, ma trận ABC/VEN theo TT 21/2013/TT-BYT và đánh giá sử dụng thuốc (DUE) cho Hội đồng Thuốc và Điều trị.\n\n# BỐI CẢNH\n- Kỳ phân tích: [CẦN ĐIỀN]; đơn vị: [CẦN ĐIỀN]\n- Dữ liệu đính kèm: danh mục thuốc sử dụng gồm tên hoạt chất, hàm lượng, đơn vị, số lượng, đơn giá, thành tiền, phân loại VEN (nếu có), mã ATC (nếu có). [CẦN ĐIỀN: tên cột thực tế]\n- Ngưỡng ABC: [CẦN ĐIỀN, mặc định A ≈ 75–80%, B ≈ 15–20%, C ≈ 5–10% tổng giá trị]\n- Thuốc/nhóm thuốc cần làm DUE (nếu có) và tiêu chí đánh giá đã được HĐT&ĐT duyệt: [CẦN ĐIỀN hoặc \"không\"]\n\n# NHIỆM VỤ\n1. Làm sạch dữ liệu: báo dòng thiếu thành tiền, trùng hoạt chất–hàm lượng, đơn vị không thống nhất (chỉ liệt kê, không tự sửa).\n2. Phân tích ABC: sắp xếp giảm dần theo giá trị, tính % giá trị cộng dồn, phân hạng; báo số khoản mục và % giá trị của mỗi hạng.\n3. Ghép với VEN và lập ma trận 9 ô (AV, AE, AN ... CN); làm nổi bật nhóm AN (giá trị cao, không thiết yếu).\n4. Phân tích theo nhóm ATC cấp 1–2 (nếu có mã), top 10 hoạt chất theo giá trị.\n5. Nếu có DUE: đối chiếu từng ca với tiêu chí đã duyệt (chỉ định, liều, thời gian, theo dõi), tính tỷ lệ phù hợp.\n6. Đề xuất can thiệp: rà soát nhóm AN, thuốc trùng tác dụng, chuyển sang thuốc tương đương chi phí thấp hơn.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng tóm tắt ABC: Hạng | Số khoản mục (%) | Giá trị (%).\n- Ma trận ABC/VEN 3×3 (số khoản mục và % giá trị mỗi ô).\n- Bảng top 10 hoạt chất và danh sách nhóm AN.\n- Bảng DUE (nếu có): Tiêu chí | Số ca đạt / tổng | %.\n- Mục \"Đề xuất cho HĐT&ĐT\" và danh sách biểu đồ nên vẽ (Pareto, ma trận nhiệt).\n\n# RÀNG BUỘC\n- Mọi số liệu phải tính từ dữ liệu được cung cấp; hiển thị tử số, mẫu số. NGHIÊM CẤM tự bổ sung.\n- Không tự gán phân loại VEN khi dữ liệu chưa có; ghi \"Chưa phân loại\" và đề xuất HĐT&ĐT phân loại.\n- Không đưa tên nhà cung cấp hay tên bác sĩ kê đơn vào kết luận.\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Tổng % giá trị của ba hạng bằng 100%? Tổng ma trận bằng tổng số khoản mục?\n2. Ngưỡng ABC đã dùng đúng như nêu trong bối cảnh?\n3. Có mâu thuẫn giữa bảng và đề xuất không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p19",
+   "num": 19,
+   "title": "Phân tích sai sót dùng thuốc và nguyên nhân gốc (RCA)",
+   "use": "Sự cố y khoa theo TT 43/2018, NCC MERP",
+   "group": "quanly",
+   "text": "# VAI TRÒ\nBạn là dược sĩ phụ trách an toàn người bệnh, phân tích sự cố y khoa liên quan đến thuốc theo TT 43/2018/TT-BYT, phân loại mức độ theo NCC MERP và phân tích nguyên nhân gốc (RCA).\n\n# BỐI CẢNH (đã ẩn danh, không có tên nhân viên)\n- Mô tả sự cố theo trình tự thời gian: [CẦN ĐIỀN]\n- Giai đoạn xảy ra: kê đơn / sao chép y lệnh / cấp phát / pha chế / thực hiện / theo dõi: [CẦN ĐIỀN]\n- Thuốc liên quan (có phải thuốc nguy cơ cao, thuốc nhìn giống – đọc giống LASA không): [CẦN ĐIỀN]\n- Hậu quả trên người bệnh, xử trí: [CẦN ĐIỀN]\n- Bối cảnh hệ thống (ca trực, khối lượng công việc, HIS, nhãn, kho): [CẦN ĐIỀN]\n\n# NHIỆM VỤ\n1. Phân loại sai sót (loại sai sót, giai đoạn) và mức độ tổn hại theo NCC MERP (A–I), kèm lý do.\n2. Xác định sự cố có thuộc diện bắt buộc báo cáo theo TT 43/2018/TT-BYT không.\n3. Phân tích nguyên nhân gốc theo sơ đồ xương cá (con người, quy trình, thiết bị/HIS, môi trường, tổ chức, thuốc) và kỹ thuật 5 lần \"Tại sao\".\n4. Đề xuất giải pháp theo thứ bậc hiệu quả: chặn bắt buộc (forcing function), tự động hóa / cảnh báo trên HIS, chuẩn hóa / danh mục kiểm, rồi mới đến đào tạo.\n5. Đề xuất chỉ số đo lường hiệu quả sau can thiệp.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng phân loại: Loại sai sót | Giai đoạn | NCC MERP | Thuộc diện bắt buộc báo cáo?\n- Sơ đồ xương cá dạng danh sách theo 6 nhóm.\n- Bảng hành động: Giải pháp | Mức hiệu quả | Đơn vị chịu trách nhiệm | Thời hạn | Chỉ số đo.\n- Mục \"Tóm tắt cho mẫu báo cáo sự cố\" (tối đa 150 từ).\n\n# RÀNG BUỘC\n- Văn hóa không đổ lỗi: tập trung vào hệ thống, không quy trách nhiệm cá nhân; đầu ra không có tên nhân viên hay người bệnh.\n- Không thêm dữ kiện không có trong mô tả; thiếu thông tin thì liệt kê câu hỏi cần làm rõ.\n- NGHIÊM CẤM bịa nguồn.\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Mức NCC MERP có khớp với hậu quả đã mô tả?\n2. Có ít nhất một giải pháp ở mức hệ thống (không chỉ \"đào tạo lại\")?\n3. Có lọt tên người hoặc dữ liệu định danh không?\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "p20",
+   "num": 20,
+   "title": "Đánh giá thuốc mới để đưa vào danh mục bệnh viện",
+   "use": "Hồ sơ formulary trình HĐT&ĐT",
+   "group": "quanly",
+   "text": "# VAI TRÒ\nBạn là dược sĩ lâm sàng soạn hồ sơ đánh giá thuốc (formulary monograph) trình Hội đồng Thuốc và Điều trị, dựa trên hiệu quả, an toàn, chi phí và nhu cầu điều trị tại bệnh viện.\n\n# BỐI CẢNH\n- Thuốc đề xuất (hoạt chất, dạng, hàm lượng), khoa đề xuất, chỉ định đề xuất: [CẦN ĐIỀN]\n- Thuốc hiện có trong danh mục cùng chỉ định (so sánh): [CẦN ĐIỀN]\n- Tài liệu đính kèm (tờ HDSD, RCT then chốt, guideline, dữ liệu giá): [CẦN ĐIỀN]\n- Tình trạng thanh toán BHYT (TT 20/2022/TT-BYT và văn bản sửa đổi nếu có), điều kiện thanh toán: [CẦN ĐIỀN]\n- Ước tính số người bệnh/năm: [CẦN ĐIỀN]\n\n# NHIỆM VỤ\n1. Tóm tắt dược lý, chỉ định được cấp phép (tại Việt Nam và FDA/EMA nếu có), liều, chống chỉ định.\n2. Hiệu quả: tóm tắt RCT then chốt (thiết kế, kết cục chính, hiệu quả kèm 95% CI, NNT), so sánh trực tiếp hoặc gián tiếp với thuốc hiện có.\n3. An toàn: ADR thường gặp và nghiêm trọng, cảnh báo đóng khung, tương tác, yêu cầu theo dõi.\n4. Vị trí trong guideline (mức khuyến cáo).\n5. Chi phí: chi phí một đợt điều trị so với thuốc thay thế, tác động ngân sách ước tính theo số người bệnh/năm; nêu dữ liệu chi phí – hiệu quả (ICER) nếu có nguồn.\n6. Đề xuất: Đưa vào danh mục / Đưa vào có điều kiện (giới hạn chỉ định, khoa, hội chẩn) / Không đưa vào, kèm tiêu chí sử dụng.\n\n# ĐỊNH DẠNG ĐẦU RA\n- Bảng so sánh: Tiêu chí | Thuốc đề xuất | Thuốc hiện có | Nguồn [số].\n- Bảng bằng chứng hiệu quả: Nghiên cứu | Thiết kế | n | Kết cục chính | Hiệu quả (95% CI) | GRADE.\n- Bảng tác động ngân sách (hiển thị công thức tính).\n- Mục \"Đề xuất và tiêu chí sử dụng\"; tài liệu tham khảo theo kiểu Vancouver.\n- Tổng độ dài không quá 1.200 từ.\n\n# RÀNG BUỘC\n- Chỉ dùng số liệu có trong tài liệu được cung cấp hoặc nguồn kiểm chứng được. NGHIÊM CẤM bịa giá, kết quả nghiên cứu, DOI, PMID.\n- Không có so sánh trực tiếp thì nói rõ, không diễn giải như có.\n- Ghi nhận xung đột lợi ích nếu tài liệu do nhà sản xuất cung cấp.\n- Kiểm tra lại hiệu lực văn bản BHYT tại thời điểm dùng.\n- Câu cuối: \"Thông tin hỗ trợ quyết định; quyết định thuộc về Hội đồng Thuốc và Điều trị.\"\n\n# TỰ KIỂM TRA TRƯỚC KHI TRẢ LỜI\n1. Đã tính lại chi phí và tác động ngân sách một lần?\n2. Đề xuất có nhất quán với bằng chứng hiệu quả, an toàn và chi phí không?\n3. Nếu có công cụ tìm kiếm: trích dẫn kèm URL/PMID thực. Nếu không: đánh dấu [CẦN XÁC MINH].\n4. Cuối bài liệt kê: điểm chưa chắc chắn, giả định, thông tin cần tôi xác nhận."
+  },
+  {
+   "id": "verify",
+   "num": null,
+   "title": "Prompt kiểm định chéo",
+   "use": "Dán vào một AI/phiên khác để đối chiếu đầu ra với nguồn gốc",
+   "group": "kiemdinh",
+   "text": "# VAI TRÒ\nBạn là thẩm định viên độc lập về bằng chứng y khoa (EBM). Bạn KHÔNG tạo nội dung mới; bạn chỉ kiểm tra và báo lỗi.\n\n# ĐẦU VÀO\n- Tác vụ gốc: [CẦN ĐIỀN: ví dụ \"thẩm định đơn kháng sinh\", \"TDM vancomycin\", \"tóm tắt guideline\"]\n- Nguồn gốc: các file đính kèm [CẦN ĐIỀN: tên tài liệu, năm, phiên bản]\n- Nội dung cần kiểm: phần dán giữa hai dòng \"=== BẮT ĐẦU ===\" và \"=== KẾT THÚC ===\".\n\n# NHIỆM VỤ\n1. Chọn tất cả (tối đa 15) mệnh đề lâm sàng có con số, ngưỡng, liều, mức khuyến cáo.\n2. Với từng mệnh đề, tìm đoạn tương ứng trong nguồn gốc; ghi trang/mục.\n3. Phân loại: KHỚP / KHÁC (nêu chỗ khác) / KHÔNG TÌM THẤY TRONG NGUỒN.\n4. Tính lại mọi phép tính (CrCl, AUC, NNT, tỷ lệ %) và báo sai lệch.\n5. Kiểm danh mục tài liệu tham khảo: mục không có trong nguồn đính kèm đánh dấu [CHƯA XÁC MINH].\n6. Kiểm: đúng format? có dữ liệu định danh người bệnh? có kết luận vượt bằng chứng?\n\n# ĐỊNH DẠNG\nBảng: STT | Mệnh đề (rút gọn) | Kết quả | Trang/mục trong nguồn | Ghi chú.\nSau bảng: tổng số KHỚP / KHÁC / KHÔNG TÌM THẤY; 3 lỗi nghiêm trọng nhất; danh sách tài liệu [CHƯA XÁC MINH].\n\n# RÀNG BUỘC\n- Chỉ dùng nguồn gốc đã đính kèm; không dùng kiến thức ngoài để \"xác nhận\".\n- Không bịa trang, DOI, PMID. Không chắc thì ghi \"KHÔNG THỂ KIỂM\".\n- Không sửa nội dung, chỉ báo lỗi.\n\n=== BẮT ĐẦU ===\n[DÁN ĐẦU RA CẦN KIỂM TẠI ĐÂY]\n=== KẾT THÚC ==="
+  }
+ ]
+}
+</script>
+
+<script id="prompt-core">
+// Hàm thuần: tách ô cần điền, điền prompt, phát hiện dữ liệu định danh. Không đụng DOM (kiểm thử được bằng Node).
+(function (root) {
+  const SLOT = /\[(?:CẦN ĐIỀN|DÁN)[^\]]*\]/g;
+
+  function norm(s) {
+    return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+  }
+
+  function hintOf(token) {
+    const inner = token.slice(1, -1);
+    if (inner.startsWith('DÁN')) return '';
+    return inner.replace(/^CẦN ĐIỀN\s*:?\s*/, '').trim();
+  }
+
+  // Mỗi lần xuất hiện của [CẦN ĐIỀN...] là một ô riêng, theo thứ tự xuất hiện.
+  function extractFields(text) {
+    const fields = [];
+    let section = '';
+    for (const line of String(text).split('\n')) {
+      const h = line.match(/^#\s+(.+)/);
+      if (h) { section = h[1].trim(); continue; }
+      const tokens = line.match(SLOT);
+      if (!tokens) continue;
+      tokens.forEach((token, j) => {
+        let k = 0;
+        const label = line
+          .replace(SLOT, () => (k++ === j ? '▢' : '…'))
+          .replace(/^\s*[-*]\s+/, '')
+          .trim();
+        const isPaste = token.startsWith('[DÁN');
+        fields.push({
+          index: fields.length,
+          token,
+          section,
+          label: label === '▢' ? token.slice(1, -1) : label,
+          hint: hintOf(token),
+          multiline: isPaste || /hoặc|danh sách|mô tả|liều|thuốc/i.test(label),
+          paste: isPaste,
+        });
+      });
+    }
+    return fields;
+  }
+
+  // Tách prompt thành các đoạn: văn bản thường, ô đã điền, ô còn trống.
+  function segments(text, values) {
+    const out = [];
+    let last = 0, k = 0, m;
+    SLOT.lastIndex = 0;
+    while ((m = SLOT.exec(text))) {
+      if (m.index > last) out.push({ type: 'text', s: text.slice(last, m.index) });
+      const v = String((values && values[k]) || '').trim();
+      out.push(v ? { type: 'fill', s: v, index: k } : { type: 'empty', s: m[0], index: k });
+      k++;
+      last = SLOT.lastIndex;
+    }
+    if (last < text.length) out.push({ type: 'text', s: text.slice(last) });
+    return out;
+  }
+
+  function fillPrompt(text, values) {
+    return segments(text, values).map(p => p.s).join('');
+  }
+
+  // Cảnh báo (không chặn) khi nội dung nhập có dấu hiệu định danh người bệnh.
+  const PHI_RULES = [
+    [/\b[A-Za-z]{2}\d{13}\b/, 'Có chuỗi giống mã thẻ BHYT (2 chữ + 13 số)'],
+    [/(?<!\d)\d{12}(?!\d)/, 'Có dãy 12 chữ số (giống số CCCD)'],
+    [/(?<!\d)(?:\+?84|0)\d{9}(?!\d)/, 'Có chuỗi giống số điện thoại'],
+    [/(?<!\d)\d{1,2}[/.-]\d{1,2}[/.-](?:19|20)\d{2}(?!\d)/, 'Có ngày tháng năm đầy đủ: nếu là ngày sinh, chỉ giữ tuổi'],
+    [/(họ (và )?tên|mã (bn|bệnh nhân|người bệnh|hồ sơ|bệnh án|y tế)|số giường|giường số|địa chỉ|số nhập viện|pid\b)/i, 'Có từ khóa gợi ý thông tin định danh (họ tên, mã bệnh án, số giường, địa chỉ…)'],
+  ];
+  function detectPHI(s) {
+    const str = String(s || '');
+    return PHI_RULES.filter(([re]) => re.test(str)).map(([, msg]) => msg);
+  }
+
+  root.PromptCore = { norm, extractFields, segments, fillPrompt, detectPHI, SLOT };
+  if (typeof module !== 'undefined') module.exports = root.PromptCore;
+})(typeof window !== 'undefined' ? window : globalThis);
+</script>
+
+<script>
+(function () {
+  const { norm, extractFields, segments, fillPrompt, detectPHI } = window.PromptCore;
+  const DATA = JSON.parse(document.getElementById('data-prompts').textContent);
+  const GROUPS = Object.fromEntries(DATA.groups.map(g => [g.id, g.name]));
+  const RECORDS = DATA.records.map(r => ({ ...r, fields: extractFields(r.text), hay: norm([r.num, r.title, r.use, GROUPS[r.group], r.text].join(' ')) }));
+  // Dữ liệu nhập chỉ nằm trong bộ nhớ của tab này: không lưu localStorage, không gửi đi đâu.
+  const VALUES = {};
+  const state = { q: '', group: 'all', current: null, tab: 'form' };
+
+  const $ = id => document.getElementById(id);
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (k === 'class') n.className = v;
+      else if (k === 'style') n.style.cssText = v;
+      else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+      else if (v !== false && v != null) n.setAttribute(k, v === true ? '' : v);
+    }
+    for (const c of kids.flat()) if (c != null) n.append(c);
+    return n;
+  };
+  const gc = g => `--gc:var(--g-${g})`;
+
+  $('meta').textContent = `${DATA.records.length - 1} prompt + kiểm định chéo · v${DATA.version} · cập nhật ${DATA.updated.split('-').reverse().join('/')}`;
+  $('foot').textContent = 'Thông tin hỗ trợ quyết định; quyết định cuối thuộc về bác sĩ điều trị và dược sĩ. Dữ liệu sức khỏe là dữ liệu cá nhân nhạy cảm (Nghị định 13/2023/NĐ-CP): chỉ nhập dữ liệu đã ẩn danh. Trang không lưu và không gửi dữ liệu nhập; đóng tab là xóa. Nội dung prompt: chưa thẩm định độc lập.';
+
+  function visible() {
+    const q = norm(state.q).trim();
+    const words = q ? q.split(/\s+/) : [];
+    return RECORDS.filter(r => (state.group === 'all' || r.group === state.group) && words.every(w => r.hay.includes(w)));
+  }
+
+  function renderChips() {
+    const counts = {};
+    RECORDS.forEach(r => (counts[r.group] = (counts[r.group] || 0) + 1));
+    const opts = [['all', 'Tất cả', RECORDS.length], ...DATA.groups.map(g => [g.id, g.name, counts[g.id] || 0])];
+    $('chips').replaceChildren(...opts.map(([id, name, n]) =>
+      el('button', { class: 'chip', 'aria-pressed': String(state.group === id), onclick: () => { state.group = id; renderChips(); renderList(); } },
+        name, el('span', { class: 'n' }, String(n)))));
+  }
+
+  function renderList() {
+    const rows = visible();
+    $('count').textContent = state.q || state.group !== 'all' ? `${rows.length} kết quả` : '';
+    $('list').replaceChildren(...(rows.length ? rows.map(r => el('li', {},
+      el('button', { class: 'item', 'aria-current': String(state.current === r.id), style: gc(r.group), onclick: () => open(r.id) },
+        el('span', { class: 'num', 'aria-hidden': 'true' }, r.num ? String(r.num) : '✓'),
+        el('div', {}, el('b', {}, r.title), el('span', { class: 'desc' }, r.use))))) :
+      [el('li', { class: 'empty-list' }, 'Không có prompt phù hợp. Thử từ khóa khác hoặc chọn "Tất cả".')]));
+  }
+
+  function open(id, fromHash) {
+    const r = RECORDS.find(x => x.id === id);
+    if (!r) return;
+    state.current = id;
+    state.tab = 'form';
+    VALUES[id] = VALUES[id] || [];
+    if (!fromHash && location.hash !== '#' + id) history.pushState(null, '', '#' + id);
+    document.body.classList.add('show-detail');
+    renderList();
+    renderDetail(r);
+    window.scrollTo({ top: 0 });
+  }
+
+  function closeDetail() {
+    state.current = null;
+    document.body.classList.remove('show-detail');
+    if (location.hash) history.pushState(null, '', location.pathname + location.search);
+    renderList();
+  }
+
+  function renderDetail(r) {
+    const vals = VALUES[r.id];
+    const phiBox = el('div', { class: 'phi', role: 'alert', hidden: true });
+    const progress = el('span', { class: 'progress' });
+    const pre = el('pre', { class: 'preview', 'aria-label': 'Nội dung prompt' });
+
+    const update = () => {
+      const done = r.fields.filter(f => String(vals[f.index] || '').trim()).length;
+      progress.replaceChildren('Đã điền ', el('b', {}, `${done}/${r.fields.length}`), ' ô');
+      const warns = [...new Set(vals.flatMap(v => detectPHI(v)))];
+      phiBox.hidden = !warns.length;
+      phiBox.replaceChildren(el('b', {}, 'Có thể còn dữ liệu định danh người bệnh. Kiểm tra lại trước khi sao chép:'),
+        el('ul', {}, warns.map(w => el('li', {}, w))));
+      pre.replaceChildren(...segments(r.text, vals).map(p =>
+        p.type === 'text' ? document.createTextNode(p.s) : el('mark', { class: p.type === 'fill' ? 'f' : 'e' }, p.s)));
+    };
+
+    // Ô nhập, nhóm theo mục của prompt (BỐI CẢNH, ĐẦU VÀO…)
+    const bySection = [];
+    r.fields.forEach(f => {
+      let g = bySection.find(s => s.name === f.section);
+      if (!g) bySection.push(g = { name: f.section, items: [] });
+      g.items.push(f);
+    });
+    const form = r.fields.length ? bySection.map(s => el('fieldset', {},
+      el('legend', {}, s.name || 'Thông tin'),
+      s.items.map(f => {
+        const fid = `f-${r.id}-${f.index}`;
+        const parts = f.label.split('▢');
+        const ta = el('textarea', {
+          id: fid, rows: f.paste ? 8 : f.multiline ? 2 : 1, spellcheck: 'false',
+          placeholder: f.hint ? `Ví dụ / gợi ý: ${f.hint}` : 'Nhập dữ liệu đã ẩn danh…',
+        });
+        ta.value = vals[f.index] || '';
+        const wrap = el('div', { class: 'field' + (ta.value.trim() ? ' done' : '') },
+          el('label', { for: fid }, parts[0], parts.length > 1 ? el('span', { class: 'slot' }, '▢') : null, parts.slice(1).join('▢')),
+          f.hint && !f.paste ? el('p', { class: 'hint' }, f.hint) : null, ta);
+        ta.addEventListener('input', () => {
+          vals[f.index] = ta.value;
+          wrap.classList.toggle('done', !!ta.value.trim());
+          update();
+        });
+        return wrap;
+      }))) : [el('p', { class: 'no-field' }, 'Prompt này không có ô cần điền. Sao chép và dùng ngay.')];
+
+    const panelForm = el('div', { class: 'panel', id: 'panel-form', role: 'tabpanel' }, phiBox, form);
+    const panelView = el('div', { class: 'panel', id: 'panel-view', role: 'tabpanel', hidden: true },
+      el('div', { class: 'legend-row' },
+        el('span', {}, el('i', { style: 'background:var(--fill)' }), 'Đã điền'),
+        el('span', {}, el('i', { style: 'background:var(--empty)' }), 'Còn trống')), pre);
+
+    const tab = (id, label) => el('button', {
+      class: 'tab', role: 'tab', id: 'tab-' + id, 'aria-controls': 'panel-' + id, 'aria-selected': String(state.tab === id),
+      onclick: () => {
+        state.tab = id;
+        panelForm.hidden = id !== 'form';
+        panelView.hidden = id !== 'view';
+        document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', String(t.id === 'tab-' + id)));
+      },
+    }, label);
+
+    $('detail').replaceChildren(el('section', { class: 'card', style: gc(r.group) },
+      el('div', { class: 'd-head' },
+        el('button', { class: 'back', onclick: closeDetail }, '← Danh sách'),
+        el('span', { class: 'tag' }, (r.num ? `Prompt ${r.num} · ` : '') + GROUPS[r.group]),
+        el('h2', {}, r.title),
+        el('p', {}, r.use)),
+      el('p', { class: 'notice' }, el('b', {}, 'Ẩn danh hóa trước khi điền: '),
+        'không nhập họ tên, mã người bệnh/BHYT, số giường, ngày sinh (chỉ giữ tuổi), địa chỉ. Chỉ dán vào AI được bệnh viện cho phép.'),
+      el('div', { class: 'tabs', role: 'tablist' }, tab('form', 'Điền thông tin'), tab('view', 'Xem prompt')),
+      panelForm, panelView,
+      el('div', { class: 'actions' }, progress,
+        el('button', { class: 'btn ghost', onclick: () => { VALUES[r.id] = []; renderDetail(r); toast('Đã xóa dữ liệu đã nhập'); } }, 'Xóa dữ liệu'),
+        el('button', { class: 'btn', onclick: () => copy(r.text, 'Đã sao chép bản gốc') }, 'Sao chép bản gốc'),
+        el('button', { class: 'btn primary', id: 'copy-filled', onclick: () => copy(fillPrompt(r.text, VALUES[r.id]), 'Đã sao chép prompt đã điền') }, 'Sao chép prompt'))));
+    update();
+  }
+
+  async function copy(text, msg) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (e) {
+      const ta = el('textarea', { style: 'position:fixed;opacity:0' });
+      ta.value = text;
+      document.body.append(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    toast(msg);
+  }
+
+  let tt;
+  function toast(msg) {
+    const t = $('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(tt);
+    tt = setTimeout(() => t.classList.remove('show'), 1800);
+  }
+
+  $('q').addEventListener('input', e => { state.q = e.target.value; renderList(); });
+  document.addEventListener('keydown', e => {
+    const typing = /INPUT|TEXTAREA/.test(document.activeElement.tagName);
+    if ((e.key === '/' && !typing) || (e.key.toLowerCase() === 'k' && (e.ctrlKey || e.metaKey))) {
+      e.preventDefault();
+      if (document.body.classList.contains('show-detail') && matchMedia('(max-width:860px)').matches) closeDetail();
+      $('q').focus();
+    }
+  });
+  const fromHash = () => {
+    const id = location.hash.slice(1);
+    if (RECORDS.some(r => r.id === id)) open(id, true);
+    else if (state.current) { state.current = null; document.body.classList.remove('show-detail'); renderList(); }
+  };
+  window.addEventListener('popstate', fromHash);
+
+  renderChips();
+  renderList();
+  fromHash();
+})();
+</script>
+</body>
+</html>

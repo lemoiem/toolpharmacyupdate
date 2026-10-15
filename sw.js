@@ -42,7 +42,11 @@ self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
   // Trang chính: ưu tiên mạng để nhận bản cập nhật liều mới nhất; mất mạng thì dùng bản đã lưu
+  // Chỉ xử lý trang gốc của app; trang con (ví dụ prompt/) không được ghi đè bản index.html đã lưu
   if (req.mode === 'navigate') {
+    const scope = new URL(self.registration.scope).pathname;
+    const p = new URL(req.url).pathname;
+    if (p !== scope && p !== scope + 'index.html') return;
     e.respondWith(fetch(req)
       .then(res => { if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put('index.html', copy)); } return res; })
       .catch(() => caches.match('index.html')));

@@ -8,6 +8,7 @@
 - 🏥 **Đơn vị:** Bệnh viện Phương Nam – Tập đoàn Y tế Phương Châu
 - 👤 **Tác giả:** DSCKI. Lê Mới Em – Dược sĩ lâm sàng
 - 🔖 **Phiên bản:** 2.3 (10/2026)
+- 🧾 **Thư viện prompt Khoa Dược:** <https://lemoiem.github.io/toolpharmacyupdate/prompt/>: 20 prompt chuẩn và prompt kiểm định chéo, có ô điền dữ liệu ca, cảnh báo dữ liệu định danh, nút sao chép. Nguồn: `docs/bo-prompt-khoa-duoc.md`. Sau khi sửa nguồn, chạy `python3 tools/build_prompts.py` để cập nhật trang.
 
 > [!WARNING]
 > **Đây là công cụ HỖ TRỢ quyết định, không thay thế phán đoán lâm sàng.** Mọi liều và chỉ định phải được bác sĩ/dược sĩ lâm sàng kiểm tra và phê duyệt trước khi dùng cho người bệnh. Các khối dữ liệu gắn nhãn **"chưa kiểm chứng"** cần một dược sĩ hoặc bác sĩ thứ hai đối chiếu với nguồn gốc trước khi áp dụng lâm sàng.
